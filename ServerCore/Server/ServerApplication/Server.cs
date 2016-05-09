@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Drawing;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
@@ -7,6 +8,7 @@ using System.Net;
 using System.Net.Sockets;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Media;
 
 namespace ServerApplication
 {
@@ -17,30 +19,26 @@ namespace ServerApplication
         private MainWindow window;
         public static bool isRunning = false;
 
-        private ObservableCollection<ClientMessage> recivedMessages = 
-            new ObservableCollection<ClientMessage>() {
-                new ClientMessage() {Time = DateTime.Now, Adress = IPAddress.Parse("123.123.123.123"), RecivedData = "Afaf" } };
-
-        public ObservableCollection<ClientMessage> RecivedMessages { get { return recivedMessages; } }
+        public MessagesContainer container = new MessagesContainer();
 
         public Server(string ipAddress, int port, MainWindow mainwindow)
         {
             this.ipAddress = IPAddress.Parse(ipAddress);
             this.port = port;
             this.window = mainwindow;
-            window.dataGrid.ItemsSource = recivedMessages;
+            window.dataGrid.DataContext = container.RecivedMessages;
         }
 
         public async void Run()
         {
             TcpListener listener = null;
-            isRunning = true;
             try
             {
                 listener = new TcpListener(this.ipAddress, this.port);
                 listener.Start();
-
+                isRunning = true;
                 window.ServerStatus.Content = "Server is running";
+                window.ServerStatus.Foreground = new SolidColorBrush(Colors.Green);
 
                 while (true)
                 {
@@ -65,24 +63,22 @@ namespace ServerApplication
 
                 while (true)
                 {
-                    string request = await reader.ReadLineAsync();
+                    string message = await reader.ReadLineAsync();
 
-                    if (request != null)
+                    if (message != null)
                     {
-                        string recivedData = Response(request);
-                        string clientEndPoint = tcpClient.Client.RemoteEndPoint.AddressFamily.ToString();
+                        string recivedData = ParseMessage(message);
+                        string clientEndPoint = tcpClient.Client.RemoteEndPoint.ToString().Split(':').First();
 
-                        recivedMessages.Add(new ClientMessage()
+                        container.RecivedMessages.Add(new Message()
                         {
                             Adress = IPAddress.Parse(clientEndPoint),
                             Time = DateTime.Now,
                             RecivedData = recivedData
                         });
-
-                       
                     }
                     else
-                        break; // Client closed connection
+                        break; // Closed connection
                 }
                 tcpClient.Close();
             }
@@ -92,9 +88,10 @@ namespace ServerApplication
             }
         }
 
-        private static string Response(string request)
+        //TODO parse respomse
+        private static string ParseMessage(string msg)
         {
-            return request;
+            return msg;
         }
     }
 }

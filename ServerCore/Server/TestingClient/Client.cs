@@ -15,7 +15,7 @@ namespace TestingClient
         public static IPAddress Ip;
         public static int Port;
         public static bool isConnedted = false;
-
+        private static int count;
 
         public Client(MainWindow w)
         {
@@ -37,7 +37,8 @@ namespace TestingClient
                 StreamWriter writer = new StreamWriter(networkStream);
                 writer.AutoFlush = true;
                
-                await writer.WriteLineAsync(data);
+                await writer.WriteLineAsync(data += " " + count);
+                count++;
                 client.Close();
 
             }

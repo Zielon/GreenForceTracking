@@ -22,7 +22,7 @@ namespace ServerApplication
     public partial class MainWindow : Window
     {
         private Server server;
-
+        public static int dsfsdf;
 
         public MainWindow()
         {
@@ -38,7 +38,6 @@ namespace ServerApplication
 
             server = new Server(ip, int.Parse(port), this);
             server.Run();
-                       
         }
     }
 }

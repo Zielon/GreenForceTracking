@@ -1,5 +1,0 @@
-X:\Repozytoria\GreenForceTracking\Server\Server\Server\bin\Debug\Server.dll
-X:\Repozytoria\GreenForceTracking\Server\Server\Server\bin\Debug\Server.pdb
-X:\Repozytoria\GreenForceTracking\Server\Server\Server\obj\Debug\Server.csprojResolveAssemblyReference.cache
-X:\Repozytoria\GreenForceTracking\Server\Server\Server\obj\Debug\Server.dll
-X:\Repozytoria\GreenForceTracking\Server\Server\Server\obj\Debug\Server.pdb

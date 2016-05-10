@@ -37,7 +37,7 @@ namespace ServerApplication
             if (Server.isRunning) return;
 
             server = new Server(ip, int.Parse(port), this);
-            server.Run();
+            server.StartListening();
         }
     }
 }

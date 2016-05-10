@@ -29,7 +29,13 @@ namespace ServerApplication
             window.dataGrid.DataContext = container.RecivedMessages;
         }
 
-        public async void Run()
+        // TODO start sending data to clients
+        public async void StartSending()
+        {
+
+        }
+
+        public async void StartListening()
         {
             TcpListener listener = null;
             try
@@ -88,7 +94,7 @@ namespace ServerApplication
             }
         }
 
-        //TODO parse respomse
+        //TODO parse response
         private static string ParseMessage(string msg)
         {
             return msg;

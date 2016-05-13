@@ -10,7 +10,6 @@ namespace ServerApplication
     public class Room
     {
         public ObservableCollection<Client> Players { get; set; }
-
         public Room() {
             Players = new ObservableCollection<Client>();
         }

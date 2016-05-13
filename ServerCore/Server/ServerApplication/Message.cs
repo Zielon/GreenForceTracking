@@ -11,6 +11,6 @@ namespace ServerApplication
     {
         public DateTime Time { get; set; }
         public IPAddress Adress { get; set; }
-        public string RecivedData { get; set; }       
+        public string RecivedData { get; set; }
     }
 }

@@ -43,6 +43,7 @@ namespace ServerApplication
 
         public void UpdatePlayers(object sender, NotifyCollectionChangedEventArgs e)
         {
+            // To be checked
             new Thread(() => StartSending()).Start();
         }
 
@@ -129,6 +130,7 @@ namespace ServerApplication
             }
             catch (Exception ex)
             {
+                Console.WriteLine(ex.Message);
                 if (tcpClient.Connected) tcpClient.Close();
             }
         }
@@ -137,16 +139,15 @@ namespace ServerApplication
         {
             XmlDocument doc = new XmlDocument();
             Client client = null;
+
             try
             {
-
                 doc.LoadXml(msg);
                 XmlNodeList elements = doc.GetElementsByTagName("Player");
                 var ipAddress = IPAddress.Parse(ip);
 
                 foreach (XmlNode player in elements)
                 {
-
                     var id = player["ID"].InnerText;
                     var lat = Double.Parse(player["Lat"].InnerText);
                     var lon = Double.Parse(player["Lon"].InnerText);
@@ -164,7 +165,6 @@ namespace ServerApplication
                     };
                 }
             }
-
             catch (Exception ex)
             {
                 Console.WriteLine(ex.Message);

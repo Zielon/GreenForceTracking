@@ -6,6 +6,7 @@ using System.Net;
 using System.Net.Sockets;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml;
 
 namespace TestingClient
 {
@@ -52,7 +53,23 @@ namespace TestingClient
 
                     if (message != null)
                     {
-                        window.textBoxResponse.Text = message;
+                        XmlDocument doc = new XmlDocument();
+                        doc.LoadXml(message);
+                        XmlNodeList elements = doc.GetElementsByTagName("Player");
+                        string str = string.Empty;
+
+                        foreach (XmlNode player in elements)
+                        {
+                            var id = player["ID"].InnerText;
+                            var lat = Double.Parse(player["Lat"].InnerText);
+                            var lon = Double.Parse(player["Lon"].InnerText);
+                            var user = player["User"].InnerText;
+
+                            str = string.Format("User: {0\n}ID: {1}\nLat: {2}\nLon: {3}",
+                                                     user, id, lat, lon);
+                        }
+
+                        window.textBoxResponse.Text = str;
                     }
                     else
                         break; // Closed connection
@@ -81,10 +98,15 @@ namespace TestingClient
                 NetworkStream networkStream = client.GetStream();
                 StreamWriter writer = new StreamWriter(networkStream);
                 writer.AutoFlush = true;
-               
-                var user = new ServerApplication.Client() {
-                    ID = "1", IpAddress = Ip, Lat = 0.0, Lon = 0.0,
-                    UserName = "Testing Client", Message = data                        
+
+                var user = new ServerApplication.Client()
+                {
+                    ID = "1",
+                    IpAddress = Ip,
+                    Lat = 0.0,
+                    Lon = 0.0,
+                    UserName = "Testing Client",
+                    Message = data
                 };
 
                 await writer.WriteLineAsync(user.ToString());
@@ -95,7 +117,6 @@ namespace TestingClient
             {
                 Console.WriteLine(ex.Message);
             }
-
-        }                  
+        }
     }
 }

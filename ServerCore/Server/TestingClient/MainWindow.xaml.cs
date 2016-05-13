@@ -22,18 +22,15 @@ namespace TestingClient
     /// </summary>
     public partial class MainWindow : Window
     {
-
         public MainWindow()
         {
             InitializeComponent();
             Client.window = this;
         }
-
         private void buttonSend_Click(object sender, RoutedEventArgs e)
         {
-            Task tsResponse = Client.Send(this.textBox.Text);          
+            Task tsResponse = Client.Send(this.textBox.Text);
         }
-
         private void button_Click(object sender, RoutedEventArgs e)
         {
             var dns = textBoxIP.Text;

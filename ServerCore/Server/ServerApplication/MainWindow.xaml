@@ -7,16 +7,14 @@
         mc:Ignorable="d"
         Title="Server vrsion 0.0" Height="469.462" Width="826.924">
 
-    <Grid Margin="0,0,-41,9">
+    <Grid Margin="0,0,-45,9">
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="466*"/>
-            <ColumnDefinition Width="129*"/>
-            <ColumnDefinition Width="130*"/>
+            <ColumnDefinition Width="107*"/>
+            <ColumnDefinition Width="95*"/>
             <ColumnDefinition Width="0*"/>
-            <ColumnDefinition Width="0*"/>
-            <ColumnDefinition Width="0*"/>
+            <ColumnDefinition Width="14*"/>
         </Grid.ColumnDefinitions>
-        <Viewbox Grid.ColumnSpan="3" Margin="10,10,58,0" Stretch="Fill">
+        <Viewbox Grid.ColumnSpan="2" Margin="10,10,8,0" Stretch="Fill">
             <Viewbox Height="352" Stretch="Fill" Width="657">
                 <Grid Height="352" Width="657">
                     <Label x:Name="label2" Content="Recived Packages" HorizontalAlignment="Left" VerticalAlignment="Top" Width="301" Height="26"/>

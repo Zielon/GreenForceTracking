@@ -11,7 +11,6 @@ namespace ServerApplication
         public MessagesContainer() {
             recivedMessages = new ObservableCollection<Message>();
         }
-
         public ObservableCollection<Message> RecivedMessages { get { return recivedMessages; } }
     }
 }

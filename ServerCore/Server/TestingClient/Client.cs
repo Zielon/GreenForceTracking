@@ -82,8 +82,12 @@ namespace TestingClient
                 StreamWriter writer = new StreamWriter(networkStream);
                 writer.AutoFlush = true;
                
-                await writer.WriteLineAsync(@"<Player><ID>1234</ID><User>Tesownik</User><Lat>123.234</Lat><Lon>123.234</Lon><Message>Test</Message></Player>");
-                count++;
+                var user = new ServerApplication.Client() {
+                    ID = "1", IpAddress = Ip, Lat = 0.0, Lon = 0.0,
+                    UserName = "Testing Client", Message = data                        
+                };
+
+                await writer.WriteLineAsync(user.ToString());
                 client.Close();
 
             }

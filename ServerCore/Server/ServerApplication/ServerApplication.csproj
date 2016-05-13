@@ -56,10 +56,10 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="ChatMessage.cs" />
     <Compile Include="Client.cs" />
     <Compile Include="Message.cs" />
     <Compile Include="MessageContainer.cs" />
+    <Compile Include="Room.cs" />
     <Compile Include="Server.cs" />
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>

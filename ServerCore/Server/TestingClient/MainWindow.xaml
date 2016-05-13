@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:TestingClient"
         mc:Ignorable="d"
-        Title="MainWindow" Height="259" Width="499">
+        Title="MainWindow" Height="365" Width="636">
     <Grid Margin="0,0,2,6">
         <Viewbox Stretch="Fill">
             <Grid Height="222" Width="489">
@@ -14,11 +14,14 @@
                     <ColumnDefinition Width="124*"/>
                 </Grid.ColumnDefinitions>
                 <Button x:Name="button" Content="Start" Margin="352,66,0,0" VerticalAlignment="Top" Click="button_Click" HorizontalAlignment="Left" Width="120" Grid.ColumnSpan="2"/>
-                <TextBox x:Name="textBox" HorizontalAlignment="Left" Height="174" Margin="12,10,0,0" TextWrapping="Wrap" Text="Message: " VerticalAlignment="Top" Width="324" Background="#FFF5CECE"/>
-                <Button x:Name="buttonSend" Content="Send message" HorizontalAlignment="Left" Margin="12,189,0,0" VerticalAlignment="Top" Width="324" Click="buttonSend_Click"/>
+                <TextBox x:Name="textBox" HorizontalAlignment="Left" Height="162" Margin="12,22,0,0" TextWrapping="Wrap" Text="Message: " VerticalAlignment="Top" Width="151" Background="#FFF5CECE"/>
+                <Button x:Name="buttonSend" Content="Send message" HorizontalAlignment="Left" Margin="12,189,0,0" VerticalAlignment="Top" Width="151" Click="buttonSend_Click"/>
                 <TextBox x:Name="textBoxIP" HorizontalAlignment="Left" Height="23" Margin="352,10,0,0" TextWrapping="Wrap" Text="kornik.ddns.net" VerticalAlignment="Top" Width="120" Grid.ColumnSpan="2"/>
                 <TextBox x:Name="textBoxPort" HorizontalAlignment="Left" Height="23" Margin="352,38,0,0" TextWrapping="Wrap" Text="52300" VerticalAlignment="Top" Width="120" Grid.ColumnSpan="2"/>
-                <Label x:Name="label" Content="Empty" HorizontalAlignment="Left" Margin="352,91,0,0" VerticalAlignment="Top" Width="120" Grid.ColumnSpan="2"/>
+                <Label x:Name="label" Content="Empty" HorizontalAlignment="Left" Margin="24,106,0,0" VerticalAlignment="Top" Width="46" TextOptions.TextHintingMode="Fixed" Grid.Column="1"/>
+                <TextBox x:Name="textBoxResponse" HorizontalAlignment="Left" Height="162" Margin="185,22,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="151" Background="#FFF5CECE"/>
+                <Label x:Name="label1" Content="Send" HorizontalAlignment="Left" Margin="12,0,0,0" VerticalAlignment="Top"/>
+                <Label x:Name="label2" Content="Recived" HorizontalAlignment="Left" Margin="185,0,0,0" VerticalAlignment="Top"/>
 
             </Grid>
         </Viewbox>

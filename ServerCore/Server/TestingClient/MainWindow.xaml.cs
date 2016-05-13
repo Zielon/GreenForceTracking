@@ -26,11 +26,12 @@ namespace TestingClient
         public MainWindow()
         {
             InitializeComponent();
+            Client.window = this;
         }
 
         private void buttonSend_Click(object sender, RoutedEventArgs e)
         {
-            Task tsResponse = Client.Send(this.textBox.Text);
+            Task tsResponse = Client.Send(this.textBox.Text);          
         }
 
         private void button_Click(object sender, RoutedEventArgs e)
@@ -52,6 +53,7 @@ namespace TestingClient
             Client.Port = port;
             Client.isConnedted = true;
             label.Content = "Ready !";
+            Client.StartListening();
         }
     }
 }

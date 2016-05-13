@@ -11,16 +11,61 @@ namespace TestingClient
 {
     class Client
     {
-        MainWindow window;
+        public static MainWindow window;
         public static IPAddress Ip;
         public static int Port;
         public static bool isConnedted = false;
         private static int count;
 
-        public Client(MainWindow w)
+        public static async void StartListening()
         {
-            this.window = w;
+            TcpListener listener = null;
+            try
+            {
+                listener = new TcpListener(IPAddress.Parse("192.168.0.2"), 52300);
+                listener.Start();
+
+                while (true)
+                {
+                    TcpClient tcpClient = await listener.AcceptTcpClientAsync();
+                    Task t = Process(tcpClient);
+                    await t;
+                }
+
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
         }
+
+        private static async Task Process(TcpClient tcpClient)
+        {
+            try
+            {
+                NetworkStream networkStream = tcpClient.GetStream();
+                StreamReader reader = new StreamReader(networkStream);
+
+                while (true)
+                {
+                    string message = await reader.ReadLineAsync();
+
+                    if (message != null)
+                    {
+                        window.textBoxResponse.Text = message;
+                    }
+                    else
+                        break; // Closed connection
+                }
+
+                tcpClient.Close();
+            }
+            catch (Exception ex)
+            {
+                if (tcpClient.Connected) tcpClient.Close();
+            }
+        }
+
 
         public static async Task Send(string data)
         {
@@ -37,7 +82,7 @@ namespace TestingClient
                 StreamWriter writer = new StreamWriter(networkStream);
                 writer.AutoFlush = true;
                
-                await writer.WriteLineAsync(data += " " + count);
+                await writer.WriteLineAsync(@"<Player><ID>1234</ID><User>Tesownik</User><Lat>123.234</Lat><Lon>123.234</Lon><Message>Test</Message></Player>");
                 count++;
                 client.Close();
 

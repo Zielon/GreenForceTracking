@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:ServerApplication"
         mc:Ignorable="d"
-        Title="Server vrsion 0.0" Height="402" Width="692">
+        Title="Server vrsion 0.0" Height="469.462" Width="826.924">
 
     <Grid Margin="0,0,-41,9">
         <Grid.ColumnDefinitions>
@@ -24,10 +24,10 @@
                     <TextBox x:Name="textBoxIP" Height="23" Margin="0,29,0,0" TextWrapping="Wrap" VerticalAlignment="Top" HorizontalAlignment="Right" Width="120" Text="192.168.0.3"/>
                     <TextBox x:Name="textBoxPort" HorizontalAlignment="Right" Height="23" Margin="0,57,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="120" Text="52300"/>
                     <Label x:Name="label" Content="IP&#xA;IP" HorizontalAlignment="Left" Margin="502,29,0,0" VerticalAlignment="Top" Height="26" Width="39" RenderTransformOrigin="0.333,0.5"/>
-                    <Label x:Name="label1" Content="Port" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="502,57,0,0" Height="26" Width="32"/>
-                    <Label x:Name="ServerStatus" Content="Server is disabled" HorizontalAlignment="Left" Margin="537,131,0,0" VerticalAlignment="Top" Width="120" Height="28" Background="White" Foreground="#FFFF0202"/>
+                    <Label x:Name="label1" Content="Port" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="500,55,0,0" Height="26" Width="32"/>
+                    <Label x:Name="ServerStatus" Content="Server is disabled" Margin="347,29,190,0" VerticalAlignment="Top" Height="28" Background="White" Foreground="#FFFF0202"/>
 
-                    <DataGrid x:Name="dataGrid" HorizontalAlignment="Left" Margin="0,26,0,0" VerticalAlignment="Top" Height="326" Width="497" Background="#FFFBDBDB"
+                    <DataGrid x:Name="dataGrid" HorizontalAlignment="Left" Margin="0,29,0,0" VerticalAlignment="Top" Height="323" Width="330" Background="#FFFBDBDB"
                               ItemsSource="{Binding}">
                         <DataGrid.DataContext>
                             <local:MessagesContainer>
@@ -37,6 +37,12 @@
                             </local:MessagesContainer>
                         </DataGrid.DataContext>
                     </DataGrid>
+                    <TextBox x:Name="textBox" HorizontalAlignment="Left" Height="188" Margin="347,164,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="310" FontSize="9.333" FontFamily="Consolas" Background="#FFF0DADA"/>
+                    <Label x:Name="label3" Content="Console output" HorizontalAlignment="Left" Margin="347,138,0,0" VerticalAlignment="Top">
+                        <Label.Foreground>
+                            <SolidColorBrush Color="{DynamicResource {x:Static SystemColors.ActiveCaptionTextColorKey}}"/>
+                        </Label.Foreground>
+                    </Label>
                 </Grid>
             </Viewbox>
         </Viewbox>

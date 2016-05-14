@@ -13,6 +13,8 @@ using System.Xml;
 using System.Collections.Specialized;
 using System.Threading;
 using System.Text.RegularExpressions;
+using System.Globalization;
+using System.ComponentModel;
 
 namespace ServerApplication
 {
@@ -34,6 +36,8 @@ namespace ServerApplication
             this.window = mainwindow;
             window.dataGrid.DataContext = container.RecivedMessages;
 
+            Console.WriteLine("Listening on port: " + port);
+
             //TODO temporaty solution
             var room = new Room();
             room.Players.CollectionChanged += UpdatePlayers;
@@ -43,11 +47,20 @@ namespace ServerApplication
 
         public void UpdatePlayers(object sender, NotifyCollectionChangedEventArgs e)
         {
-            // To be checked
-            new Thread(() => StartSending()).Start();
+            if (e.NewItems != null)
+            {
+                Console.WriteLine("Players in room: " + Rooms.First().Players.Count);
+                new Thread(() => StartSending()).Start();
+            }
         }
 
-        // TODO start sending data to clients
+        void ClientPropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            Client item = sender as Client;
+            if (item != null)
+                new Thread(() => StartSending()).Start();
+        }
+
         public void StartSending()
         {
             try
@@ -56,12 +69,13 @@ namespace ServerApplication
 
                 Rooms.First().Players.ToList().ForEach(async p =>
                 {
-
-                    await client.ConnectAsync(p.IpAddress, 52300);
+                    await client.ConnectAsync(p.IpAddress, Consts.SendingPort);
 
                     NetworkStream networkStream = client.GetStream();
                     StreamWriter writer = new StreamWriter(networkStream);
                     writer.AutoFlush = true;
+
+                    p.UserName = "Server";
 
                     await writer.WriteLineAsync(p.ToString());
                     client.Close();
@@ -69,7 +83,7 @@ namespace ServerApplication
             }
             catch (Exception ex)
             {
-                Console.WriteLine(ex.Message);
+                Console.WriteLine(ex.Message + "\n" + ex.StackTrace);
             }
         }
 
@@ -94,7 +108,7 @@ namespace ServerApplication
             }
             catch (Exception ex)
             {
-                Console.WriteLine(ex.Message);
+                Console.WriteLine(ex.Message + "\n" + ex.StackTrace);
             }
         }
 
@@ -111,8 +125,11 @@ namespace ServerApplication
 
                     if (message != null)
                     {
-                        string clientEndPoint = tcpClient.Client.RemoteEndPoint.ToString().Split(':').First();
-                        var recivedData = ParseMessage(message.ToString(), clientEndPoint);
+                        string clientEndPoint = tcpClient.Client.RemoteEndPoint
+                            .ToString().Split(':')
+                            .First();
+
+                        var recivedData = ParseMessage(message, clientEndPoint);
 
                         if (recivedData != null)
                             container.RecivedMessages.Add(new Message()
@@ -122,15 +139,14 @@ namespace ServerApplication
                                 RecivedData = recivedData.Message
                             });
                     }
-                    else
-                        break; // Closed connection
+                    else break; // Closed connection
                 }
 
                 tcpClient.Close();
             }
             catch (Exception ex)
             {
-                Console.WriteLine(ex.Message);
+                Console.WriteLine(ex.Message + "\n" + ex.StackTrace);
                 if (tcpClient.Connected) tcpClient.Close();
             }
         }
@@ -149,36 +165,39 @@ namespace ServerApplication
                 foreach (XmlNode player in elements)
                 {
                     var id = player["ID"].InnerText;
-                    var lat = Double.Parse(player["Lat"].InnerText);
-                    var lon = Double.Parse(player["Lon"].InnerText);
+                    var lat = Double.Parse(player["Lat"].InnerText.Replace(',', '.'),
+                        NumberStyles.Any, CultureInfo.InvariantCulture);
+                    var lon = Double.Parse(player["Lon"].InnerText.Replace(',', '.'),
+                        NumberStyles.Any, CultureInfo.InvariantCulture);
                     var message = player["Message"].InnerText;
                     var user = player["User"].InnerText;
 
                     client = new Client()
                     {
                         ID = id,
-                        Lat = lat,
-                        Lon = lon,
+                        Posision = new Tuple<double, double>(lat,lon),
                         Message = message,
                         UserName = user,
                         IpAddress = ipAddress
                     };
+
+                    client.PropertyChanged += ClientPropertyChanged;
                 }
             }
             catch (Exception ex)
             {
-                Console.WriteLine(ex.Message);
+                Console.WriteLine(ex.Message + "\n" + ex.StackTrace);
             }
 
             if (client == null) return null;
 
+            //TODO Fix update rooms
             if (!Rooms.First().Players.Contains(client))
                 Rooms.First().Players.Add(client);
             else
             {
                 var player = Rooms.First().Players.First();
-                player.Lat = client.Lat;
-                player.Lon = client.Lon;
+                player.Posision = new Tuple<double, double>(client.Lat, client.Lon);
                 client = player;
             }
 

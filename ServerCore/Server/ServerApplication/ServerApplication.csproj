@@ -57,6 +57,7 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Client.cs" />
+    <Compile Include="Consts.cs" />
     <Compile Include="Message.cs" />
     <Compile Include="MessageContainer.cs" />
     <Compile Include="Room.cs" />

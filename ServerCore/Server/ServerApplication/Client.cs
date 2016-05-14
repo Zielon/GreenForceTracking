@@ -1,25 +1,57 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Net;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace ServerApplication
 {
-    public class Client
+    public class Client : INotifyPropertyChanged
     {
+        private double _lat;
+        private double _lon;
+        private string _message = string.Empty;
+        private Tuple<double, double> _posision;
+
         public string ID { get; set; }
 
         public string UserName { get; set; }
 
         public IPAddress IpAddress { get; set; }
 
-        public double Lat { get; set; }
+        public double Lat {
+            get { return _posision.Item1; }
+            private set { _lat = value; }
+        }
 
-        public double Lon { get; set; }
+        public double Lon {
+            get { return _posision.Item2; }
+            private set { _lon = value; }
+        }
 
-        public string Message { get; set; }
+        public Tuple<double, double> Posision
+        {
+            get { return _posision; }
+            set {
+                _posision = value;
+                NotifyPropertyChanged(); //Notify posistion update
+                _lat = _posision.Item1;
+                _lon = _posision.Item2;
+            }
+        }
+
+        public string Message { get { return _message; } set { _message = value; NotifyPropertyChanged(); } }
+
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        private void NotifyPropertyChanged([CallerMemberName] String propertyName = "")
+        {
+            if (PropertyChanged != null)
+                PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+        }
 
         public override bool Equals(object obj)
         {
@@ -31,7 +63,7 @@ namespace ServerApplication
 
         public override int GetHashCode()
         {
-            return  ID.GetHashCode();
+            return ID.GetHashCode();
         }
 
         public override string ToString()
@@ -43,6 +75,7 @@ namespace ServerApplication
             builder.Append(string.Format("<User>{0}</User>", UserName));
             builder.Append(string.Format("<Lat>{0}</Lat>", Lat));
             builder.Append(string.Format("<Lon>{0}</Lon>", Lon));
+            builder.Append(string.Format("<Message>{0}</Message>", Message));
             builder.Append("</Player>");
 
             return builder.ToString();

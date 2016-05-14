@@ -14,6 +14,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using ServerApplication;
 
 namespace TestingClient
 {
@@ -27,14 +28,13 @@ namespace TestingClient
             InitializeComponent();
             Client.window = this;
         }
-        private void buttonSend_Click(object sender, RoutedEventArgs e)
+        private async void buttonSend_Click(object sender, RoutedEventArgs e)
         {
-            Task tsResponse = Client.Send(this.textBox.Text);
+            await Client.Send(this.textBox.Text);
         }
         private void button_Click(object sender, RoutedEventArgs e)
         {
             var dns = textBoxIP.Text;
-            var port = int.Parse(textBoxPort.Text);
 
             IPHostEntry ipHostInfo = Dns.GetHostEntry(dns);
             for (int i = 0; i < ipHostInfo.AddressList.Length; ++i)
@@ -47,9 +47,10 @@ namespace TestingClient
                 }
             }
 
-            Client.Port = port;
+            Client.Port = Consts.RecivingPort;
             Client.isConnedted = true;
             label.Content = "Ready !";
+            label.Foreground = new SolidColorBrush(Colors.Green);
             Client.StartListening();
         }
     }

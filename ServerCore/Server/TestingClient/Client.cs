@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -7,6 +8,7 @@ using System.Net.Sockets;
 using System.Text;
 using System.Threading.Tasks;
 using System.Xml;
+using ServerApplication;
 
 namespace TestingClient
 {
@@ -16,14 +18,15 @@ namespace TestingClient
         public static IPAddress Ip;
         public static int Port;
         public static bool isConnedted = false;
-        private static int count;
+        private static double count = 1.1;
+
 
         public static async void StartListening()
         {
             TcpListener listener = null;
             try
             {
-                listener = new TcpListener(IPAddress.Parse("192.168.0.2"), 52300);
+                listener = new TcpListener(IPAddress.Parse("192.168.0.2"), Consts.SendingPort);
                 listener.Start();
 
                 while (true)
@@ -61,18 +64,17 @@ namespace TestingClient
                         foreach (XmlNode player in elements)
                         {
                             var id = player["ID"].InnerText;
-                            var lat = Double.Parse(player["Lat"].InnerText);
-                            var lon = Double.Parse(player["Lon"].InnerText);
+                            var lat = Double.Parse(player["Lat"].InnerText.Replace(',', '.'), NumberStyles.Any, CultureInfo.InvariantCulture);
+                            var lon = Double.Parse(player["Lon"].InnerText.Replace(',', '.'), NumberStyles.Any, CultureInfo.InvariantCulture);
                             var user = player["User"].InnerText;
 
-                            str = string.Format("User: {0\n}ID: {1}\nLat: {2}\nLon: {3}",
+                            str = string.Format("User: {0}\nID: {1}\nLat: {2}\nLon: {3}",
                                                      user, id, lat, lon);
                         }
 
                         window.textBoxResponse.Text = str;
                     }
-                    else
-                        break; // Closed connection
+                    else break; // Closed connection
                 }
 
                 tcpClient.Close();
@@ -103,13 +105,13 @@ namespace TestingClient
                 {
                     ID = "1",
                     IpAddress = Ip,
-                    Lat = 0.0,
-                    Lon = 0.0,
+                    Posision = new Tuple<double, double>(1.23 + count, 543.456 - count),
                     UserName = "Testing Client",
                     Message = data
                 };
 
                 await writer.WriteLineAsync(user.ToString());
+                count += 11.6;
                 client.Close();
 
             }

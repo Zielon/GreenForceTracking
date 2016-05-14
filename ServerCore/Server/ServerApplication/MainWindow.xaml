@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:ServerApplication"
         mc:Ignorable="d"
-        Title="Server vrsion 0.0" Height="469.462" Width="826.924">
+        Title="Server version 1.1" Height="469.462" Width="826.924" ResizeMode="NoResize">
 
     <Grid Margin="0,0,-45,9">
         <Grid.ColumnDefinitions>
@@ -18,14 +18,12 @@
             <Viewbox Height="352" Stretch="Fill" Width="657">
                 <Grid Height="352" Width="657">
                     <Label x:Name="label2" Content="Recived Packages" HorizontalAlignment="Left" VerticalAlignment="Top" Width="301" Height="26"/>
-                    <Button x:Name="button" Content="Start listening" HorizontalAlignment="Right" Margin="0,90,0,0" VerticalAlignment="Top" Width="120" Height="24" Click="button_Click"/>
-                    <TextBox x:Name="textBoxIP" Height="23" Margin="0,29,0,0" TextWrapping="Wrap" VerticalAlignment="Top" HorizontalAlignment="Right" Width="120" Text="192.168.0.3"/>
-                    <TextBox x:Name="textBoxPort" HorizontalAlignment="Right" Height="23" Margin="0,57,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="120" Text="52300"/>
-                    <Label x:Name="label" Content="IP&#xA;IP" HorizontalAlignment="Left" Margin="502,29,0,0" VerticalAlignment="Top" Height="26" Width="39" RenderTransformOrigin="0.333,0.5"/>
-                    <Label x:Name="label1" Content="Port" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="500,55,0,0" Height="26" Width="32"/>
-                    <Label x:Name="ServerStatus" Content="Server is disabled" Margin="347,29,190,0" VerticalAlignment="Top" Height="28" Background="White" Foreground="#FFFF0202"/>
+                    <Button x:Name="button" Content="Start listening" HorizontalAlignment="Right" Margin="0,38,0,0" VerticalAlignment="Top" Width="120" Height="24" Click="button_Click"/>
+                    <TextBox x:Name="textBoxIP" Height="23" Margin="0,10,0,0" TextWrapping="Wrap" VerticalAlignment="Top" HorizontalAlignment="Right" Width="120" Text="192.168.0.3"/>
+                    <Label x:Name="label" Content="IP&#xA;IP" HorizontalAlignment="Left" Margin="515,6,0,0" VerticalAlignment="Top" Height="26" Width="39" RenderTransformOrigin="0.38,-0.118"/>
+                    <Label x:Name="ServerStatus" Content="Server is disabled" Margin="347,38,160,0" VerticalAlignment="Top" Height="38" Background="White" Foreground="#FFFF0202" FontSize="16"/>
 
-                    <DataGrid x:Name="dataGrid" HorizontalAlignment="Left" Margin="0,29,0,0" VerticalAlignment="Top" Height="323" Width="330" Background="#FFFBDBDB"
+                    <DataGrid x:Name="dataGrid" HorizontalAlignment="Left" Margin="0,29,0,0" VerticalAlignment="Top" Height="323" Width="342" Background="#FFFBDBDB"
                               ItemsSource="{Binding}">
                         <DataGrid.DataContext>
                             <local:MessagesContainer>
@@ -35,8 +33,8 @@
                             </local:MessagesContainer>
                         </DataGrid.DataContext>
                     </DataGrid>
-                    <TextBox x:Name="textBox" HorizontalAlignment="Left" Height="188" Margin="347,164,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="310" FontSize="9.333" FontFamily="Consolas" Background="#FFF0DADA"/>
-                    <Label x:Name="label3" Content="Console output" HorizontalAlignment="Left" Margin="347,138,0,0" VerticalAlignment="Top">
+                    <TextBox x:Name="textBox" HorizontalAlignment="Left" Height="216" Margin="347,136,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="310" FontSize="9.333" FontFamily="Consolas" Background="#FFF0DADA"/>
+                    <Label x:Name="label3" Content="Console output" HorizontalAlignment="Left" Margin="347,105,0,0" VerticalAlignment="Top">
                         <Label.Foreground>
                             <SolidColorBrush Color="{DynamicResource {x:Static SystemColors.ActiveCaptionTextColorKey}}"/>
                         </Label.Foreground>

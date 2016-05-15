@@ -9,12 +9,15 @@ using System.Threading.Tasks;
 
 namespace ServerApplication
 {
+    /// <summary>
+    /// Implementaion of Observer design pattern
+    /// </summary>
     public class Client : INotifyPropertyChanged
     {
         private double _lat;
         private double _lon;
         private string _message = string.Empty;
-        private Tuple<double, double> _posision;
+        private Posision _posision;
 
         public string ID { get; set; }
 
@@ -23,23 +26,23 @@ namespace ServerApplication
         public IPAddress IpAddress { get; set; }
 
         public double Lat {
-            get { return _posision.Item1; }
+            get { return _posision.Lat; }
             private set { _lat = value; }
         }
 
         public double Lon {
-            get { return _posision.Item2; }
+            get { return _posision.Lon; }
             private set { _lon = value; }
         }
 
-        public Tuple<double, double> Posision
+        public Posision Posision
         {
             get { return _posision; }
             set {
                 _posision = value;
                 NotifyPropertyChanged(); //Notify posistion update
-                _lat = _posision.Item1;
-                _lon = _posision.Item2;
+                _lat = _posision.Lat;
+                _lon = _posision.Lon;
             }
         }
 

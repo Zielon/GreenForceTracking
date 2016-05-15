@@ -105,7 +105,7 @@ namespace TestingClient
                 {
                     ID = "1",
                     IpAddress = Ip,
-                    Posision = new Tuple<double, double>(1.23 + count, 543.456 - count),
+                    Posision = new Posision(1.23 + count, 543.456 - count),
                     UserName = "Testing Client",
                     Message = data
                 };

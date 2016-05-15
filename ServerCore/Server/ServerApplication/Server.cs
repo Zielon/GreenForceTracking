@@ -175,7 +175,7 @@ namespace ServerApplication
                     client = new Client()
                     {
                         ID = id,
-                        Posision = new Tuple<double, double>(lat,lon),
+                        Posision = new Posision(lat,lon),
                         Message = message,
                         UserName = user,
                         IpAddress = ipAddress
@@ -197,7 +197,7 @@ namespace ServerApplication
             else
             {
                 var player = Rooms.First().Players.First();
-                player.Posision = new Tuple<double, double>(client.Lat, client.Lon);
+                player.Posision = new Posision(client.Lat, client.Lon);
                 client = player;
             }
 

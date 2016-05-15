@@ -60,6 +60,7 @@
     <Compile Include="Consts.cs" />
     <Compile Include="Message.cs" />
     <Compile Include="MessageContainer.cs" />
+    <Compile Include="Posision.cs" />
     <Compile Include="Room.cs" />
     <Compile Include="Server.cs" />
     <Page Include="MainWindow.xaml">

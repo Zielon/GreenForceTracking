@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -38,7 +39,8 @@ namespace ServerApplication
             var ip = textBoxIP.Text;
             if (Server.isRunning) return;
             server = new Server(ip, Consts.RecivingPort, this);
-            server.StartListening();
+            new Thread(() => server.StartListening()).Start();
+            new Thread(() => server.StartSending()).Start();
         }
     }
 

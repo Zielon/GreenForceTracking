@@ -29,6 +29,8 @@ namespace ServerApplication
 
         public MessagesContainer container = new MessagesContainer();
 
+        private static EventWaitHandle _waitHandle = new AutoResetEvent(false);
+
         public Server(string ipAddress, int port, MainWindow mainwindow)
         {
             this.ipAddress = IPAddress.Parse(ipAddress);
@@ -58,28 +60,34 @@ namespace ServerApplication
         {
             Client item = sender as Client;
             if (item != null)
-                new Thread(() => StartSending()).Start();
+                _waitHandle.Set(); //Posision to update
         }
 
         public void StartSending()
         {
             try
             {
-                TcpClient client = new TcpClient();
-
-                Rooms.First().Players.ToList().ForEach(async p =>
+                while (true)
                 {
-                    await client.ConnectAsync(p.IpAddress, Consts.SendingPort);
+                    TcpClient client = new TcpClient();
 
-                    NetworkStream networkStream = client.GetStream();
-                    StreamWriter writer = new StreamWriter(networkStream);
-                    writer.AutoFlush = true;
+                    //wait for a signal
+                    _waitHandle.WaitOne();
 
-                    p.UserName = "Server";
+                    Rooms.First().Players.ToList().ForEach(async p =>
+                    {
+                        await client.ConnectAsync(p.IpAddress, Consts.SendingPort);
 
-                    await writer.WriteLineAsync(p.ToString());
-                    client.Close();
-                });
+                        NetworkStream networkStream = client.GetStream();
+                        StreamWriter writer = new StreamWriter(networkStream);
+                        writer.AutoFlush = true;
+
+                        p.UserName = "Server";
+
+                        await writer.WriteLineAsync(p.ToString());
+                        client.Close();
+                    });
+                }
             }
             catch (Exception ex)
             {
@@ -175,7 +183,7 @@ namespace ServerApplication
                     client = new Client()
                     {
                         ID = id,
-                        Posision = new Tuple<double, double>(lat,lon),
+                        Posision = new Tuple<double, double>(lat, lon),
                         Message = message,
                         UserName = user,
                         IpAddress = ipAddress

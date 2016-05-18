@@ -58,6 +58,7 @@ namespace ServerApplication
 
         void ClientPropertyChanged(object sender, PropertyChangedEventArgs e)
         {
+            //To be checked and verify
             Client item = sender as Client;
             if (item != null)
                 _waitHandle.Set(); //Posision to update
@@ -71,7 +72,8 @@ namespace ServerApplication
                 {
                     TcpClient client = new TcpClient();
 
-                    _waitHandle.WaitOne();  //wait for a signal
+                    //wait for a signal
+                    _waitHandle.WaitOne();
 
                     Rooms.First().Players.ToList().ForEach(async p =>
                     {
@@ -182,7 +184,11 @@ namespace ServerApplication
                     client = new Client()
                     {
                         ID = id,
+<<<<<<< HEAD
                         Posision = new Posision(lat,lon),
+=======
+                        Posision = new Tuple<double, double>(lat, lon),
+>>>>>>> master
                         Message = message,
                         UserName = user,
                         IpAddress = ipAddress

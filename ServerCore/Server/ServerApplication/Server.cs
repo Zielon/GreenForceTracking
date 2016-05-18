@@ -56,6 +56,7 @@ namespace ServerApplication
 
         void ClientPropertyChanged(object sender, PropertyChangedEventArgs e)
         {
+            //To be checked and verify
             Client item = sender as Client;
             if (item != null)
                 new Thread(() => StartSending()).Start();

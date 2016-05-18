@@ -52,7 +52,7 @@ namespace ServerApplication
             if (e.NewItems != null)
             {
                 Console.WriteLine("Players in room: " + Rooms.First().Players.Count);
-                new Thread(() => StartSending()).Start();
+                _waitHandle.Set(); //Posision to update
             }
         }
 

@@ -1,6 +1,6 @@
-X:\Repozytoria\GreenForceTracking\ServerCore\Server\ServerApplication\bin\Debug\ServerApplication.exe.config
-X:\Repozytoria\GreenForceTracking\ServerCore\Server\ServerApplication\bin\Debug\ServerApplication.exe
-X:\Repozytoria\GreenForceTracking\ServerCore\Server\ServerApplication\bin\Debug\ServerApplication.pdb
+X:\Repozytoria\GreenForceTracking\ServerCore\Server\Output\ServerApplication.exe.config
+X:\Repozytoria\GreenForceTracking\ServerCore\Server\Output\ServerApplication.exe
+X:\Repozytoria\GreenForceTracking\ServerCore\Server\Output\ServerApplication.pdb
 X:\Repozytoria\GreenForceTracking\ServerCore\Server\ServerApplication\obj\Debug\MainWindow.g.cs
 X:\Repozytoria\GreenForceTracking\ServerCore\Server\ServerApplication\obj\Debug\App.g.cs
 X:\Repozytoria\GreenForceTracking\ServerCore\Server\ServerApplication\obj\Debug\GeneratedInternalTypeHelper.g.cs

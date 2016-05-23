@@ -73,6 +73,14 @@
     </ApplicationDefinition>
     <Compile Include="Client.cs" />
     <Compile Include="Consts.cs" />
+    <Compile Include="Frames\Client\ChatMessageClient.cs" />
+    <Compile Include="Frames\Client\LoginClient.cs" />
+    <Compile Include="Frames\FramesEnum.cs" />
+    <Compile Include="Frames\FramesFactory.cs" />
+    <Compile Include="Frames\IFrame.cs" />
+    <Compile Include="Frames\Server\ListOfRoomsServer.cs" />
+    <Compile Include="Frames\Server\LoginServer.cs" />
+    <Compile Include="Frames\Server\RoomInfoServer.cs" />
     <Compile Include="Message.cs" />
     <Compile Include="MessageContainer.cs" />
     <Compile Include="Posision.cs" />

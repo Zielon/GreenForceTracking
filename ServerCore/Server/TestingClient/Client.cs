@@ -103,7 +103,7 @@ namespace TestingClient
 
                 var user = new ServerApplication.Client()
                 {
-                    ID = "1",
+                    SessionID = "1",
                     IpAddress = Ip,
                     Posision = new Posision(1.23 + count, 543.456 - count),
                     UserName = "Testing Client",

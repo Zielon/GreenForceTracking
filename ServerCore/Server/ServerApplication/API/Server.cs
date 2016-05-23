@@ -184,7 +184,7 @@ namespace ServerApplication
 
                     client = new Client()
                     {
-                        ID = id,
+                        SessionID = id,
                         Posision = new Posision(lat, lon),
                         Message = message,
                         UserName = user,

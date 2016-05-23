@@ -14,12 +14,7 @@ namespace ServerApplication.Frames.Client
 
         public string Password { get; set; }
 
-        public LoginClient(string login, string password, Frames type) {
-            FrameType = type;
-            Login = login;
-            Password = password;
-        }
-
         public LoginClient() { }
+
     }
 }

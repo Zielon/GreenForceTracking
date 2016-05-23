@@ -38,6 +38,7 @@ namespace ServerApplication
 
         private void button_Click(object sender, RoutedEventArgs e)
         {
+
             var ip = textBoxIP.Text;
             if (Server.isRunning) return;
             server = new Server(ip, Consts.RecivingPort, this);

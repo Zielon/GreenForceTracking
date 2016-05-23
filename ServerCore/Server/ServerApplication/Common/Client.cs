@@ -19,7 +19,7 @@ namespace ServerApplication
         private string _message = string.Empty;
         private Posision _posision;
 
-        public string SessionID { get; set; }
+        public string ID { get; set; }
 
         public string UserName { get; set; }
 
@@ -60,13 +60,30 @@ namespace ServerApplication
         {
             var client = obj as Client;
             if (client != null)
-                return client.SessionID.Equals(SessionID);
+                return client.ID.Equals(ID);
             else return false;
         }
 
         public override int GetHashCode()
         {
-            return SessionID.GetHashCode();
+            return ID.GetHashCode();
+        }
+
+
+        //Temporary solution
+        public override string ToString()
+        {
+            StringBuilder builder = new StringBuilder();
+
+            builder.Append("<Player>");
+            builder.Append(string.Format("<ID>{0}</ID>", ID));
+            builder.Append(string.Format("<User>{0}</User>", UserName));
+            builder.Append(string.Format("<Lat>{0}</Lat>", Lat));
+            builder.Append(string.Format("<Lon>{0}</Lon>", Lon));
+            builder.Append(string.Format("<Message>{0}</Message>", Message));
+            builder.Append("</Player>");
+
+            return builder.ToString();
         }
     }
 }

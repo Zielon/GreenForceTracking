@@ -19,7 +19,7 @@
                 <Grid Height="352" Width="657">
                     <Label x:Name="label2" Content="Recived Packages" HorizontalAlignment="Left" VerticalAlignment="Top" Width="301" Height="26"/>
                     <Button x:Name="button" Content="Start listening" HorizontalAlignment="Right" Margin="0,38,0,0" VerticalAlignment="Top" Width="120" Height="24" Click="button_Click"/>
-                    <TextBox x:Name="textBoxIP" Height="23" Margin="0,10,0,0" TextWrapping="Wrap" VerticalAlignment="Top" HorizontalAlignment="Right" Width="120" Text="192.168.0.3"/>
+                    <TextBox x:Name="textBoxIP" Height="23" Margin="0,10,0,0" TextWrapping="Wrap" VerticalAlignment="Top" HorizontalAlignment="Right" Width="120" Text="192.168.0.2"/>
                     <Label x:Name="label" Content="IP&#xA;IP" HorizontalAlignment="Left" Margin="515,6,0,0" VerticalAlignment="Top" Height="26" Width="39" RenderTransformOrigin="0.38,-0.118"/>
                     <Label x:Name="ServerStatus" Content="Server is disabled" Margin="347,38,160,0" VerticalAlignment="Top" Height="38" Background="White" Foreground="#FFFF0202" FontSize="16"/>
 

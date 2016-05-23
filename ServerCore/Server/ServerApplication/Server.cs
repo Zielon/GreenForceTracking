@@ -29,7 +29,7 @@ namespace ServerApplication
 
         public MessagesContainer container = new MessagesContainer();
 
-        private static EventWaitHandle _waitHandle = new AutoResetEvent(false);
+        private static EventWaitHandle waitHandle = new AutoResetEvent(false);
 
         public Server(string ipAddress, int port, MainWindow mainwindow)
         {
@@ -52,7 +52,7 @@ namespace ServerApplication
             if (e.NewItems != null)
             {
                 Console.WriteLine("Players in room: " + Rooms.First().Players.Count);
-                _waitHandle.Set(); //Posision to update
+                waitHandle.Set(); //Posision to update
             }
         }
 
@@ -60,7 +60,7 @@ namespace ServerApplication
         {
             Client item = sender as Client;
             if (item != null)
-                _waitHandle.Set(); //Posision to update
+                waitHandle.Set(); //Posision to update
         }
 
         public void StartSending()
@@ -69,23 +69,24 @@ namespace ServerApplication
             {
                 while (true)
                 {
+                    waitHandle.WaitOne();  //Wait for a signal
                     TcpClient client = new TcpClient();
 
-                    _waitHandle.WaitOne();  //wait for a signal
-
-                    Rooms.First().Players.ToList().ForEach(async p =>
+                    lock (Rooms)
                     {
-                        await client.ConnectAsync(p.IpAddress, Consts.SendingPort);
+                        Rooms.First().Players.ToList().ForEach(async p =>
+                        {
+                            await client.ConnectAsync(p.IpAddress, Consts.SendingPort);
+                            NetworkStream networkStream = client.GetStream();
+                            StreamWriter writer = new StreamWriter(networkStream);
+                            writer.AutoFlush = true;
 
-                        NetworkStream networkStream = client.GetStream();
-                        StreamWriter writer = new StreamWriter(networkStream);
-                        writer.AutoFlush = true;
+                            p.UserName = "Server";
 
-                        p.UserName = "Server";
-
-                        await writer.WriteLineAsync(p.ToString());
-                        client.Close();
-                    });
+                            await writer.WriteLineAsync(p.ToString());
+                            client.Close();
+                        });
+                    }
                 }
             }
             catch (Exception ex)
@@ -128,17 +129,18 @@ namespace ServerApplication
 
                 while (true)
                 {
+                    // Read one single line
                     string message = await reader.ReadLineAsync();
 
                     if (message != null)
                     {
                         string clientEndPoint = tcpClient.Client.RemoteEndPoint
-                            .ToString().Split(':')
-                            .First();
+                            .ToString().Split(':').First();
 
                         var recivedData = ParseMessage(message, clientEndPoint);
 
                         if (recivedData != null)
+                            //Display message
                             container.RecivedMessages.Add(new Message()
                             {
                                 Adress = IPAddress.Parse(clientEndPoint),
@@ -148,6 +150,7 @@ namespace ServerApplication
                     }
                     else break; // Closed connection
                 }
+
 
                 tcpClient.Close();
             }
@@ -182,7 +185,7 @@ namespace ServerApplication
                     client = new Client()
                     {
                         ID = id,
-                        Posision = new Posision(lat,lon),
+                        Posision = new Posision(lat, lon),
                         Message = message,
                         UserName = user,
                         IpAddress = ipAddress
@@ -198,14 +201,18 @@ namespace ServerApplication
 
             if (client == null) return null;
 
-            //TODO Fix update rooms
-            if (!Rooms.First().Players.Contains(client))
-                Rooms.First().Players.Add(client);
-            else
+            lock (Rooms)
             {
-                var player = Rooms.First().Players.First();
-                player.Posision = new Posision(client.Lat, client.Lon);
-                client = player;
+                //TODO Fix update rooms
+                if (!Rooms.First().Players.Contains(client))
+                    Rooms.First().Players.Add(client);
+                else
+                {
+                    var player = Rooms.First().Players.First();
+                    // Send new possision by INotifyPropertyChanged mechanism
+                    player.Posision = new Posision(client.Lat, client.Lon);
+                    client = player;
+                }
             }
 
             return client;

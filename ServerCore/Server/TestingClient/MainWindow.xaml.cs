@@ -47,6 +47,8 @@ namespace TestingClient
                 }
             }
 
+            Client.Ip = IPAddress.Parse("192.168.0.2");
+
             Client.Port = Consts.RecivingPort;
             Client.isConnedted = true;
             label.Content = "Ready !";

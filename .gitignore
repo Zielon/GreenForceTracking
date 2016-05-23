@@ -1,6 +1,4 @@
 ServerCore/Server/Output/*
-ServerCore/Server/TestingClient/obj/Debug/*.exe
-
 [Dd]ebug/
 [Rr]elease/
 x64/
@@ -34,8 +32,10 @@ build/
 *.pidb
 *.log
 *.scc
-ServerCore/Server/TestingClient/obj/Debug/TestingClient.pdb
-ServerCore/Server/TestingClient/obj/Debug/TestingClient.exe
-ServerCore/Server/TestingClient/obj/Debug/TestingClient.csprojResolveAssemblyReference.cache
-ServerCore/Server/ServerApplication/obj/Debug/ServerApplication.pdb
+
 ServerCore/Server/ServerApplication/obj/Debug/ServerApplication.exe
+ServerCore/Server/ServerApplication/obj/Debug/ServerApplication.pdb
+ServerCore/Server/TestingClient/obj/Debug/TestingClient.csproj.FileListAbsolute.txt
+ServerCore/Server/TestingClient/obj/Debug/TestingClient.csprojResolveAssemblyReference.cache
+ServerCore/Server/TestingClient/obj/Debug/TestingClient.exe
+ServerCore/Server/TestingClient/obj/Debug/TestingClient.pdb

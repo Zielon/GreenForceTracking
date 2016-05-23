@@ -39,8 +39,9 @@ namespace ServerApplication
             var ip = textBoxIP.Text;
             if (Server.isRunning) return;
             server = new Server(ip, Consts.RecivingPort, this);
-            new Thread(() => server.StartListening()).Start();
+            server.StartListening();
             new Thread(() => server.StartSending()).Start();
+
         }
     }
 

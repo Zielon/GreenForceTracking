@@ -11,7 +11,13 @@ namespace ServerApplication.Frames
 {
     public class FramesFactory
     {
-
+        /// <summary>
+        /// Deserialize object.
+        /// </summary>
+        /// <param name="xml"></param>
+        /// <returns>
+        /// Type of IFrame.
+        /// </returns>
         public static IFrame CreateObject(string xml)
         {
 

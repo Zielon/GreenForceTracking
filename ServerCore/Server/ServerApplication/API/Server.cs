@@ -63,6 +63,9 @@ namespace ServerApplication
                 waitHandle.Set(); //Posision to update
         }
 
+        /// <summary>
+        /// Running in separte thread.
+        /// </summary>
         public void StartSending()
         {
             try

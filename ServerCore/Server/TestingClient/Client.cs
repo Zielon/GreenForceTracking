@@ -112,13 +112,15 @@ namespace TestingClient
                 var user = new ServerApplication.Common.Client()
                 {
                     ID = "1",
+                    RoomId = "1",
                     IpAddress = Ip,
                     Posision = new Posision(1.23 + count, 543.456 - count),
                     UserName = "Testing Client",
-                    Message = data
+                    Message = data,
+                    FrameType = Frames.Player
                 };
 
-                await writer.WriteLineAsync(user.ToString());
+                await writer.WriteLineAsync("<Frame>" + FramesFactory.CreateXmlMessage(user) + "</Frame>");
                 count += 11.6;
                 client.Close();
 

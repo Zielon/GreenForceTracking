@@ -1,4 +1,5 @@
-﻿using System;
+﻿using ServerApplication.Frames;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
@@ -13,7 +14,7 @@ namespace ServerApplication.Common
     /// <summary>
     /// Implementaion of Observer design pattern
     /// </summary>
-    public class Client : INotifyPropertyChanged
+    public class Client : INotifyPropertyChanged, IFrame
     {
         [XmlIgnoreAttribute]
         private string _message = string.Empty;
@@ -47,6 +48,8 @@ namespace ServerApplication.Common
         }
 
         public string Message { get { return _message; } set { _message = value; NotifyPropertyChanged(); } }
+
+        public Frames.Frames FrameType { get; set; }
 
         public event PropertyChangedEventHandler PropertyChanged;
 

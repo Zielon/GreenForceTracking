@@ -15,9 +15,11 @@ using System.Threading;
 using System.Text.RegularExpressions;
 using System.Globalization;
 using System.ComponentModel;
+using ServerApplication.Frames;
 using ServerApplication.Frames.Server;
 using ServerApplication.Common;
 using ServerApplication.Frames.Factory;
+using ServerApplication.API;
 
 namespace ServerApplication
 {
@@ -61,7 +63,7 @@ namespace ServerApplication
         {
             Client item = sender as Client;
             if (item != null)
-                 Task.Factory.StartNew(() => StartSending(item));
+                Task.Factory.StartNew(() => StartSending(item));
         }
 
         public void StartSending(Client player)
@@ -137,16 +139,7 @@ namespace ServerApplication
                         string clientEndPoint = tcpClient.Client.RemoteEndPoint
                             .ToString().Split(':').First();
 
-                        var recivedData = ParseMessage(message, clientEndPoint);
-
-                        if (recivedData != null)
-                            //Display message
-                            container.RecivedMessages.Add(new Message()
-                            {
-                                Adress = IPAddress.Parse(clientEndPoint),
-                                Time = DateTime.Now,
-                                RecivedData = recivedData.Message
-                            });
+                        ParseMessage(message, clientEndPoint);
                     }
                     else break; // Closed connection
                 }
@@ -161,7 +154,7 @@ namespace ServerApplication
             }
         }
 
-        private Client ParseMessage(string msg, string ip)
+        private void ParseMessage(string msg, string ip)
         {
             XmlDocument doc = new XmlDocument();
             Client client = null;
@@ -169,38 +162,42 @@ namespace ServerApplication
             try
             {
                 doc.LoadXml(msg);
-                XmlNodeList elements = doc.GetElementsByTagName("Player");
-                var ipAddress = IPAddress.Parse(ip);
+                XmlNodeList frame = doc.GetElementsByTagName("FrameType");
+                var type = Tools.ParseEnum<Frames.Frames>(frame.Item(0).InnerText);
 
-                foreach (XmlNode player in elements)
+                string elements = string.Empty;
+
+                foreach (XmlNode player in doc.GetElementsByTagName("Frame"))
                 {
-                    var id = player["ID"].InnerText;
-                    var lat = Double.Parse(player["Lat"].InnerText.Replace(',', '.'),
-                        NumberStyles.Any, CultureInfo.InvariantCulture);
-                    var lon = Double.Parse(player["Lon"].InnerText.Replace(',', '.'),
-                        NumberStyles.Any, CultureInfo.InvariantCulture);
-                    var message = player["Message"].InnerText;
-                    var user = player["User"].InnerText;
-
-                    client = new Client()
+                    using (var sw = new StringWriter())
                     {
-                        ID = id,
-                        Posision = new Posision(lat, lon),
-                        Message = message,
-                        UserName = user,
-                        IpAddress = ipAddress,
-                        RoomId = "1"
-                    };
+                        string xml = string.Empty;
 
-                    client.PropertyChanged += ClientPropertyChanged;
+                        using (var xw = new XmlTextWriter(sw))
+                        {
+                            xw.Formatting = System.Xml.Formatting.Indented;
+                            xw.Indentation = 2;
+                            player.WriteContentTo(xw);
+                            xml = sw.ToString();
+                        }
+
+                        switch (type)
+                        {
+                            case Frames.Frames.Player:
+                                client = FramesFactory.CreateObject<Client>(xml);
+                                client.PropertyChanged += ClientPropertyChanged;
+                                client.IpAddress = IPAddress.Parse(ip);
+                                break;
+                            case Frames.Frames.Login:
+                                break;
+                        }
+                    }
                 }
             }
             catch (Exception ex)
             {
                 Console.WriteLine(ex.Message + "\n" + ex.StackTrace);
             }
-
-            if (client == null) return null;
 
             //TODO Fix update rooms
             if (!Rooms.First().Players.Contains(client))
@@ -212,15 +209,18 @@ namespace ServerApplication
             {
                 var player = Rooms.First().Players.First();
                 // Send new possision by INotifyPropertyChanged mechanism
-
                 // Check if posision was changed, if no dont update
                 player.Posision = new Posision(client.Lat, client.Lon);
                 player.Message = client.Message;
                 client = player;
             }
 
-
-            return client;
+            container.RecivedMessages.Add(new Message()
+            {
+                Adress = client.IpAddress,
+                Time = DateTime.Now,
+                RecivedData = client.Message
+            });
         }
     }
 }

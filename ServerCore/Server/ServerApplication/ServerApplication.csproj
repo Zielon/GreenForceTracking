@@ -73,6 +73,7 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="API\SessionManager.cs" />
+    <Compile Include="API\Tools.cs" />
     <Compile Include="Common\Client.cs" />
     <Compile Include="Consts\Consts.cs" />
     <Compile Include="Frames\Client\ChatMessageClient.cs" />

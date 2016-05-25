@@ -11,6 +11,7 @@ using System.Xml;
 using ServerApplication;
 using ServerApplication.Frames;
 using ServerApplication.Frames.Factory;
+using ServerApplication.Common;
 
 namespace TestingClient
 {
@@ -75,11 +76,8 @@ namespace TestingClient
                                 }
 
                                 var xml = sw.ToString();
-
                                 var f = FramesFactory.CreateObject<ServerApplication.Common.Client>(xml);
-
-                                str += string.Format("User: {0}\nID: {1}\nLat: {2}\nLon: {3}",
-                                                              f.UserName, f.ID, f.Lat, f.Lon);
+                                str += string.Format("User: {0}\nID: {1}\nLat: {2}\nLon: {3}\n", f.UserName, f.ID, f.Lat, f.Lon);
                             }
                         }
 
@@ -95,7 +93,6 @@ namespace TestingClient
                 if (tcpClient.Connected) tcpClient.Close();
             }
         }
-
 
         public static async Task Send(string data)
         {

@@ -64,9 +64,6 @@ namespace ServerApplication
                  Task.Factory.StartNew(() => StartSending(item));
         }
 
-        /// <summary>
-        /// Running in separte thread.
-        /// </summary>
         public void StartSending(Client player)
         {
             try
@@ -76,6 +73,7 @@ namespace ServerApplication
                 lock (Rooms)
                 {
                     var selectedRoom = Rooms.Single(r => r.ID == player.RoomId);
+
                     selectedRoom.Players.ToList().ForEach(async p =>
                     {
                         await client.ConnectAsync(p.IpAddress, Consts.SendingPort);

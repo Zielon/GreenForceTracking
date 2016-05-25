@@ -23,6 +23,9 @@ namespace ServerApplication.Frames
         Chatmessage,
 
         [XmlEnum(Name = "RoomInfo")]
-        RoomInfo
+        RoomInfo,
+
+        [XmlEnum(Name = "Player")]
+        Player
     }
 }

@@ -15,6 +15,9 @@ using System.Threading;
 using System.Text.RegularExpressions;
 using System.Globalization;
 using System.ComponentModel;
+using ServerApplication.Frames.Server;
+using ServerApplication.Common;
+using ServerApplication.Frames.Factory;
 
 namespace ServerApplication
 {
@@ -23,13 +26,11 @@ namespace ServerApplication
         private IPAddress ipAddress;
         private int port;
         private MainWindow window;
-        public static bool isRunning = false;
-
         private List<Room> Rooms = new List<Room>();
-
-        public MessagesContainer container = new MessagesContainer();
-
         private static EventWaitHandle waitHandle = new AutoResetEvent(false);
+
+        public static bool isRunning = false;
+        public MessagesContainer container = new MessagesContainer();
 
         public Server(string ipAddress, int port, MainWindow mainwindow)
         {
@@ -41,7 +42,7 @@ namespace ServerApplication
             Console.WriteLine("Listening on port: " + port);
 
             //TODO temporaty solution
-            var room = new Room();
+            var room = new Room("1");
             room.Players.CollectionChanged += UpdatePlayers;
 
             Rooms.Add(room);
@@ -52,7 +53,7 @@ namespace ServerApplication
             if (e.NewItems != null)
             {
                 Console.WriteLine("Players in room: " + Rooms.First().Players.Count);
-                waitHandle.Set(); //Posision to update
+
             }
         }
 
@@ -60,36 +61,34 @@ namespace ServerApplication
         {
             Client item = sender as Client;
             if (item != null)
-                waitHandle.Set(); //Posision to update
+                 Task.Factory.StartNew(() => StartSending(item));
         }
 
         /// <summary>
         /// Running in separte thread.
         /// </summary>
-        public void StartSending()
+        public void StartSending(Client player)
         {
             try
             {
-                while (true)
+                TcpClient client = new TcpClient();
+
+                lock (Rooms)
                 {
-                    waitHandle.WaitOne();  //Wait for a signal
-                    TcpClient client = new TcpClient();
-
-                    lock (Rooms)
+                    var selectedRoom = Rooms.Single(r => r.ID == player.RoomId);
+                    selectedRoom.Players.ToList().ForEach(async p =>
                     {
-                        Rooms.First().Players.ToList().ForEach(async p =>
-                        {
-                            await client.ConnectAsync(p.IpAddress, Consts.SendingPort);
-                            NetworkStream networkStream = client.GetStream();
-                            StreamWriter writer = new StreamWriter(networkStream);
-                            writer.AutoFlush = true;
+                        await client.ConnectAsync(p.IpAddress, Consts.SendingPort);
+                        NetworkStream networkStream = client.GetStream();
+                        StreamWriter writer = new StreamWriter(networkStream);
+                        writer.AutoFlush = true;
 
-                            p.UserName = "Server";
+                        var msg = FramesFactory.CreateXmlMessage(
+                            new RoomInfoServer() { Players = selectedRoom.Players.ToList() });
 
-                            await writer.WriteLineAsync(p.ToString());
-                            client.Close();
-                        });
-                    }
+                        await writer.WriteLineAsync(msg);
+                        client.Close();
+                    });
                 }
             }
             catch (Exception ex)
@@ -191,7 +190,8 @@ namespace ServerApplication
                         Posision = new Posision(lat, lon),
                         Message = message,
                         UserName = user,
-                        IpAddress = ipAddress
+                        IpAddress = ipAddress,
+                        RoomId = "1"
                     };
 
                     client.PropertyChanged += ClientPropertyChanged;
@@ -204,19 +204,23 @@ namespace ServerApplication
 
             if (client == null) return null;
 
-            lock (Rooms)
+            //TODO Fix update rooms
+            if (!Rooms.First().Players.Contains(client))
             {
-                //TODO Fix update rooms
-                if (!Rooms.First().Players.Contains(client))
-                    Rooms.First().Players.Add(client);
-                else
-                {
-                    var player = Rooms.First().Players.First();
-                    // Send new possision by INotifyPropertyChanged mechanism
-                    player.Posision = new Posision(client.Lat, client.Lon);
-                    client = player;
-                }
+                ClientPropertyChanged(client, new PropertyChangedEventArgs("Posision"));
+                Rooms.First().Players.Add(client);
             }
+            else
+            {
+                var player = Rooms.First().Players.First();
+                // Send new possision by INotifyPropertyChanged mechanism
+
+                // Check if posision was changed, if no dont update
+                player.Posision = new Posision(client.Lat, client.Lon);
+                player.Message = client.Message;
+                client = player;
+            }
+
 
             return client;
         }

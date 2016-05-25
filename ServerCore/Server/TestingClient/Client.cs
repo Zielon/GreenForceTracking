@@ -9,6 +9,8 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Xml;
 using ServerApplication;
+using ServerApplication.Frames;
+using ServerApplication.Frames.Factory;
 
 namespace TestingClient
 {
@@ -58,18 +60,27 @@ namespace TestingClient
                     {
                         XmlDocument doc = new XmlDocument();
                         doc.LoadXml(message);
-                        XmlNodeList elements = doc.GetElementsByTagName("Player");
+                        XmlNodeList elements = doc.GetElementsByTagName("Players");
                         string str = string.Empty;
 
                         foreach (XmlNode player in elements)
                         {
-                            var id = player["ID"].InnerText;
-                            var lat = Double.Parse(player["Lat"].InnerText.Replace(',', '.'), NumberStyles.Any, CultureInfo.InvariantCulture);
-                            var lon = Double.Parse(player["Lon"].InnerText.Replace(',', '.'), NumberStyles.Any, CultureInfo.InvariantCulture);
-                            var user = player["User"].InnerText;
+                            using (var sw = new System.IO.StringWriter())
+                            {
+                                using (var xw = new System.Xml.XmlTextWriter(sw))
+                                {
+                                    xw.Formatting = System.Xml.Formatting.Indented;
+                                    xw.Indentation = 2;
+                                    player.WriteContentTo(xw);
+                                }
 
-                            str = string.Format("User: {0}\nID: {1}\nLat: {2}\nLon: {3}",
-                                                     user, id, lat, lon);
+                                var xml = sw.ToString();
+
+                                var f = FramesFactory.CreateObject<ServerApplication.Common.Client>(xml);
+
+                                str += string.Format("User: {0}\nID: {1}\nLat: {2}\nLon: {3}",
+                                                              f.UserName, f.ID, f.Lat, f.Lon);
+                            }
                         }
 
                         window.textBoxResponse.Text = str;
@@ -101,7 +112,7 @@ namespace TestingClient
                 StreamWriter writer = new StreamWriter(networkStream);
                 writer.AutoFlush = true;
 
-                var user = new ServerApplication.Client()
+                var user = new ServerApplication.Common.Client()
                 {
                     ID = "1",
                     IpAddress = Ip,

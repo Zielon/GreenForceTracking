@@ -6,43 +6,43 @@ using System.Net;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml.Serialization;
 
-namespace ServerApplication
+namespace ServerApplication.Common
 {
     /// <summary>
     /// Implementaion of Observer design pattern
     /// </summary>
     public class Client : INotifyPropertyChanged
     {
-        private double _lat;
-        private double _lon;
+        [XmlIgnoreAttribute]
         private string _message = string.Empty;
+
+        [XmlIgnoreAttribute]
         private Posision _posision;
 
         public string ID { get; set; }
 
         public string UserName { get; set; }
 
+        [XmlIgnoreAttribute]
         public IPAddress IpAddress { get; set; }
 
-        public double Lat {
-            get { return _posision.Lat; }
-            private set { _lat = value; }
-        }
+        public string RoomId { get; set; }
 
-        public double Lon {
-            get { return _posision.Lon; }
-            private set { _lon = value; }
-        }
+        public double Lat { get; set; }
 
+        public double Lon { get; set; }
+
+        [XmlIgnoreAttribute]
         public Posision Posision
         {
             get { return _posision; }
             set {
                 _posision = value;
                 NotifyPropertyChanged(); //Notify posistion update
-                _lat = _posision.Lat;
-                _lon = _posision.Lon;
+                Lat = _posision.Lat;
+                Lon = _posision.Lon;
             }
         }
 
@@ -69,6 +69,7 @@ namespace ServerApplication
             return ID.GetHashCode();
         }
 
+        public Client() { }
 
         //Temporary solution
         public override string ToString()

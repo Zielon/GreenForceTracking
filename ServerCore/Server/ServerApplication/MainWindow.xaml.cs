@@ -43,8 +43,6 @@ namespace ServerApplication
             if (Server.isRunning) return;
             server = new Server(ip, Consts.RecivingPort, this);
             server.StartListening();
-            new Thread(() => server.StartSending()).Start();
-
         }
     }
 

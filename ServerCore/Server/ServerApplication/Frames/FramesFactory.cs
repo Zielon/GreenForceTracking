@@ -6,8 +6,9 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Xml;
 using System.Xml.Serialization;
+using ServerApplication.Common;
 
-namespace ServerApplication.Frames
+namespace ServerApplication.Frames.Factory
 {
     public class FramesFactory
     {
@@ -18,12 +19,16 @@ namespace ServerApplication.Frames
         /// <returns>
         /// Type of IFrame.
         /// </returns>
-        public static IFrame CreateObject(string xml)
+        public static T CreateObject<T>(string xml)
         {
+            XmlSerializer serializer = new XmlSerializer(typeof(T));
+            T result;
+            using (TextReader reader = new StringReader(xml))
+            {
+                result = (T)serializer.Deserialize(reader);
+            }
 
-            var reader = new System.IO.StringReader(xml);
-            var serializer = new XmlSerializer(typeof(IFrame));
-            return serializer.Deserialize(reader) as IFrame;
+            return result;
         }
 
         /// <summary>
@@ -33,7 +38,7 @@ namespace ServerApplication.Frames
         /// <returns>
         /// Single string line.
         /// </returns>
-        public static string CreateXmlMessage(IFrame frame)
+        public static string CreateXmlMessage<T>(T frame)
         {
             XmlWriterSettings settings = new XmlWriterSettings();
             settings.OmitXmlDeclaration = true;

@@ -104,6 +104,7 @@ namespace ServerApplication
             {
                 listener = new TcpListener(this.ipAddress, this.port);
                 listener.Start();
+
                 isRunning = true;
                 window.ServerStatus.Content = "Server is running...";
                 window.ServerStatus.Foreground = new SolidColorBrush(Colors.Green);
@@ -114,7 +115,6 @@ namespace ServerApplication
                     Task t = Process(tcpClient);
                     await t;
                 }
-
             }
             catch (Exception ex)
             {
@@ -136,14 +136,13 @@ namespace ServerApplication
 
                     if (message != null)
                     {
-                        string clientEndPoint = tcpClient.Client.RemoteEndPoint
-                            .ToString().Split(':').First();
+                        string clientEndPoint = tcpClient.Client.
+                            RemoteEndPoint.ToString().Split(':').First();
 
                         ParseMessage(message, clientEndPoint);
                     }
                     else break; // Closed connection
                 }
-
 
                 tcpClient.Close();
             }
@@ -189,6 +188,7 @@ namespace ServerApplication
                                 client.IpAddress = IPAddress.Parse(ip);
                                 break;
                             case Frames.Frames.Login:
+                                //TODO
                                 break;
                         }
                     }
@@ -199,22 +199,26 @@ namespace ServerApplication
                 Console.WriteLine(ex.Message + "\n" + ex.StackTrace);
             }
 
-            //TODO Fix update rooms
-            if (!Rooms.First().Players.Contains(client))
+            lock (Rooms)
             {
-                ClientPropertyChanged(client, new PropertyChangedEventArgs("Posision"));
-                Rooms.First().Players.Add(client);
-            }
-            else
-            {
-                var player = Rooms.First().Players.First();
-                // Send new possision by INotifyPropertyChanged mechanism
-                // Check if posision was changed, if no dont update
-                player.Posision = new Posision(client.Lat, client.Lon);
-                player.Message = client.Message;
-                client = player;
+                //TODO Fix update rooms
+                if (!Rooms.First().Players.Contains(client))
+                {
+                    ClientPropertyChanged(client, new PropertyChangedEventArgs("Posision"));
+                    Rooms.First().Players.Add(client);
+                }
+                else
+                {
+                    var player = Rooms.First().Players.First();
+                    // Send new possision by INotifyPropertyChanged mechanism
+                    // Check if posision was changed, if no dont update
+                    player.Posision = new Posision(client.Lat, client.Lon);
+                    player.Message = client.Message;
+                    client = player;
+                }
             }
 
+            //Add message to container
             container.RecivedMessages.Add(new Message()
             {
                 Adress = client.IpAddress,

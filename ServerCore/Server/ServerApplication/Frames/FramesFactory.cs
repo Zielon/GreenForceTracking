@@ -17,9 +17,9 @@ namespace ServerApplication.Frames.Factory
         /// </summary>
         /// <param name="xml"></param>
         /// <returns>
-        /// Type of IFrame.
+        /// Type of template which implements IFrame interface.
         /// </returns>
-        public static T CreateObject<T>(string xml)
+        public static T CreateObject<T>(string xml) where T : IFrame
         {
             XmlSerializer serializer = new XmlSerializer(typeof(T));
             T result;
@@ -38,7 +38,7 @@ namespace ServerApplication.Frames.Factory
         /// <returns>
         /// Single string line.
         /// </returns>
-        public static string CreateXmlMessage<T>(T frame)
+        public static string CreateXmlMessage<T>(T frame) where T : IFrame
         {
             XmlWriterSettings settings = new XmlWriterSettings();
             settings.OmitXmlDeclaration = true;

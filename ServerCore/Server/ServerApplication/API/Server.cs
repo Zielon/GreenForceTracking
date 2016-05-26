@@ -76,19 +76,23 @@ namespace ServerApplication
                 {
                     var selectedRoom = Rooms.Single(r => r.ID == player.RoomId);
 
-                    selectedRoom.Players.ToList().ForEach(async p =>
+                    lock (selectedRoom)
                     {
-                        await client.ConnectAsync(p.IpAddress, Consts.SendingPort);
-                        NetworkStream networkStream = client.GetStream();
-                        StreamWriter writer = new StreamWriter(networkStream);
-                        writer.AutoFlush = true;
+                        selectedRoom.Players.ToList().ForEach(async p =>
+                        {
+                            await client.ConnectAsync(p.IpAddress, Consts.SendingPort);
+                            NetworkStream networkStream = client.GetStream();
+                            StreamWriter writer = new StreamWriter(networkStream);
+                            writer.AutoFlush = true;
 
-                        var msg = FramesFactory.CreateXmlMessage(
-                            new RoomInfoServer() { Players = selectedRoom.Players.ToList() });
+                            var msg = FramesFactory.CreateXmlMessage(
+                                new RoomInfoServer() { Players = selectedRoom.Players.ToList() });
 
-                        await writer.WriteLineAsync(msg);
-                        client.Close();
-                    });
+                            await writer.WriteLineAsync(msg);
+
+                            client.Close();
+                        });
+                    }
                 }
             }
             catch (Exception ex)
@@ -161,6 +165,7 @@ namespace ServerApplication
             try
             {
                 doc.LoadXml(msg);
+
                 XmlNodeList frame = doc.GetElementsByTagName("FrameType");
                 var type = Tools.ParseEnum<Frames.Frames>(frame.Item(0).InnerText);
 

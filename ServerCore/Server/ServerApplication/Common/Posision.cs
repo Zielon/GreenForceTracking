@@ -17,6 +17,14 @@ namespace ServerApplication.Common
             Lon = lon;
         }
 
+        public override bool Equals(object obj)
+        {
+            var pos = obj as Posision;
+            if (pos != null && pos.Lat == this.Lat && pos.Lon == this.Lon)
+                return true;
+            return false;
+        }
+
         public override string ToString()
         {
             return string.Format("Lat: {0}, Lon: {1}", Lat, Lon);

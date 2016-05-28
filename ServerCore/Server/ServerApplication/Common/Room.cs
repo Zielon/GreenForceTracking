@@ -16,5 +16,19 @@ namespace ServerApplication.Common
             ID = _id;
             Players = new ObservableCollection<Client>();
         }
+
+        public override bool Equals(object obj)
+        {
+            var room = obj as Room;
+            if(room != null)
+                return ID.Equals(room.ID);
+            return false;
+        }
+
+        public override int GetHashCode()
+        {
+            return ID.GetHashCode();
+        }
+
     }
 }

@@ -29,7 +29,7 @@ namespace ServerApplication
         private IPAddress ipAddress;
         private int port;
         private MainWindow window;
-        private List<Room> Rooms = new List<Room>();
+        private Dictionary<string, Room> Rooms = new Dictionary<string, Room>();
         private static EventWaitHandle waitHandle = new AutoResetEvent(false);
 
         public static bool isRunning = false;
@@ -48,14 +48,14 @@ namespace ServerApplication
             var room = new Room("1");
             room.Players.CollectionChanged += UpdatePlayers;
 
-            Rooms.Add(room);
+            Rooms.Add("1", room);
         }
 
         public void UpdatePlayers(object sender, NotifyCollectionChangedEventArgs e)
         {
             if (e.NewItems != null)
             {
-                Console.WriteLine("Players in room: " + Rooms.First().Players.Count);
+                Console.WriteLine("Rooms: " + Rooms.Count);
             }
         }
 
@@ -72,7 +72,7 @@ namespace ServerApplication
         {
             try
             {
-                var selectedRoom = Rooms.Single(r => r.ID == player.RoomId);
+                var selectedRoom = Rooms[player.RoomId];
 
                 foreach (var p in selectedRoom.Players)
                 {
@@ -209,9 +209,9 @@ namespace ServerApplication
             lock (Rooms)
             {
                 //TODO Fix update rooms
-                if (!Rooms.First().Players.Contains(client))
+                if (!Rooms[client.RoomId].Players.Contains(client))
                 {
-                    Rooms.First().Players.Add(client);
+                    Rooms[client.RoomId].Players.Add(client);
                     client.Posision = new Posision(client.Lat, client.Lon);
                     client.ID = Tools.RandomString();
                 }
@@ -219,8 +219,7 @@ namespace ServerApplication
                 {
                     // Send new possision by INotifyPropertyChanged mechanism
                     // Check if posision was changed, if no dont update
-
-                    var player = Rooms.First().Players.Single(p => p.UserName.Equals(client.UserName));
+                    var player = Rooms[client.RoomId].Players.Single(p => p.UserName.Equals(client.UserName));
                     if (!client.Posision.Equals(player.Posision))
                         player.Posision = client.Posision;
                     player.Message = client.Message;

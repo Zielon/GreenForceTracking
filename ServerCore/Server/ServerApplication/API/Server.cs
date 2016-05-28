@@ -222,7 +222,7 @@ namespace ServerApplication
 
                     var player = Rooms.First().Players.Single(p => p.UserName.Equals(client.UserName));
                     if (!client.Posision.Equals(player.Posision))
-                        player.Posision = new Posision(client.Lat, client.Lon);
+                        player.Posision = client.Posision;
                     player.Message = client.Message;
                 }
             }

@@ -77,7 +77,8 @@ namespace TestingClient
 
                                 var xml = sw.ToString();
                                 var f = FramesFactory.CreateObject<ServerApplication.Common.Client>(xml);
-                                str += string.Format("User: {0}\nID: {1}\nLat: {2}\nLon: {3}\n", f.UserName, f.ID, f.Lat, f.Lon);
+                                str += string.Format("User: {0}\nID: {1}\nLat: {2}\nLon: {3}\nMsg: {4}\n",
+                                                            f.UserName, f.ID, f.Lat, f.Lon, f.Message);
                             }
                         }
 
@@ -120,6 +121,7 @@ namespace TestingClient
                 };
 
                 string msg = FramesFactory.CreateXmlMessage(user);
+
                 await writer.WriteLineAsync(msg);
                 count += 11.6;
                 client.Close();

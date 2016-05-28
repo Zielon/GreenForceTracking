@@ -21,19 +21,20 @@ using ServerApplication.Common;
 using ServerApplication.Frames.Factory;
 using ServerApplication.API;
 using System.Windows;
+using ServerApplication.Frames.Client;
 
 namespace ServerApplication
 {
     public class Server
     {
+        public static bool isRunning = false;
+        public MessagesContainer container = new MessagesContainer();
+
         private IPAddress ipAddress;
         private int port;
         private MainWindow window;
         private Dictionary<string, Room> Rooms = new Dictionary<string, Room>();
         private static EventWaitHandle waitHandle = new AutoResetEvent(false);
-
-        public static bool isRunning = false;
-        public MessagesContainer container = new MessagesContainer();
 
         public Server(string ipAddress, int port, MainWindow mainwindow)
         {
@@ -44,7 +45,7 @@ namespace ServerApplication
 
             Console.WriteLine("Listening on port: " + port);
 
-            //TODO temporaty solution
+            // TODO temporaty solution
             var room = new Room("1");
             room.Players.CollectionChanged += UpdatePlayers;
 
@@ -55,7 +56,7 @@ namespace ServerApplication
         {
             if (e.NewItems != null)
             {
-                Console.WriteLine("Rooms: " + Rooms.Count);
+                Console.WriteLine("New player was added");
             }
         }
 
@@ -72,27 +73,30 @@ namespace ServerApplication
         {
             try
             {
-                var selectedRoom = Rooms[player.RoomId];
-
-                foreach (var p in selectedRoom.Players)
+                lock (Rooms)
                 {
-                    using (TcpClient client = new TcpClient())
+                    var selectedRoom = Rooms[player.RoomId];
+
+                    foreach (var p in selectedRoom.Players)
                     {
-                        var result = client.BeginConnect(p.IpAddress.ToString(), Consts.SendingPort, null, null);
+                        using (TcpClient client = new TcpClient())
+                        {
+                            var result = client.BeginConnect(p.IpAddress.ToString(), Consts.SendingPort, null, null);
 
-                        if (!result.AsyncWaitHandle.WaitOne(TimeSpan.FromSeconds(2)))
-                            throw new TimeoutException();
+                            if (!result.AsyncWaitHandle.WaitOne(TimeSpan.FromSeconds(2)))
+                                throw new TimeoutException();
 
-                        NetworkStream networkStream = client.GetStream();
-                        StreamWriter writer = new StreamWriter(networkStream);
+                            NetworkStream networkStream = client.GetStream();
+                            StreamWriter writer = new StreamWriter(networkStream);
 
-                        writer.AutoFlush = true;
+                            writer.AutoFlush = true;
 
-                        var msg = FramesFactory.CreateXmlMessage(
-                            new RoomInfoServer() { Players = selectedRoom.Players.ToList() });
+                            var msg = FramesFactory.CreateXmlMessage(
+                                new RoomInfoServer() { Players = selectedRoom.Players.ToList() });
 
-                        writer.WriteLine(msg);
-                        client.EndConnect(result);
+                            writer.WriteLine(msg);
+                            client.EndConnect(result);
+                        }
                     }
                 }
             }
@@ -173,7 +177,6 @@ namespace ServerApplication
                 string elements = string.Empty;
 
                 foreach (XmlNode player in doc.GetElementsByTagName("Frame"))
-                {
                     using (var sw = new StringWriter())
                     {
                         string xml = string.Empty;
@@ -195,11 +198,12 @@ namespace ServerApplication
                                 client.Posision = new Posision(client.Lat, client.Lon);
                                 break;
                             case Frames.Frames.Login:
-                                //TODO
+                                SessionManager.Logger(FramesFactory.CreateObject<LoginClient>(xml));
                                 break;
+                            default:
+                                throw new InvalidEnumArgumentException();
                         }
                     }
-                }
             }
             catch (Exception ex)
             {
@@ -208,7 +212,6 @@ namespace ServerApplication
 
             lock (Rooms)
             {
-                //TODO Fix update rooms
                 if (!Rooms[client.RoomId].Players.Contains(client))
                 {
                     Rooms[client.RoomId].Players.Add(client);
@@ -218,7 +221,7 @@ namespace ServerApplication
                 else
                 {
                     // Send new possision by INotifyPropertyChanged mechanism
-                    // Check if posision was changed, if no dont update
+                    // Check if posision was changed. If not dont update
                     var player = Rooms[client.RoomId].Players.Single(p => p.UserName.Equals(client.UserName));
                     if (!client.Posision.Equals(player.Posision))
                         player.Posision = client.Posision;
@@ -226,7 +229,7 @@ namespace ServerApplication
                 }
             }
 
-            //Add message to container
+            // Add message to container
             container.RecivedMessages.Add(new Message()
             {
                 Adress = client.IpAddress,
@@ -234,10 +237,9 @@ namespace ServerApplication
                 RecivedData = client.Message
             });
 
+            // Clean messages container after 14 frames
             if (container.RecivedMessages.Count > 14)
-            {
-                container.RecivedMessages.Remove(mbox => true);
-            }
+                container.RecivedMessages.Remove(m => true);
         }
     }
 }

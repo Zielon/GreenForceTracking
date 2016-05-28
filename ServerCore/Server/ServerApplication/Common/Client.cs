@@ -73,21 +73,5 @@ namespace ServerApplication.Common
         }
 
         public Client() { }
-
-        //Temporary solution
-        public override string ToString()
-        {
-            StringBuilder builder = new StringBuilder();
-
-            builder.Append("<Player>");
-            builder.Append(string.Format("<ID>{0}</ID>", ID));
-            builder.Append(string.Format("<User>{0}</User>", UserName));
-            builder.Append(string.Format("<Lat>{0}</Lat>", Lat));
-            builder.Append(string.Format("<Lon>{0}</Lon>", Lon));
-            builder.Append(string.Format("<Message>{0}</Message>", Message));
-            builder.Append("</Player>");
-
-            return builder.ToString();
-        }
     }
 }

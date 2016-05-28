@@ -84,8 +84,8 @@
     <Compile Include="Frames\Server\ListOfRoomsServer.cs" />
     <Compile Include="Frames\Server\LoginServer.cs" />
     <Compile Include="Frames\Server\RoomInfoServer.cs" />
-    <Compile Include="Message.cs" />
-    <Compile Include="MessageContainer.cs" />
+    <Compile Include="Messages\Message.cs" />
+    <Compile Include="Messages\MessageContainer.cs" />
     <Compile Include="Common\Posision.cs" />
     <Compile Include="Common\Room.cs" />
     <Compile Include="API\Server.cs" />

@@ -12,3 +12,4 @@ X:\Repozytoria\GreenForceTracking\ServerCore\Server\ServerApplication\obj\Debug\
 X:\Repozytoria\GreenForceTracking\ServerCore\Server\ServerApplication\obj\Debug\ServerApplication.csproj.GenerateResource.Cache
 X:\Repozytoria\GreenForceTracking\ServerCore\Server\ServerApplication\obj\Debug\ServerApplication.exe
 X:\Repozytoria\GreenForceTracking\ServerCore\Server\ServerApplication\obj\Debug\ServerApplication.pdb
+X:\Repozytoria\GreenForceTracking\ServerCore\Server\ServerApplication\obj\Debug\ServerApplication.csprojResolveAssemblyReference.cache

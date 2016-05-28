@@ -64,21 +64,25 @@ namespace TestingClient
                         XmlNodeList elements = doc.GetElementsByTagName("Players");
                         string str = string.Empty;
 
-                        foreach (XmlNode player in elements)
+                        foreach (XmlNode players in elements)
                         {
-                            using (var sw = new System.IO.StringWriter())
+                            foreach (XmlNode player in players)
                             {
-                                using (var xw = new System.Xml.XmlTextWriter(sw))
+                                using (var sw = new StringWriter())
                                 {
-                                    xw.Formatting = System.Xml.Formatting.Indented;
-                                    xw.Indentation = 2;
-                                    player.WriteContentTo(xw);
-                                }
+                                    using (var xw = new XmlTextWriter(sw))
+                                    {
+                                        xw.Formatting = System.Xml.Formatting.Indented;
+                                        xw.Indentation = 2;
+                                        player.WriteTo(xw);
+                                    }
 
-                                var xml = sw.ToString();
-                                var f = FramesFactory.CreateObject<ServerApplication.Common.Client>(xml);
-                                str += string.Format("User: {0}\nID: {1}\nLat: {2}\nLon: {3}\nMsg: {4}\n",
-                                                            f.UserName, f.ID, f.Lat, f.Lon, f.Message);
+                                    var xml = sw.ToString();
+                                    var f = FramesFactory.CreateObject<ServerApplication.Common.Client>(xml);
+                                    str += string.Format(
+                                        "User: {0}\nID: {1}\nLat: {2}\nLon: {3}\nMsg: {4}\n--------------------\n",
+                                                                f.UserName, f.ID, f.Lat, f.Lon, f.Message);
+                                }
                             }
                         }
 

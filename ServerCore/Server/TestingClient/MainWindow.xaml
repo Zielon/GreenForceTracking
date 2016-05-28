@@ -18,7 +18,7 @@
                 <Button x:Name="buttonSend" Content="Send message" HorizontalAlignment="Left" Margin="12,189,0,0" VerticalAlignment="Top" Width="151" Click="buttonSend_Click"/>
                 <TextBox x:Name="textBoxIP" HorizontalAlignment="Left" Height="23" Margin="352,22,0,0" TextWrapping="Wrap" Text="kornik.ddns.net" VerticalAlignment="Top" Width="120" Grid.ColumnSpan="2"/>
                 <Label x:Name="label" Content="Empty" HorizontalAlignment="Left" Margin="228,189,0,0" VerticalAlignment="Top" Width="46" TextOptions.TextHintingMode="Fixed"/>
-                <TextBox x:Name="textBoxResponse" HorizontalAlignment="Left" Height="162" Margin="185,22,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="151" Background="#FFF5CECE"/>
+                <TextBox x:Name="textBoxResponse" HorizontalAlignment="Left" Height="162" Margin="185,22,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="151" Background="#FFF5CECE" FontSize="8"/>
                 <Label x:Name="label1" Content="Message" HorizontalAlignment="Left" Margin="12,0,0,0" VerticalAlignment="Top"/>
                 <Label x:Name="label2" Content="Recived" HorizontalAlignment="Left" Margin="185,0,0,0" VerticalAlignment="Top"/>
                 <TextBox x:Name="textBoxIP_Copy" HorizontalAlignment="Left" Height="23" Margin="352,50,0,0" TextWrapping="Wrap" Text="192.168.0.2" VerticalAlignment="Top" Width="120" Grid.ColumnSpan="2"/>

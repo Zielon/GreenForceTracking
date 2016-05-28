@@ -36,18 +36,18 @@ namespace TestingClient
         {
             var dns = textBoxIP.Text;
 
-            //IPHostEntry ipHostInfo = Dns.GetHostEntry(dns);
-            //for (int i = 0; i < ipHostInfo.AddressList.Length; ++i)
-            //{
-            //    if (ipHostInfo.AddressList[i].AddressFamily ==
-            //      AddressFamily.InterNetwork)
-            //    {
-            //        Client.Ip = ipHostInfo.AddressList[i];
-            //        break;
-            //    }
-            //}
+            IPHostEntry ipHostInfo = Dns.GetHostEntry(dns);
+            for (int i = 0; i < ipHostInfo.AddressList.Length; ++i)
+            {
+                if (ipHostInfo.AddressList[i].AddressFamily ==
+                  AddressFamily.InterNetwork)
+                {
+                    Client.Ip = ipHostInfo.AddressList[i];
+                    break;
+                }
+            }
 
-            Client.Ip = IPAddress.Parse("192.168.0.2");
+            //Client.Ip = IPAddress.Parse("192.168.0.2");
 
             Client.Port = Consts.RecivingPort;
             Client.isConnedted = true;

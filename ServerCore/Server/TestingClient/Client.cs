@@ -29,7 +29,7 @@ namespace TestingClient
             TcpListener listener = null;
             try
             {
-                listener = new TcpListener(IPAddress.Parse("192.168.0.2"), Consts.SendingPort);
+                listener = new TcpListener(IPAddress.Parse(window.textBoxIP_Copy.Text), Consts.SendingPort);
                 listener.Start();
 
                 while (true)
@@ -111,16 +111,16 @@ namespace TestingClient
 
                 var user = new ServerApplication.Common.Client()
                 {
-                    ID = "1",
-                    RoomId = "1",
+                    RoomId = window.RoomBox.Text,
                     IpAddress = Ip,
                     Posision = new Posision(1.23 + count, 543.456 - count),
-                    UserName = "Testing Client",
+                    UserName = window.NameBox.Text,
                     Message = data,
                     FrameType = Frames.Player
                 };
 
-                await writer.WriteLineAsync("<Frame>" + FramesFactory.CreateXmlMessage(user) + "</Frame>");
+                string msg = FramesFactory.CreateXmlMessage(user);
+                await writer.WriteLineAsync(msg);
                 count += 11.6;
                 client.Close();
 

@@ -27,7 +27,6 @@ namespace ServerApplication.Frames.Factory
             {
                 result = (T)serializer.Deserialize(reader);
             }
-
             return result;
         }
 
@@ -52,7 +51,7 @@ namespace ServerApplication.Frames.Factory
             ms.Seek(0, SeekOrigin.Begin);
             StreamReader sr = new StreamReader(ms);
 
-            return sr.ReadToEnd();
+            return string.Format("<Frame>{0}</Frame>", sr.ReadToEnd());
         }
     }
 }

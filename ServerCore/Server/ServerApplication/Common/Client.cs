@@ -47,7 +47,7 @@ namespace ServerApplication.Common
             }
         }
 
-        public string Message { get { return _message; } set { _message = value; NotifyPropertyChanged(); } }
+        public string Message { get { return _message; } set { _message = value; } }
 
         public Frames.Frames FrameType { get; set; }
 
@@ -63,13 +63,13 @@ namespace ServerApplication.Common
         {
             var client = obj as Client;
             if (client != null)
-                return client.ID.Equals(ID);
+                return client.UserName.Equals(UserName);
             else return false;
         }
 
         public override int GetHashCode()
         {
-            return ID.GetHashCode();
+            return UserName.GetHashCode();
         }
 
         public Client() { }

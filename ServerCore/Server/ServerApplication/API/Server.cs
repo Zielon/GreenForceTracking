@@ -20,6 +20,7 @@ using ServerApplication.Frames.Server;
 using ServerApplication.Common;
 using ServerApplication.Frames.Factory;
 using ServerApplication.API;
+using System.Windows;
 
 namespace ServerApplication
 {
@@ -55,7 +56,6 @@ namespace ServerApplication
             if (e.NewItems != null)
             {
                 Console.WriteLine("Players in room: " + Rooms.First().Players.Count);
-
             }
         }
 
@@ -63,35 +63,36 @@ namespace ServerApplication
         {
             Client item = sender as Client;
             if (item != null)
+            {
                 Task.Factory.StartNew(() => StartSending(item));
+            }
         }
 
         public void StartSending(Client player)
         {
             try
             {
-                TcpClient client = new TcpClient();
+                var selectedRoom = Rooms.Single(r => r.ID == player.RoomId);
 
-                lock (Rooms)
+                foreach (var p in selectedRoom.Players)
                 {
-                    var selectedRoom = Rooms.Single(r => r.ID == player.RoomId);
-
-                    lock (selectedRoom)
+                    using (TcpClient client = new TcpClient())
                     {
-                        selectedRoom.Players.ToList().ForEach(async p =>
-                        {
-                            await client.ConnectAsync(p.IpAddress, Consts.SendingPort);
-                            NetworkStream networkStream = client.GetStream();
-                            StreamWriter writer = new StreamWriter(networkStream);
-                            writer.AutoFlush = true;
+                        var result = client.BeginConnect(p.IpAddress.ToString(), Consts.SendingPort, null, null);
 
-                            var msg = FramesFactory.CreateXmlMessage(
-                                new RoomInfoServer() { Players = selectedRoom.Players.ToList() });
+                        if (!result.AsyncWaitHandle.WaitOne(TimeSpan.FromSeconds(2)))
+                            throw new TimeoutException();
 
-                            await writer.WriteLineAsync(msg);
+                        NetworkStream networkStream = client.GetStream();
+                        StreamWriter writer = new StreamWriter(networkStream);
 
-                            client.Close();
-                        });
+                        writer.AutoFlush = true;
+
+                        var msg = FramesFactory.CreateXmlMessage(
+                            new RoomInfoServer() { Players = selectedRoom.Players.ToList() });
+
+                        writer.WriteLine(msg);
+                        client.EndConnect(result);
                     }
                 }
             }
@@ -191,6 +192,7 @@ namespace ServerApplication
                                 client = FramesFactory.CreateObject<Client>(xml);
                                 client.PropertyChanged += ClientPropertyChanged;
                                 client.IpAddress = IPAddress.Parse(ip);
+                                client.Posision = new Posision(client.Lat, client.Lon);
                                 break;
                             case Frames.Frames.Login:
                                 //TODO
@@ -209,17 +211,19 @@ namespace ServerApplication
                 //TODO Fix update rooms
                 if (!Rooms.First().Players.Contains(client))
                 {
-                    ClientPropertyChanged(client, new PropertyChangedEventArgs("Posision"));
                     Rooms.First().Players.Add(client);
+                    client.Posision = new Posision(client.Lat, client.Lon);
+                    client.ID = Tools.RandomString();
                 }
                 else
                 {
-                    var player = Rooms.First().Players.First();
                     // Send new possision by INotifyPropertyChanged mechanism
                     // Check if posision was changed, if no dont update
-                    player.Posision = new Posision(client.Lat, client.Lon);
+
+                    var player = Rooms.First().Players.Single(p => p.UserName.Equals(client.UserName));
+                    if (!client.Posision.Equals(player.Posision))
+                        player.Posision = new Posision(client.Lat, client.Lon);
                     player.Message = client.Message;
-                    client = player;
                 }
             }
 
@@ -230,6 +234,11 @@ namespace ServerApplication
                 Time = DateTime.Now,
                 RecivedData = client.Message
             });
+
+            if (container.RecivedMessages.Count > 14)
+            {
+                container.RecivedMessages.Remove(mbox => true);
+            }
         }
     }
 }

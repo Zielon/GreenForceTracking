@@ -3,6 +3,9 @@ X:\Repozytoria\GreenForceTracking\ServerCore\Server\TestingClient\bin\Debug\Test
 X:\Repozytoria\GreenForceTracking\ServerCore\Server\TestingClient\bin\Debug\TestingClient.pdb
 X:\Repozytoria\GreenForceTracking\ServerCore\Server\TestingClient\bin\Debug\ServerApplication.exe
 X:\Repozytoria\GreenForceTracking\ServerCore\Server\TestingClient\bin\Debug\ServerApplication.pdb
+X:\Repozytoria\GreenForceTracking\ServerCore\Server\Output\TestingClient.exe.config
+X:\Repozytoria\GreenForceTracking\ServerCore\Server\Output\TestingClient.exe
+X:\Repozytoria\GreenForceTracking\ServerCore\Server\Output\TestingClient.pdb
 X:\Repozytoria\GreenForceTracking\ServerCore\Server\TestingClient\obj\Debug\TestingClient.csprojResolveAssemblyReference.cache
 X:\Repozytoria\GreenForceTracking\ServerCore\Server\TestingClient\obj\Debug\MainWindow.g.cs
 X:\Repozytoria\GreenForceTracking\ServerCore\Server\TestingClient\obj\Debug\App.g.cs
@@ -14,6 +17,3 @@ X:\Repozytoria\GreenForceTracking\ServerCore\Server\TestingClient\obj\Debug\Test
 X:\Repozytoria\GreenForceTracking\ServerCore\Server\TestingClient\obj\Debug\TestingClient.csproj.GenerateResource.Cache
 X:\Repozytoria\GreenForceTracking\ServerCore\Server\TestingClient\obj\Debug\TestingClient.exe
 X:\Repozytoria\GreenForceTracking\ServerCore\Server\TestingClient\obj\Debug\TestingClient.pdb
-X:\Repozytoria\GreenForceTracking\ServerCore\Server\Output\TestingClient.exe.config
-X:\Repozytoria\GreenForceTracking\ServerCore\Server\Output\TestingClient.exe
-X:\Repozytoria\GreenForceTracking\ServerCore\Server\Output\TestingClient.pdb

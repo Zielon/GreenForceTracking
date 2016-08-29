@@ -48,7 +48,6 @@ namespace ServerApplication
             // TODO temporaty solution
             var room = new Room("1");
             room.Players.CollectionChanged += UpdatePlayers;
-
             Rooms.Add("1", room);
         }
 

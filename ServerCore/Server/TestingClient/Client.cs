@@ -112,6 +112,7 @@ namespace TestingClient
 
                 NetworkStream networkStream = client.GetStream();
                 StreamWriter writer = new StreamWriter(networkStream);
+
                 writer.AutoFlush = true;
 
                 var user = new ServerApplication.Common.Client()

@@ -35,6 +35,10 @@ namespace ServerApplication
         private MainWindow window;
         private Dictionary<string, Room> Rooms = new Dictionary<string, Room>();
         private static EventWaitHandle waitHandle = new AutoResetEvent(false);
+        private List<TcpClient> clientList = new List<TcpClient>();
+
+        private IProgress<Message> progress;
+        private IProgress<string> messages;
 
         public Server(string ipAddress, int port, MainWindow mainwindow)
         {
@@ -43,11 +47,13 @@ namespace ServerApplication
             this.window = mainwindow;
             window.dataGrid.DataContext = container.RecivedMessages;
 
+            progress = new Progress<Message>(s => container.RecivedMessages.Add(s));
+            messages = new Progress<string>(s => this.window.textBox.AppendText(s + "\n"));
+
             Console.WriteLine("Listening on port: " + port);
 
             // TODO temporaty solution
             var room = new Room("1");
-            room.Players.CollectionChanged += UpdatePlayers;
             Rooms.Add("1", room);
         }
 
@@ -55,7 +61,7 @@ namespace ServerApplication
         {
             if (e.NewItems != null)
             {
-                Console.WriteLine("New player was added");
+                messages.Report("New player was added");
             }
         }
 
@@ -72,42 +78,40 @@ namespace ServerApplication
         {
             try
             {
-                lock (Rooms)
-                {
-                    var selectedRoom = Rooms[player.RoomId];
+                var selectedRoom = Rooms[player.RoomId];
 
+                lock (selectedRoom.Players)
+                {
                     foreach (var p in selectedRoom.Players)
                     {
-                        using (TcpClient client = new TcpClient())
-                        {
-                            var result = client.BeginConnect(p.IpAddress.ToString(), Consts.SendingPort, null, null);
+                        if (p.Connection == null) continue;
 
-                            if (!result.AsyncWaitHandle.WaitOne(TimeSpan.FromSeconds(2)))
-                                throw new TimeoutException();
+                        TcpClient client = p.Connection;
 
-                            NetworkStream networkStream = client.GetStream();
-                            StreamWriter writer = new StreamWriter(networkStream);
+                        if (!client.Connected) continue;
 
-                            writer.AutoFlush = true;
+                        NetworkStream networkStream = client.GetStream();
+                        StreamWriter writer = new StreamWriter(networkStream);
 
-                            var msg = FramesFactory.CreateXmlMessage(
-                                new RoomInfoServer() { Players = selectedRoom.Players.ToList() });
+                        writer.AutoFlush = true;
 
-                            writer.WriteLine(msg);
-                            client.EndConnect(result);
-                        }
+                        var msg = FramesFactory.CreateXmlMessage(
+                            new RoomInfoServer() { Players = selectedRoom.Players.ToList() });
+
+                        writer.WriteLine(msg);
                     }
                 }
             }
             catch (Exception ex)
             {
-                Console.WriteLine(ex.Message + "\n" + ex.StackTrace);
+                messages.Report(ex.Message + "\n" + ex.StackTrace);
             }
         }
 
         public async void StartListening()
         {
             TcpListener listener = null;
+
             try
             {
                 listener = new TcpListener(this.ipAddress, this.port);
@@ -120,48 +124,47 @@ namespace ServerApplication
                 while (true)
                 {
                     TcpClient tcpClient = await listener.AcceptTcpClientAsync();
-                    Task t = Process(tcpClient);
-                    await t;
+                    Processing(tcpClient);
                 }
             }
             catch (Exception ex)
             {
-                Console.WriteLine(ex.Message + "\n" + ex.StackTrace);
+                messages.Report(ex.Message + "\n" + ex.StackTrace);
             }
         }
 
-        private async Task Process(TcpClient tcpClient)
+        private void Processing(TcpClient client)
         {
             try
             {
-                NetworkStream networkStream = tcpClient.GetStream();
-                StreamReader reader = new StreamReader(networkStream, true);
+                var localClient = client;
 
-                while (true)
+                Task.Factory.StartNew(async () =>
                 {
-                    // Read one single line
-                    string message = await reader.ReadLineAsync();
+                    NetworkStream networkStream = localClient.GetStream();
+                    StreamReader reader = new StreamReader(networkStream, true);
 
-                    if (message != null)
+                    while (true)
                     {
-                        string clientEndPoint = tcpClient.Client.
-                            RemoteEndPoint.ToString().Split(':').First();
+                        string message = await reader.ReadLineAsync();
 
-                        ParseMessage(message, clientEndPoint);
+                        if (message != null)
+                        {
+                            ParseMessage(message, localClient);
+                        }
+                        else break;
                     }
-                    else break; // Closed connection
-                }
 
-                tcpClient.Close();
+                }, TaskCreationOptions.LongRunning);
+
             }
             catch (Exception ex)
             {
                 Console.WriteLine(ex.Message + "\n" + ex.StackTrace);
-                if (tcpClient.Connected) tcpClient.Close();
             }
         }
 
-        private void ParseMessage(string msg, string ip)
+        private void ParseMessage(string msg, TcpClient tcpClient)
         {
             XmlDocument doc = new XmlDocument();
             Client client = null;
@@ -182,7 +185,7 @@ namespace ServerApplication
 
                         using (var xw = new XmlTextWriter(sw))
                         {
-                            xw.Formatting = System.Xml.Formatting.Indented;
+                            xw.Formatting = Formatting.Indented;
                             xw.Indentation = 2;
                             player.WriteContentTo(xw);
                             xml = sw.ToString();
@@ -193,7 +196,6 @@ namespace ServerApplication
                             case Frames.Frames.Player:
                                 client = FramesFactory.CreateObject<Client>(xml);
                                 client.PropertyChanged += ClientPropertyChanged;
-                                client.IpAddress = IPAddress.Parse(ip);
                                 client.Posision = new Posision(client.Lat, client.Lon);
                                 break;
                             case Frames.Frames.Login:
@@ -206,14 +208,15 @@ namespace ServerApplication
             }
             catch (Exception ex)
             {
-                Console.WriteLine(ex.Message + "\n" + ex.StackTrace);
+                messages.Report(ex.Message + "\n" + ex.StackTrace);
             }
 
-            lock (Rooms)
+            lock (Rooms[client.RoomId].Players)
             {
                 if (!Rooms[client.RoomId].Players.Contains(client))
                 {
                     Rooms[client.RoomId].Players.Add(client);
+                    client.Connection = tcpClient;
                     client.Posision = new Posision(client.Lat, client.Lon);
                     client.ID = Tools.RandomString();
                 }
@@ -229,16 +232,17 @@ namespace ServerApplication
             }
 
             // Add message to container
-            container.RecivedMessages.Add(new Message()
+            progress.Report(new Message()
             {
-                Adress = client.IpAddress,
+                User = client.UserName,
+                Adress = tcpClient.Client.RemoteEndPoint.ToString(),
                 Time = DateTime.Now,
                 RecivedData = client.Message
             });
 
-            // Clean messages container after 14 frames
-            if (container.RecivedMessages.Count > 14)
-                container.RecivedMessages.Remove(m => true);
+            lock (container.RecivedMessages)
+                 if (container.RecivedMessages.Count > 14)
+                    this.window.Dispatcher.Invoke(() => container.RecivedMessages.Remove(m => true));
         }
     }
 }

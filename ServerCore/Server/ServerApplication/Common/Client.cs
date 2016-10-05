@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Net;
+using System.Net.Sockets;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
@@ -16,18 +17,10 @@ namespace ServerApplication.Common
     /// </summary>
     public class Client : INotifyPropertyChanged, IFrame
     {
-        [XmlIgnoreAttribute]
-        private string _message = string.Empty;
-
-        [XmlIgnoreAttribute]
-        private Posision _posision;
 
         public string ID { get; set; }
 
         public string UserName { get; set; }
-
-        [XmlIgnoreAttribute]
-        public IPAddress IpAddress { get; set; }
 
         public string RoomId { get; set; }
 
@@ -35,15 +28,26 @@ namespace ServerApplication.Common
 
         public double Lon { get; set; }
 
+
+        [XmlIgnoreAttribute]
+        public TcpClient Connection { get; set; }
+
+        [XmlIgnoreAttribute]
+        private string _message = string.Empty;
+
+        [XmlIgnoreAttribute]
+        private Posision _posision;
+
         [XmlIgnoreAttribute]
         public Posision Posision
         {
             get { return _posision; }
-            set {
+            set
+            {
                 _posision = value;
-                NotifyPropertyChanged(); //Notify posistion update
                 Lat = _posision.Lat;
                 Lon = _posision.Lon;
+                NotifyPropertyChanged(); //Notify posistion update
             }
         }
 
@@ -53,7 +57,7 @@ namespace ServerApplication.Common
 
         public event PropertyChangedEventHandler PropertyChanged;
 
-        private void NotifyPropertyChanged([CallerMemberName] String propertyName = "")
+        private void NotifyPropertyChanged([CallerMemberName] string propertyName = "")
         {
             if (PropertyChanged != null)
                 PropertyChanged(this, new PropertyChangedEventArgs(propertyName));

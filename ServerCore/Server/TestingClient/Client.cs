@@ -1,14 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Globalization;
 using System.IO;
-using System.Linq;
 using System.Net;
 using System.Net.Sockets;
-using System.Text;
 using System.Threading.Tasks;
 using System.Xml;
-using ServerApplication;
 using ServerApplication.Frames;
 using ServerApplication.Frames.Factory;
 using ServerApplication.Common;
@@ -19,42 +14,43 @@ namespace TestingClient
     {
         public static MainWindow window;
         public static IPAddress Ip;
-        public static int Port;
         public static bool isConnedted = false;
         private static double count = 1.1;
 
+        static TcpClient _client;
 
-        public static async void StartListening()
-        {
-            TcpListener listener = null;
-            try
-            {
-                listener = new TcpListener(IPAddress.Parse(window.textBoxIP_Copy.Text), Consts.SendingPort);
-                listener.Start();
+        static Client() {
 
-                while (true)
-                {
-                    TcpClient tcpClient = await listener.AcceptTcpClientAsync();
-                    Task t = Process(tcpClient);
-                    await t;
-                }
+            _client = new TcpClient();
 
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex.Message);
-            }
+            //IPHostEntry ipHostInfo = Dns.GetHostEntry("kornik.sytes.net");
+
+            //for (int i = 0; i < ipHostInfo.AddressList.Length; ++i)
+            //{
+            //    if (ipHostInfo.AddressList[i].AddressFamily ==
+            //      AddressFamily.InterNetwork)
+            //    {
+            //        Ip = ipHostInfo.AddressList[i];
+            //        break;
+            //    }
+            //}
+
+            Ip = IPAddress.Parse("192.168.0.2");
+
+            _client.ConnectAsync(Ip, 52400);
         }
 
-        private static async Task Process(TcpClient tcpClient)
+        public static async void Process(IProgress<string> update)
         {
-            try
+            while (true)
             {
-                NetworkStream networkStream = tcpClient.GetStream();
-                StreamReader reader = new StreamReader(networkStream);
-
-                while (true)
+                try
                 {
+                    if (!_client.Connected) _client.Connect(Ip, 52400);
+
+                    NetworkStream networkStream = _client.GetStream();
+                    StreamReader reader = new StreamReader(networkStream);
+
                     string message = await reader.ReadLineAsync();
 
                     if (message != null)
@@ -86,31 +82,23 @@ namespace TestingClient
                             }
                         }
 
-                        window.textBoxResponse.Text = str;
+                        update.Report(str);
                     }
-                    else break; // Closed connection
                 }
+                catch (Exception ex)
+                {
+                    update.Report(ex.Message);
 
-                tcpClient.Close();
-            }
-            catch (Exception ex)
-            {
-                if (tcpClient.Connected) tcpClient.Close();
+                    if (_client.Connected) _client.Close();
+                }
             }
         }
 
         public static async Task Send(string data)
         {
-
-            if (!isConnedted) return;
-
             try
             {
-                TcpClient client = new TcpClient();
-
-                await client.ConnectAsync(Ip, Port);
-
-                NetworkStream networkStream = client.GetStream();
+                NetworkStream networkStream = _client.GetStream();
                 StreamWriter writer = new StreamWriter(networkStream);
 
                 writer.AutoFlush = true;
@@ -118,7 +106,6 @@ namespace TestingClient
                 var user = new ServerApplication.Common.Client()
                 {
                     RoomId = window.RoomBox.Text,
-                    IpAddress = Ip,
                     Posision = new Posision(1.23 + count, 543.456 - count),
                     UserName = window.NameBox.Text,
                     Message = data,
@@ -129,12 +116,10 @@ namespace TestingClient
 
                 await writer.WriteLineAsync(msg);
                 count += 11.6;
-                client.Close();
-
             }
             catch (Exception ex)
             {
-                Console.WriteLine(ex.Message);
+                window.textBoxResponse.Text = ex.Message;
             }
         }
     }

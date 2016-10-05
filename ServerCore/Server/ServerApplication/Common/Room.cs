@@ -29,6 +29,5 @@ namespace ServerApplication.Common
         {
             return ID.GetHashCode();
         }
-
     }
 }

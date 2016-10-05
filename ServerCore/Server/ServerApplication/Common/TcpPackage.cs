@@ -4,10 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ServerApplication
+namespace ServerApplication.Common
 {
-    public class Consts
+    struct TcpPackage
     {
-        public const int RecivingPort = 52400;
+
     }
 }

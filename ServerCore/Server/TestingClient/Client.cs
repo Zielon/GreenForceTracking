@@ -19,24 +19,23 @@ namespace TestingClient
 
         static TcpClient _client;
 
-        static Client() {
-
+        static Client()
+        {
             _client = new TcpClient();
 
-            //IPHostEntry ipHostInfo = Dns.GetHostEntry("kornik.sytes.net");
+            IPHostEntry ipHostInfo = Dns.GetHostEntry("kornik.ddns.net");
 
-            //for (int i = 0; i < ipHostInfo.AddressList.Length; ++i)
-            //{
-            //    if (ipHostInfo.AddressList[i].AddressFamily ==
-            //      AddressFamily.InterNetwork)
-            //    {
-            //        Ip = ipHostInfo.AddressList[i];
-            //        break;
-            //    }
-            //}
+            for (int i = 0; i < ipHostInfo.AddressList.Length; ++i)
+            {
+                if (ipHostInfo.AddressList[i].AddressFamily ==
+                  AddressFamily.InterNetwork)
+                {
+                    Ip = ipHostInfo.AddressList[i];
+                    break;
+                }
+            }
 
-            Ip = IPAddress.Parse("192.168.0.2");
-
+            Ip = IPAddress.Parse("192.168.0.3");
             _client.ConnectAsync(Ip, 52400);
         }
 
@@ -77,7 +76,7 @@ namespace TestingClient
                                     var f = FramesFactory.CreateObject<ServerApplication.Common.Client>(xml);
                                     str += string.Format(
                                         "User: {0}\nID: {1}\nLat: {2}\nLon: {3}\nMsg: {4}\n--------------------\n",
-                                                                f.UserName, f.ID, f.Lat, f.Lon, f.Message);
+                                        f.UserName, f.ID, f.Lat, f.Lon, f.Message);
                                 }
                             }
                         }
@@ -105,7 +104,6 @@ namespace TestingClient
 
                 var user = new ServerApplication.Common.Client()
                 {
-                    RoomId = window.RoomBox.Text,
                     Posision = new Posision(1.23 + count, 543.456 - count),
                     UserName = window.NameBox.Text,
                     Message = data,

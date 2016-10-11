@@ -25,7 +25,7 @@ namespace ServerApplication
 
             var ip = textBoxIP.Text;
             if (Server.isRunning) return;
-            server = new Server(ip, Consts.RecivingPort, this);
+            server = new Server(ip, 52400, this);
             server.StartListening();
         }
     }

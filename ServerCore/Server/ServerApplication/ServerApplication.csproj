@@ -76,7 +76,6 @@
     <Compile Include="API\Tools.cs" />
     <Compile Include="Common\Client.cs" />
     <Compile Include="Common\TcpPackage.cs" />
-    <Compile Include="Consts\Consts.cs" />
     <Compile Include="Frames\Client\ChatMessageClient.cs" />
     <Compile Include="Frames\Client\LoginClient.cs" />
     <Compile Include="Frames\FramesEnum.cs" />

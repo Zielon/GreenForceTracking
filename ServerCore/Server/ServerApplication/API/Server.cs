@@ -33,9 +33,9 @@ namespace ServerApplication
         private IPAddress ipAddress;
         private int port;
         private MainWindow window;
-        private Dictionary<string, Room> Rooms = new Dictionary<string, Room>();
         private static EventWaitHandle waitHandle = new AutoResetEvent(false);
         private List<TcpClient> clientList = new List<TcpClient>();
+        private Room Room = new Room();
 
         private IProgress<Message> progress;
         private IProgress<string> messages;
@@ -50,11 +50,7 @@ namespace ServerApplication
             progress = new Progress<Message>(s => container.RecivedMessages.Add(s));
             messages = new Progress<string>(s => this.window.textBox.AppendText(s + "\n"));
 
-            Console.WriteLine("Listening on port: " + port);
-
-            // TODO temporaty solution
-            var room = new Room("1");
-            Rooms.Add("1", room);
+            this.window.textBox.Text += $"Listening on port: {port}\n";
         }
 
         public void UpdatePlayers(object sender, NotifyCollectionChangedEventArgs e)
@@ -78,11 +74,9 @@ namespace ServerApplication
         {
             try
             {
-                var selectedRoom = Rooms[player.RoomId];
-
-                lock (selectedRoom.Players)
+                lock (Room.Players)
                 {
-                    foreach (var p in selectedRoom.Players)
+                    foreach (var p in Room.Players)
                     {
                         if (p.Connection == null) continue;
 
@@ -96,7 +90,7 @@ namespace ServerApplication
                         writer.AutoFlush = true;
 
                         var msg = FramesFactory.CreateXmlMessage(
-                            new RoomInfoServer() { Players = selectedRoom.Players.ToList() });
+                            new RoomInfoServer() { Players = Room.Players.ToList() });
 
                         writer.WriteLine(msg);
                     }
@@ -211,11 +205,11 @@ namespace ServerApplication
                 messages.Report(ex.Message + "\n" + ex.StackTrace);
             }
 
-            lock (Rooms[client.RoomId].Players)
+            lock (Room.Players)
             {
-                if (!Rooms[client.RoomId].Players.Contains(client))
+                if (!Room.Players.Contains(client))
                 {
-                    Rooms[client.RoomId].Players.Add(client);
+                    Room.Players.Add(client);
                     client.Connection = tcpClient;
                     client.Posision = new Posision(client.Lat, client.Lon);
                     client.ID = Tools.RandomString();
@@ -224,7 +218,7 @@ namespace ServerApplication
                 {
                     // Send new possision by INotifyPropertyChanged mechanism
                     // Check if posision was changed. If not dont update
-                    var player = Rooms[client.RoomId].Players.Single(p => p.UserName.Equals(client.UserName));
+                    var player = Room.Players.Single(p => p.UserName.Equals(client.UserName));
                     if (!client.Posision.Equals(player.Posision))
                         player.Posision = client.Posision;
                     player.Message = client.Message;
@@ -241,7 +235,7 @@ namespace ServerApplication
             });
 
             lock (container.RecivedMessages)
-                 if (container.RecivedMessages.Count > 14)
+                 if (container.RecivedMessages.Count > 17)
                     this.window.Dispatcher.Invoke(() => container.RecivedMessages.Remove(m => true));
         }
     }

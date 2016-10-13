@@ -17,17 +17,13 @@ namespace ServerApplication.Common
     /// </summary>
     public class Client : INotifyPropertyChanged, IFrame
     {
-
         public string ID { get; set; }
 
         public string UserName { get; set; }
 
-        public string RoomId { get; set; }
-
         public double Lat { get; set; }
 
         public double Lon { get; set; }
-
 
         [XmlIgnoreAttribute]
         public TcpClient Connection { get; set; }

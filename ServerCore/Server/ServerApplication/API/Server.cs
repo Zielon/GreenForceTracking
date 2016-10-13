@@ -72,9 +72,11 @@ namespace ServerApplication
 
         public void StartSending(Client player)
         {
-            try
+            lock (Room.Players)
             {
-                lock (Room.Players)
+                var notConnected = new List<Client>();
+
+                try
                 {
                     foreach (var p in Room.Players)
                     {
@@ -82,7 +84,7 @@ namespace ServerApplication
 
                         TcpClient client = p.Connection;
 
-                        if (!client.Connected) continue;
+                        if (!client.Connected) { notConnected.Add(p); continue; }
 
                         NetworkStream networkStream = client.GetStream();
                         StreamWriter writer = new StreamWriter(networkStream);
@@ -94,11 +96,14 @@ namespace ServerApplication
 
                         writer.WriteLine(msg);
                     }
+
+                    notConnected.ForEach(e => Room.Players.Remove(e));
                 }
-            }
-            catch (Exception ex)
-            {
-                messages.Report(ex.Message + "\n" + ex.StackTrace);
+                catch (Exception ex)
+                {
+                    messages.Report("StartSending()\n");
+                    messages.Report(ex.Message + "\n" + ex.StackTrace);
+                }
             }
         }
 
@@ -129,33 +134,25 @@ namespace ServerApplication
 
         private void Processing(TcpClient client)
         {
-            try
-            {
-                var localClient = client;
+            var localClient = client;
 
-                Task.Factory.StartNew(async () =>
+            Task.Factory.StartNew(async () =>
+            {
+                NetworkStream networkStream = localClient.GetStream();
+                StreamReader reader = new StreamReader(networkStream, true);
+
+                while (true)
                 {
-                    NetworkStream networkStream = localClient.GetStream();
-                    StreamReader reader = new StreamReader(networkStream, true);
+                    string message = await reader.ReadLineAsync();
 
-                    while (true)
+                    if (message != null)
                     {
-                        string message = await reader.ReadLineAsync();
-
-                        if (message != null)
-                        {
-                            ParseMessage(message, localClient);
-                        }
-                        else break;
+                        ParseMessage(message, localClient);
                     }
+                    else break;
+                }
 
-                }, TaskCreationOptions.LongRunning);
-
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex.Message + "\n" + ex.StackTrace);
-            }
+            }, TaskCreationOptions.LongRunning);
         }
 
         private void ParseMessage(string msg, TcpClient tcpClient)
@@ -205,6 +202,8 @@ namespace ServerApplication
                 messages.Report(ex.Message + "\n" + ex.StackTrace);
             }
 
+            Client playerInTheRoom = null;
+
             lock (Room.Players)
             {
                 if (!Room.Players.Contains(client))
@@ -213,22 +212,20 @@ namespace ServerApplication
                     client.Connection = tcpClient;
                     client.Posision = new Posision(client.Lat, client.Lon);
                     client.ID = Tools.RandomString();
+                    playerInTheRoom = client;
                 }
                 else
                 {
-                    // Send new possision by INotifyPropertyChanged mechanism
-                    // Check if posision was changed. If not dont update
-                    var player = Room.Players.Single(p => p.UserName.Equals(client.UserName));
-                    if (!client.Posision.Equals(player.Posision))
-                        player.Posision = client.Posision;
-                    player.Message = client.Message;
+                    playerInTheRoom = Room.Players.Single(p => p.UserName.Equals(client.UserName));
+                    if (!client.Posision.Equals(playerInTheRoom.Posision))
+                        playerInTheRoom.Posision = client.Posision;
+                    playerInTheRoom.Message = client.Message;
                 }
             }
 
-            // Add message to container
             progress.Report(new Message()
             {
-                User = client.UserName,
+                User = playerInTheRoom.UserName,
                 Adress = tcpClient.Client.RemoteEndPoint.ToString(),
                 Time = DateTime.Now,
                 RecivedData = client.Message

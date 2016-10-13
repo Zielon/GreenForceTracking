@@ -35,7 +35,7 @@ namespace TestingClient
                 }
             }
 
-            Ip = IPAddress.Parse("192.168.0.3");
+            //Ip = IPAddress.Parse("192.168.0.2");
             _client.ConnectAsync(Ip, 52400);
         }
 
@@ -86,9 +86,7 @@ namespace TestingClient
                 }
                 catch (Exception ex)
                 {
-                    update.Report(ex.Message);
-
-                    if (_client.Connected) _client.Close();
+                    update.Report(ex.Message + "\n" + ex.StackTrace);
                 }
             }
         }
@@ -117,7 +115,7 @@ namespace TestingClient
             }
             catch (Exception ex)
             {
-                window.textBoxResponse.Text = ex.Message;
+                window.textBoxResponse.Text = ex.Message + "\n" + ex.StackTrace;
             }
         }
     }

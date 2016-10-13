@@ -13,7 +13,6 @@ namespace ServerApplication
     public partial class MainWindow : Window
     {
         private Server server;
-        public static int dsfsdf;
 
         public MainWindow()
         {

@@ -76,10 +76,11 @@ namespace ServerApplication
             {
                 var notConnected = new List<Client>();
 
-                try
+                foreach (var p in Room.Players)
                 {
-                    foreach (var p in Room.Players)
+                    try
                     {
+
                         if (p.Connection == null) continue;
 
                         TcpClient client = p.Connection;
@@ -96,14 +97,16 @@ namespace ServerApplication
 
                         writer.WriteLine(msg);
                     }
+                    catch (Exception ex)
+                    {
+                        notConnected.Add(p);
+                        messages.Report("Method: StartSending()\n");
+                        messages.Report($"User: {p.UserName}\n");
+                        messages.Report(ex.Message + "\n" + ex.StackTrace);
+                    }
+                }
 
-                    notConnected.ForEach(e => Room.Players.Remove(e));
-                }
-                catch (Exception ex)
-                {
-                    messages.Report("StartSending()\n");
-                    messages.Report(ex.Message + "\n" + ex.StackTrace);
-                }
+                notConnected.ForEach(e => { Room.Players.Remove(e); messages.Report($"{e.UserName} has been deleted\n"); });
             }
         }
 
@@ -213,6 +216,8 @@ namespace ServerApplication
                     client.Posision = new Posision(client.Lat, client.Lon);
                     client.ID = Tools.RandomString();
                     playerInTheRoom = client;
+
+                    messages.Report($"New player {client.UserName}");
                 }
                 else
                 {

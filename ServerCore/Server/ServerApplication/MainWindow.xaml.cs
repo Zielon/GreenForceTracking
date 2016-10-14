@@ -1,8 +1,7 @@
-﻿using System;
-using System.IO;
-using System.Text;
+﻿using Library.Server;
+using Library.API;
 using System.Windows;
-using System.Windows.Controls;
+using System.Windows.Media;
 
 
 namespace ServerApplication
@@ -12,7 +11,7 @@ namespace ServerApplication
     /// </summary>
     public partial class MainWindow : Window
     {
-        private Server server;
+        private static bool Running;
 
         public MainWindow()
         {
@@ -21,11 +20,24 @@ namespace ServerApplication
 
         private void button_Click(object sender, RoutedEventArgs e)
         {
+            if (Running) return;
 
+            Running = true;
             var ip = textBoxIP.Text;
-            if (Server.isRunning) return;
-            server = new Server(ip, 52400, this);
+
+            var server = new Server(ip, 52400);
+
+            dataGrid.DataContext = server.Container.RecivedMessages;
+
+            // Events setup
+            server.ContainerEvent += (s, a) => { if (a.Clean) Dispatcher.Invoke(() => server.Container.RecivedMessages.Remove(m => a.Clean)); };
+            server.ContainerEvent += (s, a) => { if (a.Message != null) Dispatcher.Invoke(() => server.Container.RecivedMessages.Add(a.Message)); };
+            server.MessageEvent += (s, a) => Dispatcher.Invoke(() => textBox.AppendText(a.Message));
+            server.WindowEvent += (s, a) => ServerStatus.Content = a.Running;
+            server.WindowEvent += (s, a) => { if (a.ChangeBrush) ServerStatus.Foreground = new SolidColorBrush(Colors.Green); };
+
             server.StartListening();
+
         }
     }
 }

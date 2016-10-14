@@ -4,9 +4,9 @@ using System.Net;
 using System.Net.Sockets;
 using System.Threading.Tasks;
 using System.Xml;
-using ServerApplication.Frames;
-using ServerApplication.Frames.Factory;
-using ServerApplication.Common;
+using Library.Common;
+using Library.Frames;
+using Library.Frames.Factory;
 
 namespace TestingClient
 {
@@ -73,7 +73,7 @@ namespace TestingClient
                                     }
 
                                     var xml = sw.ToString();
-                                    var f = FramesFactory.CreateObject<ServerApplication.Common.Client>(xml);
+                                    var f = FramesFactory.CreateObject<Library.Common.Client>(xml);
                                     str += string.Format(
                                         "User: {0}\nID: {1}\nLat: {2}\nLon: {3}\nMsg: {4}\n--------------------\n",
                                         f.UserName, f.ID, f.Lat, f.Lon, f.Message);
@@ -100,7 +100,7 @@ namespace TestingClient
 
                 writer.AutoFlush = true;
 
-                var user = new ServerApplication.Common.Client()
+                var user = new Library.Common.Client()
                 {
                     Posision = new Posision(1.23 + count, 543.456 - count),
                     UserName = window.NameBox.Text,

@@ -7,21 +7,27 @@ using System.Xml;
 using Library.Common;
 using Library.Frames;
 using Library.Frames.Factory;
+using System.Threading;
 
 namespace TestingClient
 {
     class Client
     {
-        public static MainWindow window;
-        public static IPAddress Ip;
-        public static bool isConnedted = false;
-        private static double count = 1.1;
+        public MainWindow Window;
+        public IPAddress Ip;
+        public bool isConnedted = false;
+        public IProgress<string> Progress;
 
-        static TcpClient _client;
+        private double count = 1.1;
+        private ManualResetEvent waitForSocket = new ManualResetEvent(true);
+        private TcpClient _client;
 
-        static Client()
+        public Client(Progress<string> progress, MainWindow window)
         {
             _client = new TcpClient();
+
+            this.Window = window;
+            this.Progress = progress;
 
             IPHostEntry ipHostInfo = Dns.GetHostEntry("kornik.ddns.net");
 
@@ -39,7 +45,7 @@ namespace TestingClient
             _client.ConnectAsync(Ip, 52400);
         }
 
-        public static async void Process(IProgress<string> update)
+        public async void StartProcessing()
         {
             while (true)
             {
@@ -81,20 +87,22 @@ namespace TestingClient
                             }
                         }
 
-                        update.Report(str);
+                        Progress.Report(str);
                     }
                 }
                 catch (Exception ex)
                 {
-                    update.Report(ex.Message + "\n" + ex.StackTrace);
+                    Progress.Report(ex.Message + "\n" + ex.StackTrace);
                 }
             }
         }
 
-        public static async Task Send(string data)
+        public async Task Send(string data)
         {
             try
             {
+                waitForSocket.Reset();
+
                 NetworkStream networkStream = _client.GetStream();
                 StreamWriter writer = new StreamWriter(networkStream);
 
@@ -103,7 +111,7 @@ namespace TestingClient
                 var user = new Library.Common.Client()
                 {
                     Posision = new Posision(1.23 + count, 543.456 - count),
-                    UserName = window.NameBox.Text,
+                    UserName = Window.NameBox.Text,
                     Message = data,
                     FrameType = Frames.Player
                 };
@@ -112,10 +120,12 @@ namespace TestingClient
 
                 await writer.WriteLineAsync(msg);
                 count += 11.6;
+
+                waitForSocket.Set();
             }
             catch (Exception ex)
             {
-                window.textBoxResponse.Text = ex.Message + "\n" + ex.StackTrace;
+                Window.textBoxResponse.Text = ex.Message + "\n" + ex.StackTrace;
             }
         }
     }

@@ -14,30 +14,31 @@ namespace TestingClient
     /// </summary>
     public partial class MainWindow : Window
     {
+        private Client Client;
+
         public MainWindow()
         {
             InitializeComponent();
+            Client = new Client(new Progress<string>(s => this.textBoxResponse.Text = s), this);
         }
 
         private async void buttonSend_Click(object sender, RoutedEventArgs e)
         {
-            try{
+            try
+            {
                 await Client.Send(this.textBox.Text);
             }
-            catch (Exception ex){
+            catch (Exception ex)
+            {
                 textBoxResponse.Text = ex.Message;
             }
         }
 
         private void button_Click(object sender, RoutedEventArgs e)
         {
-            Client.window = this;
             label.Content = "Ready !";
             label.Foreground = new SolidColorBrush(Colors.Green);
-
-            var progress = new Progress<string>(s => this.textBoxResponse.Text = s);
-
-            Task.Factory.StartNew(() => Client.Process(progress), TaskCreationOptions.LongRunning);
+            Client.StartProcessing();
         }
     }
 }

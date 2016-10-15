@@ -6,7 +6,6 @@ using System.Net;
 using System.Net.Sockets;
 using System.Threading.Tasks;
 using System.Xml;
-using System.Collections.Specialized;
 using System.Threading;
 using System.ComponentModel;
 using Library.Frames.Server;
@@ -57,7 +56,6 @@ namespace Library.Server
                 {
                     try
                     {
-
                         if (p.Connection == null) continue;
 
                         TcpClient client = p.Connection;
@@ -69,8 +67,7 @@ namespace Library.Server
 
                         writer.AutoFlush = true;
 
-                        var msg = FramesFactory.CreateXmlMessage(
-                            new RoomInfoServer() { Players = Room.Players.ToList() });
+                        var msg = FramesFactory.CreateXmlMessage(new RoomInfoServer() { Players = new List<Client> { player } });
 
                         writer.WriteLine(msg);
                     }

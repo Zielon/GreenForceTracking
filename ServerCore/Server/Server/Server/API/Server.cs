@@ -56,7 +56,7 @@ namespace Library.Server
                 {
                     try
                     {
-                        if (p.Connection == null) continue;
+                        if (p.Connection == null || p.Equals(player)) continue;
 
                         TcpClient client = p.Connection;
 

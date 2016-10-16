@@ -60,12 +60,9 @@ namespace TestingClient
 
                     if (message != null)
                     {
-                        XmlDocument doc = new XmlDocument();
-                        doc.LoadXml(message);
-                        XmlNodeList elements = doc.GetElementsByTagName("Players");
                         string str = string.Empty;
 
-                        foreach (XmlNode players in elements)
+                        foreach (XmlNode players in GetNodeList(message, "Players"))
                         {
                             foreach (XmlNode player in players)
                             {
@@ -97,6 +94,13 @@ namespace TestingClient
             }
         }
 
+        private XmlNodeList GetNodeList(string xml, string tagName)
+        {
+            XmlDocument doc = new XmlDocument();
+            doc.LoadXml(xml);
+            return doc.GetElementsByTagName(tagName);
+        }
+
         public async Task<bool> Login(string user, string password)
         {
             NetworkStream networkStream = _client.GetStream();
@@ -106,8 +110,8 @@ namespace TestingClient
 
             var msg = new Library.Frames.Client.SystemUser
             {
-                Login = Window.NameBox.Text,
-                Password = Window.PasswordBox.Text
+                Login = user,
+                Password = password
             };
 
             await writer.WriteLineAsync(FramesFactory.CreateXmlMessage(msg));
@@ -116,9 +120,7 @@ namespace TestingClient
 
             string logger = await reader.ReadLineAsync();
 
-            XmlDocument doc = new XmlDocument();
-            doc.LoadXml(logger);
-            XmlNodeList elements = doc.GetElementsByTagName("LoggedIn");
+            XmlNodeList elements = GetNodeList(logger, "LoggedIn");
 
             return bool.Parse(elements[0].InnerText);
         }

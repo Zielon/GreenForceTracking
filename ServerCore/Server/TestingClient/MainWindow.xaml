@@ -10,20 +10,20 @@
         <Viewbox Stretch="Fill">
             <Grid Height="222" Width="489">
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="365*"/>
-                    <ColumnDefinition Width="124*"/>
+                    <ColumnDefinition/>
+                    <ColumnDefinition Width="0*"/>
                 </Grid.ColumnDefinitions>
-                <Button x:Name="button" Content="Login" Margin="352,117,0,0" VerticalAlignment="Top" Click="button_Click" HorizontalAlignment="Left" Width="120" Grid.ColumnSpan="2"/>
-                <TextBox x:Name="textBox" HorizontalAlignment="Left" Height="162" Margin="12,22,0,0" TextWrapping="Wrap" Text="#Message" VerticalAlignment="Top" Width="151" Background="#FFF5CECE"/>
-                <Button x:Name="buttonSend" Content="Send message" HorizontalAlignment="Left" Margin="12,189,0,0" VerticalAlignment="Top" Width="151" Click="buttonSend_Click"/>
-                <Label x:Name="label" Content="Empty" HorizontalAlignment="Left" Margin="228,189,0,0" VerticalAlignment="Top" Width="46" TextOptions.TextHintingMode="Fixed"/>
-                <TextBox x:Name="textBoxResponse" HorizontalAlignment="Left" Height="162" Margin="185,22,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="151" Background="#FFF5CECE" FontSize="8"/>
-                <Label x:Name="label1" Content="Message" HorizontalAlignment="Left" Margin="12,0,0,0" VerticalAlignment="Top"/>
-                <Label x:Name="label2" Content="Recived" HorizontalAlignment="Left" Margin="185,0,0,0" VerticalAlignment="Top"/>
-                <TextBox x:Name="NameBox" HorizontalAlignment="Left" Height="23" Margin="352,22,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="120" Grid.ColumnSpan="2" Text="root"/>
-                <Label x:Name="label3" Content="Name" HorizontalAlignment="Left" Margin="352,0,0,0" VerticalAlignment="Top" Grid.ColumnSpan="2" Width="34" Height="23" FontSize="8"/>
-                <Label x:Name="label3_Copy" Content="Password" HorizontalAlignment="Left" Margin="352,50,0,0" VerticalAlignment="Top" Grid.ColumnSpan="2" Width="83" Height="23" FontSize="8"/>
-                <TextBox x:Name="PasswordBox" HorizontalAlignment="Left" Height="23" Margin="352,73,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="120" Grid.ColumnSpan="2" Text="123"/>
+                <Button x:Name="button" Content="Login" Margin="352,117,0,0" VerticalAlignment="Top" Click="button_Click" HorizontalAlignment="Left" Width="120" FontFamily="Consolas" Height="18"/>
+                <TextBox x:Name="textBox" HorizontalAlignment="Left" Height="162" Margin="12,22,0,0" TextWrapping="Wrap" Text="#Message" VerticalAlignment="Top" Width="151" Background="#FFF5CECE" FontFamily="Consolas"/>
+                <Button x:Name="buttonSend" Content="Send message" HorizontalAlignment="Left" Margin="12,189,0,0" VerticalAlignment="Top" Width="151" Click="buttonSend_Click" FontFamily="Consolas" Height="18"/>
+                <Label x:Name="label" Content="Empty" HorizontalAlignment="Left" Margin="228,189,0,0" VerticalAlignment="Top" Width="46" TextOptions.TextHintingMode="Fixed" FontFamily="Consolas" Height="24"/>
+                <TextBox x:Name="textBoxResponse" HorizontalAlignment="Left" Height="162" Margin="185,22,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="151" Background="#FFF5CECE" FontSize="8" FontFamily="Consolas"/>
+                <Label x:Name="label1" Content="Message" HorizontalAlignment="Left" Margin="12,0,0,0" VerticalAlignment="Top" FontFamily="Consolas" Height="24" Width="56"/>
+                <Label x:Name="label2" Content="Recived" HorizontalAlignment="Left" Margin="185,0,0,0" VerticalAlignment="Top" FontFamily="Consolas" Height="24" Width="56"/>
+                <TextBox x:Name="NameBox" HorizontalAlignment="Left" Height="23" Margin="352,22,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="120" Text="root" FontFamily="Consolas"/>
+                <Label x:Name="label3" Content="Name" HorizontalAlignment="Left" Margin="352,0,0,0" VerticalAlignment="Top" Width="34" Height="23" FontSize="8" FontFamily="Consolas"/>
+                <Label x:Name="label3_Copy" Content="Password" HorizontalAlignment="Left" Margin="352,55,0,0" VerticalAlignment="Top" Width="83" Height="23" FontSize="8" FontFamily="Consolas"/>
+                <PasswordBox x:Name="passwordBox" HorizontalAlignment="Left" Margin="352,78,0,0" VerticalAlignment="Top" Width="120" Height="22" FontFamily="Consolas" Password="123"/>
 
             </Grid>
         </Viewbox>

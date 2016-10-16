@@ -34,7 +34,7 @@ namespace TestingClient
 
         private void button_Click(object sender, RoutedEventArgs e)
         {
-            Client.Login(NameBox.Text, PasswordBox.Text).ContinueWith(
+            Client.Login(NameBox.Text, passwordBox.Password).ContinueWith(
             t =>
             {
                 if (!t.Result) return;

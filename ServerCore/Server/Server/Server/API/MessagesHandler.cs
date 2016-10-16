@@ -106,19 +106,20 @@ namespace Server.API
             Client playerInTheRoom = null;
 
             client = FramesFactory.CreateObject<Client>(xml);
-            client.PropertyChanged += Server.ClientPropertyChanged;
-            client.Posision = new Posision(client.Lat, client.Lon);
 
             if (!IsLogged(client)) return;
+
+            var posision = new Posision(client.Lat, client.Lon);
 
             lock (Server.Room.Players)
             {
                 if (!Server.Room.Players.Contains(client))
                 {
                     Server.Room.Players.Add(client);
+                    client.PropertyChanged += Server.ClientPropertyChanged;
                     client.Connection = tcpClient;
-                    client.Posision = new Posision(client.Lat, client.Lon);
                     client.ID = Tools.RandomString();
+                    client.Posision = posision; // Notify property changed
                     playerInTheRoom = client;
 
                     Server.OnMessageChange(new MessageEventArgs { Message = $"New player {client.Login}\n" });
@@ -126,8 +127,8 @@ namespace Server.API
                 else
                 {
                     playerInTheRoom = Server.Room.Players.Single(p => p.Login.Equals(client.Login));
-                    if (!client.Posision.Equals(playerInTheRoom.Posision))
-                        playerInTheRoom.Posision = client.Posision;
+                    if (!playerInTheRoom.Posision.Equals(posision))
+                        playerInTheRoom.Posision = posision; // Notify property changed
                     playerInTheRoom.Message = client.Message;
                 }
             }

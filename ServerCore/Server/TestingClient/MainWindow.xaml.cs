@@ -41,6 +41,7 @@ namespace TestingClient
                 label.Content = "Ready !";
                 label.Foreground = new SolidColorBrush(Colors.Green);
                 buttonSend.IsEnabled = true;
+                button.IsEnabled = false;
                 Client.StartProcessing();
             },
             TaskScheduler.FromCurrentSynchronizationContext());

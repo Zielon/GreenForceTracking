@@ -41,7 +41,7 @@ namespace TestingClient
                 }
             }
 
-            Ip = IPAddress.Parse("192.168.0.2");
+            //Ip = IPAddress.Parse("192.168.0.2");
             _client.ConnectAsync(Ip, 52400);
         }
 

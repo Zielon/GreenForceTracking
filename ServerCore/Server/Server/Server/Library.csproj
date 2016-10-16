@@ -45,6 +45,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="API\MessagesHandler.cs" />
     <Compile Include="API\Server.cs" />
     <Compile Include="API\Tools.cs" />
     <Compile Include="Common\Client.cs" />
@@ -53,15 +54,14 @@
     <Compile Include="Events\ContainerEventArgs.cs" />
     <Compile Include="Events\MessageEventArgs.cs" />
     <Compile Include="Events\WindowEventArgs.cs" />
-    <Compile Include="Frames\Client\LoginClient.cs" />
+    <Compile Include="Frames\Client\SystemUser.cs" />
     <Compile Include="Frames\FramesEnum.cs" />
     <Compile Include="Frames\FramesFactory.cs" />
     <Compile Include="Frames\IFrame.cs" />
-    <Compile Include="Frames\Server\ListOfRoomsServer.cs" />
-    <Compile Include="Frames\Server\LoginServer.cs" />
     <Compile Include="Frames\Server\RoomInfoServer.cs" />
     <Compile Include="Messages\Message.cs" />
     <Compile Include="Messages\MessageContainer.cs" />
+    <Compile Include="Mock\DataBaseMock.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

@@ -1,19 +1,21 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Net;
 using System.Net.Sockets;
 using System.Threading.Tasks;
-using System.Xml;
 using System.Threading;
 using System.ComponentModel;
 using Library.Frames.Server;
 using Library.Common;
 using Library.Frames.Factory;
-using Library.API;
 using Library.Events;
 using Library.Messages;
+using Server.API;
+using Library.Frames;
+using Library.Frames.Client;
+using Server.Mock;
+using System.Linq;
 
 namespace Library.Server
 {
@@ -23,30 +25,49 @@ namespace Library.Server
         public EventHandler<MessageEventArgs> MessageEvent;
         public EventHandler<ContainerEventArgs> ContainerEvent;
         public EventHandler<WindowEventArgs> WindowEvent;
+        public Room Room = new Room();
 
         private IPAddress ipAddress;
         private int port;
         private static EventWaitHandle waitHandle = new AutoResetEvent(false);
         private List<TcpClient> clientList = new List<TcpClient>();
-        private Room Room = new Room();
+        private MessagesHandler FramesHandler;
 
         public Server(string ipAddress, int port)
         {
             this.ipAddress = IPAddress.Parse(ipAddress);
             this.port = port;
             Container = new MessagesContainer();
+            FramesHandler = new MessagesHandler(this);
         }
 
-        void ClientPropertyChanged(object sender, PropertyChangedEventArgs e)
+        public void ClientPropertyChanged(object sender, PropertyChangedEventArgs e)
         {
             Client item = sender as Client;
+            SystemUser login = sender as SystemUser;
+
             if (item != null)
             {
-                Task.Factory.StartNew(() => StartSending(item));
+                Task.Factory.StartNew(() => StartSending(
+                    new RoomInfoServer()
+                    {
+                        Players = new List<Client> { item },
+                        Login = item.Login
+                    }));
+            }
+            else if (login != null)
+            {
+                Task.Factory.StartNew(() =>
+                {
+                    NetworkStream networkStream = login.Connection.GetStream();
+                    StreamWriter writer = new StreamWriter(networkStream);
+                    writer.AutoFlush = true;
+                    writer.WriteLine(FramesFactory.CreateXmlMessage(login));
+                });
             }
         }
 
-        public void StartSending(Client player)
+        public void StartSending(IFrame frame)
         {
             lock (Room.Players)
             {
@@ -56,7 +77,7 @@ namespace Library.Server
                 {
                     try
                     {
-                        if (p.Connection == null || p.Equals(player)) continue;
+                        if (p.Connection == null || p.Login.Equals(frame.Login)) continue;
 
                         TcpClient client = p.Connection;
 
@@ -67,7 +88,7 @@ namespace Library.Server
 
                         writer.AutoFlush = true;
 
-                        var msg = FramesFactory.CreateXmlMessage(new RoomInfoServer() { Players = new List<Client> { player } });
+                        var msg = FramesFactory.CreateXmlMessage(frame);
 
                         writer.WriteLine(msg);
                     }
@@ -75,16 +96,17 @@ namespace Library.Server
                     {
                         notConnected.Add(p);
                         OnMessageChange(new MessageEventArgs { Message = "Method: StartSending()\n" });
-                        OnMessageChange(new MessageEventArgs { Message = $"User: {p.UserName}\n" });
+                        OnMessageChange(new MessageEventArgs { Message = $"User: {p.Login}\n" });
                         OnMessageChange(new MessageEventArgs { Message = ex.Message + "\n" + ex.StackTrace });
                     }
                 }
 
-                notConnected.ForEach(e =>
+                notConnected.ForEach((Action<Client>)(e =>
                 {
                     Room.Players.Remove(e);
-                    OnMessageChange(new MessageEventArgs { Message = $"{e.UserName} has been deleted\n" });
-                });
+                    DataBaseMock.Users.Single((Func<SystemUser, bool>)(s => s.Login.Equals(e.Login))).LoggedIn = false;
+                    OnMessageChange(new MessageEventArgs { Message = $"{e.Login} has been deleted\n" });
+                }));
             }
         }
 
@@ -126,7 +148,7 @@ namespace Library.Server
 
                     if (message != null)
                     {
-                        ParseMessage(message, localClient);
+                        FramesHandler.ParseMessage(message, localClient);
                     }
                     else break;
                 }
@@ -134,102 +156,17 @@ namespace Library.Server
             }, TaskCreationOptions.LongRunning);
         }
 
-        private void ParseMessage(string msg, TcpClient tcpClient)
-        {
-            XmlDocument doc = new XmlDocument();
-            Client client = null;
-
-            try
-            {
-                doc.LoadXml(msg);
-
-                XmlNodeList frame = doc.GetElementsByTagName("FrameType");
-                var type = Tools.ParseEnum<Frames.Frames>(frame.Item(0).InnerText);
-
-                string elements = string.Empty;
-
-                foreach (XmlNode player in doc.GetElementsByTagName("Frame"))
-                    using (var sw = new StringWriter())
-                    {
-                        string xml = string.Empty;
-
-                        using (var xw = new XmlTextWriter(sw))
-                        {
-                            xw.Formatting = Formatting.Indented;
-                            xw.Indentation = 2;
-                            player.WriteContentTo(xw);
-                            xml = sw.ToString();
-                        }
-
-                        switch (type)
-                        {
-                            case Frames.Frames.Player:
-                                client = FramesFactory.CreateObject<Client>(xml);
-                                client.PropertyChanged += ClientPropertyChanged;
-                                client.Posision = new Posision(client.Lat, client.Lon);
-                                break;
-                            case Frames.Frames.Login:
-                                break;
-                            default:
-                                throw new InvalidEnumArgumentException();
-                        }
-                    }
-            }
-            catch (Exception ex)
-            {
-                OnMessageChange(new MessageEventArgs { Message = ex.Message + "\n" + ex.StackTrace });
-            }
-
-            Client playerInTheRoom = null;
-
-            lock (Room.Players)
-            {
-                if (!Room.Players.Contains(client))
-                {
-                    Room.Players.Add(client);
-                    client.Connection = tcpClient;
-                    client.Posision = new Posision(client.Lat, client.Lon);
-                    client.ID = Tools.RandomString();
-                    playerInTheRoom = client;
-
-                    OnMessageChange(new MessageEventArgs { Message = $"New player {client.UserName}\n" });
-                }
-                else
-                {
-                    playerInTheRoom = Room.Players.Single(p => p.UserName.Equals(client.UserName));
-                    if (!client.Posision.Equals(playerInTheRoom.Posision))
-                        playerInTheRoom.Posision = client.Posision;
-                    playerInTheRoom.Message = client.Message;
-                }
-            }
-
-            OnContainerChange(new ContainerEventArgs
-            {
-                Message = new Message()
-                {
-                    User = playerInTheRoom.UserName,
-                    Adress = tcpClient.Client.RemoteEndPoint.ToString(),
-                    Time = DateTime.Now,
-                    RecivedData = client.Message
-                }
-            });
-
-            lock (Container.RecivedMessages)
-                 if (Container.RecivedMessages.Count > 17)
-                    OnContainerChange(new ContainerEventArgs { Clean = true });
-        }
-
-        private void OnMessageChange(MessageEventArgs args)
+        public void OnMessageChange(MessageEventArgs args)
         {
             MessageEvent?.Invoke(this, args);
         }
 
-        private void OnContainerChange(ContainerEventArgs args)
+        public void OnContainerChange(ContainerEventArgs args)
         {
             ContainerEvent?.Invoke(this, args);
         }
 
-        private void OnWindowChange(WindowEventArgs args)
+        public void OnWindowChange(WindowEventArgs args)
         {
             WindowEvent?.Invoke(this, args);
         }

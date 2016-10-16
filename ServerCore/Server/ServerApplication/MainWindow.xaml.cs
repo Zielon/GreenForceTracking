@@ -1,5 +1,4 @@
-﻿using Library.Server;
-using Library.API;
+﻿using Library.API;
 using System.Windows;
 using System.Windows.Media;
 
@@ -25,7 +24,7 @@ namespace ServerApplication
             Running = true;
             var ip = textBoxIP.Text;
 
-            var server = new Server(ip, 52400);
+            var server = new Library.Server.Server(ip, 52400);
 
             dataGrid.DataContext = server.Container.RecivedMessages;
 
@@ -34,7 +33,7 @@ namespace ServerApplication
             server.ContainerEvent += (s, a) => { if (a.Message != null) Dispatcher.Invoke(() => server.Container.RecivedMessages.Add(a.Message)); };
             server.MessageEvent += (s, a) => Dispatcher.Invoke(() => textBox.AppendText(a.Message));
             server.WindowEvent += (s, a) => ServerStatus.Content = a.Running;
-            server.WindowEvent += (s, a) => { if (a.ChangeBrush) ServerStatus.Foreground = new SolidColorBrush(Colors.Green); };
+            server.WindowEvent += (s, a) => { if (a.ChangeBrush) ServerStatus.Foreground = new SolidColorBrush(Colors.Green); button.IsEnabled = false; };
 
             server.StartListening();
 

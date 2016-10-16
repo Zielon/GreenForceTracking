@@ -41,7 +41,7 @@ namespace TestingClient
                 }
             }
 
-            //Ip = IPAddress.Parse("192.168.0.2");
+            Ip = IPAddress.Parse("192.168.0.2");
             _client.ConnectAsync(Ip, 52400);
         }
 
@@ -82,7 +82,7 @@ namespace TestingClient
                                     var f = FramesFactory.CreateObject<Library.Common.Client>(xml);
                                     str += string.Format(
                                         "User: {0}\nID: {1}\nLat: {2}\nLon: {3}\nMsg: {4}\n--------------------\n",
-                                        f.UserName, f.ID, f.Lat, f.Lon, f.Message);
+                                        f.Login, f.ID, f.Lat, f.Lon, f.Message);
                                 }
                             }
                         }
@@ -97,6 +97,32 @@ namespace TestingClient
             }
         }
 
+        public async Task<bool> Login(string user, string password)
+        {
+            NetworkStream networkStream = _client.GetStream();
+            StreamWriter writer = new StreamWriter(networkStream);
+
+            writer.AutoFlush = true;
+
+            var msg = new Library.Frames.Client.SystemUser
+            {
+                Login = Window.NameBox.Text,
+                Password = Window.PasswordBox.Text
+            };
+
+            await writer.WriteLineAsync(FramesFactory.CreateXmlMessage(msg));
+
+            StreamReader reader = new StreamReader(networkStream);
+
+            string logger = await reader.ReadLineAsync();
+
+            XmlDocument doc = new XmlDocument();
+            doc.LoadXml(logger);
+            XmlNodeList elements = doc.GetElementsByTagName("LoggedIn");
+
+            return bool.Parse(elements[0].InnerText);
+        }
+
         public async Task Send(string data)
         {
             try
@@ -107,11 +133,12 @@ namespace TestingClient
                 StreamWriter writer = new StreamWriter(networkStream);
 
                 writer.AutoFlush = true;
+                Window.textBoxResponse.Clear();
 
                 var user = new Library.Common.Client()
                 {
                     Posision = new Posision(1.23 + count, 543.456 - count),
-                    UserName = Window.NameBox.Text,
+                    Login = Window.NameBox.Text,
                     Message = data,
                     FrameType = Frames.Player
                 };

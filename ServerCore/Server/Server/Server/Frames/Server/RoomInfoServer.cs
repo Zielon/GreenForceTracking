@@ -11,6 +11,8 @@ namespace Library.Frames.Server
     {
         public Frames FrameType { get; set; }
 
+        public string Login { get; set; }
+
         public List<Common.Client> Players { get; set; }
 
         public RoomInfoServer() { FrameType = Frames.RoomInfo; }

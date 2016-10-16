@@ -1,13 +1,7 @@
 ﻿using Library.Frames;
-using System;
-using System.Collections.Generic;
 using System.ComponentModel;
-using System.Linq;
-using System.Net;
 using System.Net.Sockets;
 using System.Runtime.CompilerServices;
-using System.Text;
-using System.Threading.Tasks;
 using System.Xml.Serialization;
 
 namespace Library.Common
@@ -17,17 +11,15 @@ namespace Library.Common
     /// </summary>
     public class Client : INotifyPropertyChanged, IFrame
     {
-
         public string ID { get; set; }
 
-        public string UserName { get; set; }
+        public string Login { get; set; }
 
         public string RoomId { get; set; }
 
         public double Lat { get; set; }
 
         public double Lon { get; set; }
-
 
         [XmlIgnoreAttribute]
         public TcpClient Connection { get; set; }
@@ -67,13 +59,13 @@ namespace Library.Common
         {
             var client = obj as Client;
             if (client != null)
-                return client.UserName.Equals(UserName);
+                return client.Login.Equals(Login);
             else return false;
         }
 
         public override int GetHashCode()
         {
-            return UserName.GetHashCode();
+            return Login.GetHashCode();
         }
 
         public Client() { }

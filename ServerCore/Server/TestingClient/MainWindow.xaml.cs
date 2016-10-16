@@ -1,10 +1,7 @@
 ﻿using System;
-using System.Net;
-using System.Net.Sockets;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Media;
-
 
 
 namespace TestingClient
@@ -19,6 +16,7 @@ namespace TestingClient
         public MainWindow()
         {
             InitializeComponent();
+            buttonSend.IsEnabled = false;
             Client = new Client(new Progress<string>(s => this.textBoxResponse.Text = s), this);
         }
 
@@ -36,9 +34,16 @@ namespace TestingClient
 
         private void button_Click(object sender, RoutedEventArgs e)
         {
-            label.Content = "Ready !";
-            label.Foreground = new SolidColorBrush(Colors.Green);
-            Client.StartProcessing();
+            Client.Login(NameBox.Text, PasswordBox.Text).ContinueWith(
+            t =>
+            {
+                if (!t.Result) return;
+                label.Content = "Ready !";
+                label.Foreground = new SolidColorBrush(Colors.Green);
+                buttonSend.IsEnabled = true;
+                Client.StartProcessing();
+            },
+            TaskScheduler.FromCurrentSynchronizationContext());
         }
     }
 }

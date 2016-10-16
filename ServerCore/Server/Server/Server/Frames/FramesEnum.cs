@@ -14,9 +14,6 @@ namespace Library.Frames
         [XmlEnum(Name = "Disconnect")]
         Disconnect,
 
-        [XmlEnum(Name = "Chatmessage")]
-        Chatmessage,
-
         [XmlEnum(Name = "RoomInfo")]
         RoomInfo,
 

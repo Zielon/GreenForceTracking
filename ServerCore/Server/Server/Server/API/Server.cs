@@ -92,12 +92,18 @@ namespace Library.Server
 
                         writer.WriteLine(msg);
                     }
+
+                    catch (SocketException)
+                    {
+                        OnMessageChange(new MessageEventArgs { Message = $"User: {p.Login} lost connection !\n" });
+                    }
                     catch (Exception ex)
                     {
+                        OnMessageChange(new MessageEventArgs { Message = ex.Message + "\n" + ex.StackTrace + "\n" });
+                    }
+                    finally
+                    {
                         notConnected.Add(p);
-                        OnMessageChange(new MessageEventArgs { Message = "Method: StartSending()\n" });
-                        OnMessageChange(new MessageEventArgs { Message = $"User: {p.Login}\n" });
-                        OnMessageChange(new MessageEventArgs { Message = ex.Message + "\n" + ex.StackTrace });
                     }
                 }
 

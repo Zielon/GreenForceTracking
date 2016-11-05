@@ -48,22 +48,19 @@ namespace Library.Server
 
             if (item != null)
             {
-                Task.Factory.StartNew(() => StartSending(
+                StartSending(
                     new RoomInfoServer()
                     {
                         Players = new List<Client> { item },
                         Login = item.Login
-                    }));
+                    });
             }
             else if (login != null)
             {
-                Task.Factory.StartNew(() =>
-                {
-                    NetworkStream networkStream = login.Connection.GetStream();
-                    StreamWriter writer = new StreamWriter(networkStream);
-                    writer.AutoFlush = true;
-                    writer.WriteLine(FramesFactory.CreateXmlMessage(login));
-                });
+                NetworkStream networkStream = login.Connection.GetStream();
+                StreamWriter writer = new StreamWriter(networkStream);
+                writer.AutoFlush = true;
+                writer.WriteLine(FramesFactory.CreateXmlMessage(login));
             }
         }
 
@@ -81,7 +78,12 @@ namespace Library.Server
 
                         TcpClient client = p.Connection;
 
-                        if (!client.Connected) { notConnected.Add(p); continue; }
+                        if (!client.Connected)
+                        {
+                            OnMessageChange(new MessageEventArgs { Message = $"User: {p.Login} is not connected !\n" });
+                            notConnected.Add(p);
+                            continue;
+                        }
 
                         NetworkStream networkStream = client.GetStream();
                         StreamWriter writer = new StreamWriter(networkStream);

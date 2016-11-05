@@ -5,9 +5,14 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:TestingClient"
         mc:Ignorable="d"
-        Title="MainWindow" Height="360" Width="701" ResizeMode="NoResize">
+        Title="Tester" Height="360" Width="701" ResizeMode="NoResize" FontFamily="Consolas">
     <Grid Margin="0,0,2,6">
-        <Viewbox Stretch="Fill">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="73*"/>
+            <ColumnDefinition Width="136*"/>
+            <ColumnDefinition Width="484*"/>
+        </Grid.ColumnDefinitions>
+        <Viewbox Stretch="Fill" Grid.ColumnSpan="3">
             <Grid Height="222" Width="489">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition/>

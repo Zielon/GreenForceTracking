@@ -25,7 +25,6 @@ namespace ServerApplication
             var ip = textBoxIP.Text;
 
             var server = new Library.Server.Server(ip, 52400);
-
             server.WindowEvent += (s, a) => ServerStatus.Content = a.Running;
 
             dataGrid.DataContext = server.Container.RecivedMessages;

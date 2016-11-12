@@ -114,7 +114,9 @@ namespace TestingClient
                 Password = password
             };
 
-            await writer.WriteLineAsync(FramesFactory.CreateXmlMessage(msg));
+            var xmlMsg = FramesFactory.CreateXmlMessage(msg);
+
+            await writer.WriteLineAsync(xmlMsg);
 
             StreamReader reader = new StreamReader(networkStream);
 

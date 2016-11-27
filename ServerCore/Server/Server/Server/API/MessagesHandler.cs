@@ -77,13 +77,19 @@ namespace Server.API
             lock (DataBaseMock.Users)
             {
                 var user = DataBaseMock.Users.SingleOrDefault(u => u.Password.Equals(client.Password) && u.Login.Equals(client.Login));
-                if (user == null) { user.LoggedIn = false; return; }
+                if (user == null)
+                {
+                    client.PropertyChanged += Server.ClientPropertyChanged;
+                    client.Connection = tcpClient;
+                    client.LoggedIn = false;
+                    return;
+                }
+
                 if (user != null)
                 {
                     user.PropertyChanged += Server.ClientPropertyChanged;
                     user.Connection = tcpClient;
                     user.LoggedIn = true;
-                    return;
                 }
             }
         }
@@ -126,10 +132,11 @@ namespace Server.API
                 else
                 {
                     playerInTheRoom = Server.Room.Players.Single(p => p.Login.Equals(client.Login));
-                    if (!playerInTheRoom.Posision.Equals(posision))
-                        playerInTheRoom.Posision = posision; // Notify property changed
                     playerInTheRoom.Message = client.Message;
                     playerInTheRoom.Accuracy = client.Accuracy;
+
+                    if (!playerInTheRoom.Posision.Equals(posision))
+                        playerInTheRoom.Posision = posision; // Notify property changed
                 }
             }
 

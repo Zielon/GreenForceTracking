@@ -62,7 +62,7 @@ namespace TestingClient
                     {
                         string str = string.Empty;
 
-                        foreach (XmlNode player in GetNodeList(message, "Player"))
+                        foreach (XmlNode player in GetNodeList(message, "Client"))
                         {
                             using (var sw = new StringWriter())
                             {
@@ -76,18 +76,18 @@ namespace TestingClient
                                 var xml = sw.ToString();
                                 var f = FramesFactory.CreateObject<Library.Common.Client>(xml);
                                 str += string.Format(
-                                    "User: {0}\nID: {1}\nLat: {2}\nLon: {3}\nMsg: {4}\n--------------------\n",
-                                    f.Login, "f.ID", f.Lat, f.Lon, f.Message);
+                                    "User: {0}\nAcc: {1}\nLat: {2}\nLon: {3}\nMsg: {4}\n--------------------\n",
+                                    f.Login, f.Accuracy, f.Lat, f.Lon, f.Message);
                             }
                         }
-
 
                         Progress.Report(str);
                     }
                 }
                 catch (Exception ex)
                 {
-                    Progress.Report(ex.Message + "\n" + ex.StackTrace);
+                    Progress.Report(ex.Message + "\n");
+                    break;
                 }
             }
         }

@@ -1,4 +1,5 @@
-﻿using System.Xml.Serialization;
+﻿using System.Collections.Generic;
+using System.Xml.Serialization;
 
 namespace Library.Frames.Server
 {
@@ -9,7 +10,7 @@ namespace Library.Frames.Server
         [XmlIgnoreAttribute]
         public string Login { get; set; }
 
-        public Common.Client Player { get; set; }
+        public Common.Client Client { get; set; }
 
         public RoomInfoServer() { FrameType = Frames.RoomInfo; }
     }

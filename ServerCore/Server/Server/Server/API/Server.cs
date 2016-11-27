@@ -51,7 +51,7 @@ namespace Library.Server
                 StartSending(
                     new RoomInfoServer()
                     {
-                        Player = item,
+                        Client = item,
                         Login = item.Login
                     });
             }

@@ -37,7 +37,8 @@ namespace TestingClient
             Client.Login(NameBox.Text, passwordBox.Password).ContinueWith(
             t =>
             {
-                if (!t.Result) return;
+                if (!t.Result) { textBoxResponse.Text = "Wrong password or login !\n"; return; }
+                textBoxResponse.Text = "Correct password and login !\n";
                 label.Content = "Ready !";
                 label.Foreground = new SolidColorBrush(Colors.Green);
                 buttonSend.IsEnabled = true;

@@ -20,8 +20,7 @@ namespace Library.Frames.Client
             set
             {
                 _logggedIn = value;
-                if (value)
-                    NotifyPropertyChanged();
+                NotifyPropertyChanged();
             }
         }
 

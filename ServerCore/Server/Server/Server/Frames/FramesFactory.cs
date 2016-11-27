@@ -11,7 +11,7 @@ namespace Library.Frames.Factory
         /// </summary>
         /// <param name="xml"></param>
         /// <returns>
-        /// Type of template which implements IFrame interface.
+        /// Type of a template which implements an IFrame interface.
         /// </returns>
         public static T CreateObject<T>(string xml) where T : IFrame
         {
@@ -25,7 +25,7 @@ namespace Library.Frames.Factory
         }
 
         /// <summary>
-        /// Create serialized object as a single xml string line.
+        /// Create an serialized object as a single xml string line.
         /// </summary>
         /// <param name="frame"></param>
         /// <returns>

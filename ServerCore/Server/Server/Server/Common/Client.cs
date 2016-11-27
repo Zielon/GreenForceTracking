@@ -11,7 +11,7 @@ namespace Library.Common
     /// </summary>
     public class Client : INotifyPropertyChanged, IFrame
     {
-        public string ID { get; set; }
+        //public string ID { get; set; }
 
         public string Login { get; set; }
 
@@ -20,6 +20,8 @@ namespace Library.Common
         public double Lat { get; set; }
 
         public double Lon { get; set; }
+
+        public double Accuracy { get; set; }
 
         [XmlIgnoreAttribute]
         public TcpClient Connection { get; set; }

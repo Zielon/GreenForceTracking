@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Library.Common;
+﻿using System.Xml.Serialization;
 
 namespace Library.Frames.Server
 {
@@ -11,9 +6,10 @@ namespace Library.Frames.Server
     {
         public Frames FrameType { get; set; }
 
+        [XmlIgnoreAttribute]
         public string Login { get; set; }
 
-        public List<Common.Client> Players { get; set; }
+        public Common.Client Player { get; set; }
 
         public RoomInfoServer() { FrameType = Frames.RoomInfo; }
     }

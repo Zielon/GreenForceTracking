@@ -118,7 +118,7 @@ namespace Server.API
                     Server.Room.Players.Add(client);
                     client.PropertyChanged += Server.ClientPropertyChanged;
                     client.Connection = tcpClient;
-                    client.ID = Tools.RandomString();
+                    client.Accuracy = client.Accuracy;
                     client.Posision = posision; // Notify property changed
                     playerInTheRoom = client;
 
@@ -130,6 +130,7 @@ namespace Server.API
                     if (!playerInTheRoom.Posision.Equals(posision))
                         playerInTheRoom.Posision = posision; // Notify property changed
                     playerInTheRoom.Message = client.Message;
+                    playerInTheRoom.Accuracy = client.Accuracy;
                 }
             }
 

@@ -79,7 +79,7 @@ namespace TestingClient
                                     var f = FramesFactory.CreateObject<Library.Common.Client>(xml);
                                     str += string.Format(
                                         "User: {0}\nID: {1}\nLat: {2}\nLon: {3}\nMsg: {4}\n--------------------\n",
-                                        f.Login, f.ID, f.Lat, f.Lon, f.Message);
+                                        f.Login, "f.ID", f.Lat, f.Lon, f.Message);
                                 }
                             }
                         }
@@ -142,6 +142,7 @@ namespace TestingClient
                 var user = new Library.Common.Client()
                 {
                     Posision = new Posision(1.23 + count, 543.456 - count),
+                    Accuracy = 1.53 + count,
                     Login = Window.NameBox.Text,
                     Message = data,
                     FrameType = Frames.Player

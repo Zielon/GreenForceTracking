@@ -77,7 +77,7 @@ namespace Server.API
             lock (DataBaseMock.Users)
             {
                 var user = DataBaseMock.Users.SingleOrDefault(u => u.Password.Equals(client.Password) && u.Login.Equals(client.Login));
-                if (user == null) return;
+                if (user == null) { user.LoggedIn = false; return; }
                 if (user != null)
                 {
                     user.PropertyChanged += Server.ClientPropertyChanged;
@@ -85,7 +85,6 @@ namespace Server.API
                     user.LoggedIn = true;
                     return;
                 }
-                user.LoggedIn = false;
             }
         }
 

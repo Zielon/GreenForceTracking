@@ -62,27 +62,25 @@ namespace TestingClient
                     {
                         string str = string.Empty;
 
-                        foreach (XmlNode players in GetNodeList(message, "Players"))
+                        foreach (XmlNode player in GetNodeList(message, "Player"))
                         {
-                            foreach (XmlNode player in players)
+                            using (var sw = new StringWriter())
                             {
-                                using (var sw = new StringWriter())
+                                using (var xw = new XmlTextWriter(sw))
                                 {
-                                    using (var xw = new XmlTextWriter(sw))
-                                    {
-                                        xw.Formatting = System.Xml.Formatting.Indented;
-                                        xw.Indentation = 2;
-                                        player.WriteTo(xw);
-                                    }
-
-                                    var xml = sw.ToString();
-                                    var f = FramesFactory.CreateObject<Library.Common.Client>(xml);
-                                    str += string.Format(
-                                        "User: {0}\nID: {1}\nLat: {2}\nLon: {3}\nMsg: {4}\n--------------------\n",
-                                        f.Login, "f.ID", f.Lat, f.Lon, f.Message);
+                                    xw.Formatting = System.Xml.Formatting.Indented;
+                                    xw.Indentation = 2;
+                                    player.WriteTo(xw);
                                 }
+
+                                var xml = sw.ToString();
+                                var f = FramesFactory.CreateObject<Library.Common.Client>(xml);
+                                str += string.Format(
+                                    "User: {0}\nID: {1}\nLat: {2}\nLon: {3}\nMsg: {4}\n--------------------\n",
+                                    f.Login, "f.ID", f.Lat, f.Lon, f.Message);
                             }
                         }
+
 
                         Progress.Report(str);
                     }

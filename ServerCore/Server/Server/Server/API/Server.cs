@@ -57,6 +57,8 @@ namespace Library.Server
             }
             else if (login != null)
             {
+                if (!login.Connection.Connected) return;
+
                 NetworkStream networkStream = login.Connection.GetStream();
                 StreamWriter writer = new StreamWriter(networkStream);
                 writer.AutoFlush = true;
@@ -64,17 +66,24 @@ namespace Library.Server
             }
         }
 
-        public void StartSending(IFrame frame)
+        public void Broadcast()
+        {
+            StartSending(null, true);
+        }
+
+        public void StartSending(IFrame frame, bool broadcast = false)
         {
             lock (Room.Players)
             {
                 var notConnected = new List<Client>();
 
+                if (broadcast) OnMessageChange(new MessageEventArgs { Message = $"Broadcasting to every player ! Count: {Room.Players.Count} \n" });
+
                 foreach (var p in Room.Players)
                 {
                     try
                     {
-                        if (p.Connection == null || p.Login.Equals(frame.Login)) continue;
+                        if (!broadcast && (p.Connection == null || p.Login.Equals(frame.Login))) continue;
 
                         TcpClient client = p.Connection;
 
@@ -89,8 +98,28 @@ namespace Library.Server
                         StreamWriter writer = new StreamWriter(networkStream);
 
                         writer.AutoFlush = true;
+                        string msg = string.Empty;
 
-                        var msg = FramesFactory.CreateXmlMessage(frame);
+                        if (broadcast)
+                        {
+                            msg = FramesFactory.CreateXmlMessage(new RoomInfoServer()
+                            {
+                                Client = new Client {
+                                    Message = "Broadcasting...",
+                                    Lat = -1,
+                                    Lng = -1,
+                                    Accuracy = -1,
+                                    Login = "SERVER",
+                                    FrameType = Frames.Frames.RoomInfo,
+                                    RoomId = ""
+                                },
+                                Login = "SERVER"
+                            });
+                        }
+                        else
+                        {
+                            msg = FramesFactory.CreateXmlMessage(frame);
+                        }
 
                         writer.WriteLine(msg);
                     }
@@ -102,7 +131,7 @@ namespace Library.Server
                     catch (Exception ex)
                     {
                         notConnected.Add(p);
-                        OnMessageChange(new MessageEventArgs { Message = ex.Message + "\n" + ex.StackTrace + "\n" });
+                        OnMessageChange(new MessageEventArgs { Message = ex.Message + "\n" });
                     }
                 }
 

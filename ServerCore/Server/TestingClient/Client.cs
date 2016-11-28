@@ -28,20 +28,31 @@ namespace TestingClient
 
             this.Window = window;
             this.Progress = progress;
+        }
 
-            IPHostEntry ipHostInfo = Dns.GetHostEntry("kornik.ddns.net");
+        public void Conntect() {
 
-            for (int i = 0; i < ipHostInfo.AddressList.Length; ++i)
+            if (_client.Connected) return;
+
+            var check = Window.customIPBtn.IsChecked ?? false;
+            if (check)
             {
-                if (ipHostInfo.AddressList[i].AddressFamily ==
-                  AddressFamily.InterNetwork)
+                Ip = IPAddress.Parse(Window.Ip_Box.Text);
+            }
+            else
+            {
+                IPHostEntry ipHostInfo = Dns.GetHostEntry("kornik.ddns.net");
+                for (int i = 0; i < ipHostInfo.AddressList.Length; ++i)
                 {
-                    Ip = ipHostInfo.AddressList[i];
-                    break;
+                    if (ipHostInfo.AddressList[i].AddressFamily ==
+                      AddressFamily.InterNetwork)
+                    {
+                        Ip = ipHostInfo.AddressList[i];
+                        break;
+                    }
                 }
             }
 
-            //Ip = IPAddress.Parse("192.168.0.2");
             _client.ConnectAsync(Ip, 52400);
         }
 
@@ -76,8 +87,8 @@ namespace TestingClient
                                 var xml = sw.ToString();
                                 var f = FramesFactory.CreateObject<Library.Common.Client>(xml);
                                 str += string.Format(
-                                    "User: {0}\nAcc: {1}\nLat: {2}\nLon: {3}\nMsg: {4}\n--------------------\n",
-                                    f.Login, f.Accuracy, f.Lat, f.Lon, f.Message);
+                                    "User: {0}\nAcc: {1}\nLat: {2}\nLng: {3}\nMsg: {4}\n--------------------\n",
+                                    f.Login, f.Accuracy, f.Lat, f.Lng, f.Message);
                             }
                         }
 

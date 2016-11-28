@@ -11,10 +11,12 @@ namespace ServerApplication
     public partial class MainWindow : Window
     {
         private static bool Running;
+        private Library.Server.Server server;
 
         public MainWindow()
         {
             InitializeComponent();
+            broadcast.IsEnabled = false;
         }
 
         private void button_Click(object sender, RoutedEventArgs e)
@@ -24,22 +26,29 @@ namespace ServerApplication
             Running = true;
             var ip = textBoxIP.Text;
 
-            var server = new Library.Server.Server(ip, 52400);
+            server = new Library.Server.Server(ip, 52400);
             server.WindowEvent += (s, a) => ServerStatus.Content = a.Running;
 
             dataGrid.DataContext = server.Container.RecivedMessages;
 
             // Events setup
-            server.ContainerEvent += (s, a) =>{
-                if (a.Clean) Dispatcher.Invoke(() => server.Container.RecivedMessages.Remove(m => a.Clean)); };
-            server.ContainerEvent += (s, a) => {
-                if (a.Message != null) Dispatcher.Invoke(() => server.Container.RecivedMessages.Add(a.Message)); };
+            server.ContainerEvent += (s, a) => { if (a.Clean) Dispatcher.Invoke(() => server.Container.RecivedMessages.Remove(m => a.Clean)); };
+            server.ContainerEvent += (s, a) => { if (a.Message != null) Dispatcher.Invoke(() => server.Container.RecivedMessages.Add(a.Message)); };
             server.MessageEvent += (s, a) => Dispatcher.Invoke(() => textBox.AppendText(a.Message));
-            server.WindowEvent += (s, a) => {
-                if (a.ChangeBrush) ServerStatus.Foreground = new SolidColorBrush(Colors.Green); button.IsEnabled = false; };
+            server.WindowEvent += (s, a) => { if (a.ChangeBrush) ServerStatus.Foreground = new SolidColorBrush(Colors.Green); button.IsEnabled = false; };
 
             server.StartListening();
+            broadcast.IsEnabled = true;
+        }
 
+        private void broadcast_Click(object sender, RoutedEventArgs e)
+        {
+            server.Broadcast();
+        }
+
+        private void button1_Click(object sender, RoutedEventArgs e)
+        {
+            this.textBox.Clear();
         }
     }
 }

@@ -19,7 +19,7 @@ namespace Library.Common
 
         public double Lat { get; set; }
 
-        public double Lon { get; set; }
+        public double Lng { get; set; }
 
         public double Accuracy { get; set; }
 
@@ -40,7 +40,7 @@ namespace Library.Common
             {
                 _posision = value;
                 Lat = _posision.Lat;
-                Lon = _posision.Lon;
+                Lng = _posision.Lon;
                 NotifyPropertyChanged(); //Notify posistion update
             }
         }

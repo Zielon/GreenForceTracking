@@ -34,6 +34,7 @@ namespace TestingClient
 
         private void button_Click(object sender, RoutedEventArgs e)
         {
+            Client.Conntect();
             Client.Login(NameBox.Text, passwordBox.Password).ContinueWith(
             t =>
             {

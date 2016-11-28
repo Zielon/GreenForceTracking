@@ -114,7 +114,7 @@ namespace Server.API
 
             if (!IsLogged(client)) return;
 
-            var posision = new Posision(client.Lat, client.Lon);
+            var posision = new Posision(client.Lat, client.Lng);
 
             lock (Server.Room.Players)
             {

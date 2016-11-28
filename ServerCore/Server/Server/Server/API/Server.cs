@@ -77,7 +77,8 @@ namespace Library.Server
             {
                 var notConnected = new List<Client>();
 
-                if (broadcast) OnMessageChange(new MessageEventArgs { Message = $"Broadcasting to every player ! Count: {Room.Players.Count} \n" });
+                if (broadcast && Room.Players.Count > 0)
+                    OnMessageChange(new MessageEventArgs { Message = $"Broadcasting to every player ! Count: {Room.Players.Count} \n" });
 
                 foreach (var p in Room.Players)
                 {
@@ -110,8 +111,7 @@ namespace Library.Server
                                     Lng = -1,
                                     Accuracy = -1,
                                     Login = "SERVER",
-                                    FrameType = Frames.Frames.RoomInfo,
-                                    RoomId = ""
+                                    FrameType = Frames.Frames.RoomInfo
                                 },
                                 Login = "SERVER"
                             });

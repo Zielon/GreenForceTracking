@@ -15,8 +15,6 @@ namespace Library.Common
 
         public string Login { get; set; }
 
-        public string RoomId { get; set; }
-
         public double Lat { get; set; }
 
         public double Lng { get; set; }

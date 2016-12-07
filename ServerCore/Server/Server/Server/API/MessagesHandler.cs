@@ -132,11 +132,13 @@ namespace Server.API
                 else
                 {
                     playerInTheRoom = Server.Room.Players.Single(p => p.Login.Equals(client.Login));
-                    playerInTheRoom.Message = client.Message;
                     playerInTheRoom.Accuracy = client.Accuracy;
 
                     if (!playerInTheRoom.Posision.Equals(posision))
                         playerInTheRoom.Posision = posision; // Notify property changed
+
+                    if (!playerInTheRoom.Message.Equals(client.Message))
+                        playerInTheRoom.Message = client.Message;
                 }
             }
 

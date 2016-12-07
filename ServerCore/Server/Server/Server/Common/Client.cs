@@ -43,7 +43,13 @@ namespace Library.Common
             }
         }
 
-        public string Message { get { return _message; } set { _message = value; } }
+        public string Message {
+            get { return _message; }
+            set {
+                _message = value;
+                NotifyPropertyChanged();
+            }
+        }
 
         public Frames.Frames FrameType { get; set; }
 

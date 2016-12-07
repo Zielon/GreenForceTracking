@@ -29,8 +29,8 @@
                 <Label x:Name="label3" Content="Name" HorizontalAlignment="Left" Margin="352,0,0,0" VerticalAlignment="Top" Width="34" Height="23" FontSize="8" FontFamily="Consolas"/>
                 <Label x:Name="label3_Copy" Content="Password" HorizontalAlignment="Left" Margin="352,55,0,0" VerticalAlignment="Top" Width="83" Height="23" FontSize="8" FontFamily="Consolas"/>
                 <PasswordBox x:Name="passwordBox" HorizontalAlignment="Left" Margin="352,78,0,0" VerticalAlignment="Top" Width="120" Height="22" FontFamily="Consolas" Password="123"/>
-                <TextBox x:Name="Ip_Box" HorizontalAlignment="Left" Height="23" Margin="352,190,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="120" Text="192.168.0.2" FontFamily="Consolas"/>
-                <CheckBox x:Name="customIPBtn" Content="Custom IP" HorizontalAlignment="Left" Margin="352,170,0,0" VerticalAlignment="Top"/>
+                <TextBox x:Name="Ip_Box" HorizontalAlignment="Left" Height="23" Margin="352,172,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="120" Text="192.168.0.2" FontFamily="Consolas"/>
+                <CheckBox x:Name="customIPBtn" Content="Custom IP" HorizontalAlignment="Left" Margin="352,150,0,0" VerticalAlignment="Top"/>
 
             </Grid>
         </Viewbox>

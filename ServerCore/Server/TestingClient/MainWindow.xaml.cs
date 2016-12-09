@@ -17,7 +17,8 @@ namespace TestingClient
         {
             InitializeComponent();
             buttonSend.IsEnabled = false;
-            Client = new Client(new Progress<string>(s => this.textBoxResponse.Text = s), this);
+            markerAdd.IsEnabled = false;
+            Client = new Client(new Progress<string>(s => this.textBoxResponse.Text += s), this);
         }
 
         private async void buttonSend_Click(object sender, RoutedEventArgs e)
@@ -25,6 +26,18 @@ namespace TestingClient
             try
             {
                 await Client.Send(this.textBox.Text);
+            }
+            catch (Exception ex)
+            {
+                textBoxResponse.Text = ex.Message;
+            }
+        }
+
+        private async void markerAdd_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                await Client.SendMarker();
             }
             catch (Exception ex)
             {
@@ -43,6 +56,7 @@ namespace TestingClient
                 label.Content = "Ready !";
                 label.Foreground = new SolidColorBrush(Colors.Green);
                 buttonSend.IsEnabled = true;
+                markerAdd.IsEnabled = true;
                 button.IsEnabled = false;
                 Client.StartProcessing();
             },

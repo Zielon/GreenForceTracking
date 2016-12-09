@@ -43,7 +43,6 @@
                             <SolidColorBrush Color="{DynamicResource {x:Static SystemColors.ActiveCaptionTextColorKey}}"/>
                         </Label.Foreground>
                     </Label>
-                    <Button x:Name="broadcast" Content="Broadcast" HorizontalAlignment="Left" Margin="67,67,0,0" VerticalAlignment="Top" Width="120" Height="24" Grid.Column="1" Click="broadcast_Click"/>
                     <Button x:Name="button1" Content="Clean" Grid.Column="1" HorizontalAlignment="Left" Margin="140,114,0,0" VerticalAlignment="Top" Width="47" Height="17" FontSize="9.333" Click="button1_Click"/>
                 </Grid>
             </Viewbox>

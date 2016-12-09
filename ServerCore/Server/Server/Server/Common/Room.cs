@@ -1,18 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using Library.Frames;
 using System.Collections.ObjectModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Library.Common
 {
     public class Room
     {
-        public ObservableCollection<Client> Players { get; set; }
+        public ObservableCollection<IFrame> Players { get; set; }
+        public ObservableCollection<IFrame> Markers { get; set; }
         public Room()
         {
-            Players = new ObservableCollection<Client>();
+            Players = new ObservableCollection<IFrame>();
+            Markers = new ObservableCollection<IFrame>();
         }
     }
 }

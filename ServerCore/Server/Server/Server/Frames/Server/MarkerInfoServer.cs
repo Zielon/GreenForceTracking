@@ -1,10 +1,10 @@
-﻿using System.Collections.Generic;
+﻿using Library.Common;
 using System.Net.Sockets;
 using System.Xml.Serialization;
 
 namespace Library.Frames.Server
 {
-    public class RoomInfoServer : IFrame
+    public class MarkerInfoServer : IFrame
     {
         public Frames FrameType { get; set; }
 
@@ -14,8 +14,8 @@ namespace Library.Frames.Server
         [XmlIgnoreAttribute]
         public TcpClient Connection { get; set; }
 
-        public Common.Client Client { get; set; }
+        public Marker Marker { get; set; }
 
-        public RoomInfoServer() { FrameType = Frames.RoomInfo; }
+        public MarkerInfoServer() { FrameType = Frames.Marker; }
     }
 }

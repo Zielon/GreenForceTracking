@@ -21,6 +21,8 @@ namespace Library.Common
 
         public double Accuracy { get; set; }
 
+        public double Direction { get; set; }
+
         [XmlIgnoreAttribute]
         public TcpClient Connection { get; set; }
 
@@ -39,7 +41,6 @@ namespace Library.Common
                 _posision = value;
                 Lat = _posision.Lat;
                 Lng = _posision.Lon;
-                NotifyPropertyChanged(); //Notify posistion update
             }
         }
 
@@ -47,7 +48,6 @@ namespace Library.Common
             get { return _message; }
             set {
                 _message = value;
-                NotifyPropertyChanged();
             }
         }
 
@@ -55,7 +55,7 @@ namespace Library.Common
 
         public event PropertyChangedEventHandler PropertyChanged;
 
-        private void NotifyPropertyChanged([CallerMemberName] string propertyName = "")
+        public void NotifyPropertyChanged([CallerMemberName] string propertyName = "")
         {
             if (PropertyChanged != null)
                 PropertyChanged(this, new PropertyChangedEventArgs(propertyName));

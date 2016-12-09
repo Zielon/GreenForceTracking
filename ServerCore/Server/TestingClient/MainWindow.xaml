@@ -19,8 +19,8 @@
                     <ColumnDefinition Width="0*"/>
                 </Grid.ColumnDefinitions>
                 <Button x:Name="button" Content="Login" Margin="352,117,0,0" VerticalAlignment="Top" Click="button_Click" HorizontalAlignment="Left" Width="120" FontFamily="Consolas" Height="18"/>
-                <TextBox x:Name="textBox" HorizontalAlignment="Left" Height="162" Margin="12,22,0,0" TextWrapping="Wrap" Text="#Message" VerticalAlignment="Top" Width="151" Background="#FFF5CECE" FontFamily="Consolas"/>
-                <Button x:Name="buttonSend" Content="Send message" HorizontalAlignment="Left" Margin="12,189,0,0" VerticalAlignment="Top" Width="151" Click="buttonSend_Click" FontFamily="Consolas" Height="18"/>
+                <TextBox x:Name="textBox" HorizontalAlignment="Left" Height="143" Margin="12,22,0,0" TextWrapping="Wrap" Text="#Message" VerticalAlignment="Top" Width="151" Background="#FFF5CECE" FontFamily="Consolas"/>
+                <Button x:Name="buttonSend" Content="Send message" HorizontalAlignment="Left" Margin="12,170,0,0" VerticalAlignment="Top" Width="151" Click="buttonSend_Click" FontFamily="Consolas" Height="18"/>
                 <Label x:Name="label" Content="Empty" HorizontalAlignment="Left" Margin="228,189,0,0" VerticalAlignment="Top" Width="46" TextOptions.TextHintingMode="Fixed" FontFamily="Consolas" Height="24"/>
                 <TextBox x:Name="textBoxResponse" HorizontalAlignment="Left" Height="162" Margin="185,22,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="151" Background="#FFF5CECE" FontSize="8" FontFamily="Consolas"/>
                 <Label x:Name="label1" Content="Message" HorizontalAlignment="Left" Margin="12,0,0,0" VerticalAlignment="Top" FontFamily="Consolas" Height="24" Width="56"/>
@@ -31,6 +31,7 @@
                 <PasswordBox x:Name="passwordBox" HorizontalAlignment="Left" Margin="352,78,0,0" VerticalAlignment="Top" Width="120" Height="22" FontFamily="Consolas" Password="123"/>
                 <TextBox x:Name="Ip_Box" HorizontalAlignment="Left" Height="23" Margin="352,172,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="120" Text="192.168.0.2" FontFamily="Consolas"/>
                 <CheckBox x:Name="customIPBtn" Content="Custom IP" HorizontalAlignment="Left" Margin="352,150,0,0" VerticalAlignment="Top"/>
+                <Button x:Name="markerAdd" Content="Add marker" HorizontalAlignment="Left" Margin="12,194,0,0" VerticalAlignment="Top" Width="151" FontFamily="Consolas" Height="18" Click="markerAdd_Click"/>
 
             </Grid>
         </Viewbox>

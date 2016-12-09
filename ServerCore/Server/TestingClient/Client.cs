@@ -92,6 +92,42 @@ namespace TestingClient
                             }
                         }
 
+                        foreach (XmlNode player in GetNodeList(message, "RemoveUser"))
+                        {
+                            using (var sw = new StringWriter())
+                            {
+                                using (var xw = new XmlTextWriter(sw))
+                                {
+                                    xw.Formatting = System.Xml.Formatting.Indented;
+                                    xw.Indentation = 2;
+                                    player.WriteTo(xw);
+                                }
+
+                                var xml = sw.ToString();
+                                var f = FramesFactory.CreateObject<Library.Common.RemoveUser>(xml);
+                                str += string.Format(
+                                    "User: {0} was deleted\n--------------------\n", f.Login);
+                            }
+                        }
+
+                        foreach (XmlNode player in GetNodeList(message, "Marker"))
+                        {
+                            using (var sw = new StringWriter())
+                            {
+                                using (var xw = new XmlTextWriter(sw))
+                                {
+                                    xw.Formatting = System.Xml.Formatting.Indented;
+                                    xw.Indentation = 2;
+                                    player.WriteTo(xw);
+                                }
+
+                                var xml = sw.ToString();
+                                var f = FramesFactory.CreateObject<Library.Common.Marker>(xml);
+                                str += string.Format(
+                                    "User: {0} added new marker\n--------------------\n", f.Login);
+                            }
+                        }
+
                         Progress.Report(str);
                     }
                 }
@@ -158,6 +194,42 @@ namespace TestingClient
                 };
 
                 string msg = FramesFactory.CreateXmlMessage(user);
+
+                await writer.WriteLineAsync(msg);
+                count += 11.6;
+
+                waitForSocket.Set();
+            }
+            catch (Exception ex)
+            {
+                Window.textBoxResponse.Text = ex.Message + "\n" + ex.StackTrace;
+            }
+        }
+
+        public async Task SendMarker()
+        {
+            try
+            {
+                waitForSocket.Reset();
+
+                NetworkStream networkStream = _client.GetStream();
+                StreamWriter writer = new StreamWriter(networkStream);
+
+                writer.AutoFlush = true;
+                Window.textBoxResponse.Clear();
+
+                var marker = new Library.Common.Marker()
+                {
+                    Add = true,
+                    Login = Window.NameBox.Text,
+                    FrameType = Frames.Marker,
+                    Lat = count,
+                    Lng = count - 99,
+                    Text = "New marker added",
+                    Id = Library.API.Tools.RandomString()
+                };
+
+                string msg = FramesFactory.CreateXmlMessage(marker);
 
                 await writer.WriteLineAsync(msg);
                 count += 11.6;

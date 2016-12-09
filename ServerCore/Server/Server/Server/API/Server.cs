@@ -16,6 +16,7 @@ using Library.Frames;
 using Library.Frames.Client;
 using Server.Mock;
 using System.Linq;
+using System.Collections.ObjectModel;
 
 namespace Library.Server
 {
@@ -44,19 +45,16 @@ namespace Library.Server
         public void ClientPropertyChanged(object sender, PropertyChangedEventArgs e)
         {
             Client item = sender as Client;
+            Marker marker = sender as Marker;
             SystemUser login = sender as SystemUser;
 
-            if (item != null)
-            {
-                StartSending(
-                    new RoomInfoServer()
-                    {
-                        Client = item,
-                        Login = item.Login
-                    });
+            if (item != null){
+                StartSending(new RoomInfoServer(){ Client = item, Login = item.Login }, Frames.Frames.Player);
             }
-            else if (login != null)
-            {
+            else if (marker != null){
+                StartSending(new MarkerInfoServer() { Marker = marker, Login = marker.Login }, Frames.Frames.Marker);
+            }
+            else if (login != null){
                 if (!login.Connection.Connected) return;
 
                 NetworkStream networkStream = login.Connection.GetStream();
@@ -66,25 +64,19 @@ namespace Library.Server
             }
         }
 
-        public void Broadcast()
+        public void StartSending(IFrame frame, Frames.Frames type)
         {
-            StartSending(null, true);
-        }
+            ObservableCollection<IFrame> collection = Room.Players;
 
-        public void StartSending(IFrame frame, bool broadcast = false)
-        {
-            lock (Room.Players)
+            lock (collection)
             {
-                var notConnected = new List<Client>();
+                var notConnected = new List<IFrame>();
 
-                if (broadcast && Room.Players.Count > 0)
-                    OnMessageChange(new MessageEventArgs { Message = $"Broadcasting to every player ! Count: {Room.Players.Count} \n" });
-
-                foreach (var p in Room.Players)
+                foreach (var p in collection)
                 {
                     try
                     {
-                        if (!broadcast && (p.Connection == null || p.Login.Equals(frame.Login))) continue;
+                        if (p.Connection == null || p.Login.Equals(frame.Login)) continue;
 
                         TcpClient client = p.Connection;
 
@@ -101,26 +93,7 @@ namespace Library.Server
                         writer.AutoFlush = true;
                         string msg = string.Empty;
 
-                        if (broadcast)
-                        {
-                            msg = FramesFactory.CreateXmlMessage(new RoomInfoServer()
-                            {
-                                Client = new Client {
-                                    Message = "Broadcasting...",
-                                    Lat = -1,
-                                    Lng = -1,
-                                    Accuracy = -1,
-                                    Login = "SERVER",
-                                    FrameType = Frames.Frames.RoomInfo
-                                },
-                                Login = "SERVER"
-                            });
-                        }
-                        else
-                        {
-                            msg = FramesFactory.CreateXmlMessage(frame);
-                        }
-
+                        msg = FramesFactory.CreateXmlMessage(frame);
                         writer.WriteLine(msg);
                     }
                     catch (SocketException)
@@ -135,12 +108,13 @@ namespace Library.Server
                     }
                 }
 
-                notConnected.ForEach((Action<Client>)(e =>
-                {
-                    Room.Players.Remove(e);
-                    DataBaseMock.Users.Single((Func<SystemUser, bool>)(s => s.Login.Equals(e.Login))).LoggedIn = false;
+                notConnected.ForEach(e => {
+                    collection.Remove(e);
+                    StartSending(
+                        new RemoveUser { Connection = e.Connection, FrameType = Frames.Frames.RemovingUser, Login = e.Login }, Frames.Frames.Player);
+                    DataBaseMock.Users.Single(s => s.Login.Equals(e.Login)).LoggedIn = false;
                     OnMessageChange(new MessageEventArgs { Message = $"{e.Login} has been deleted\n" });
-                }));
+                });
             }
         }
 

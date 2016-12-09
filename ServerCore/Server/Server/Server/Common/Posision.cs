@@ -25,6 +25,11 @@ namespace Library.Common
             return false;
         }
 
+        public override int GetHashCode()
+        {
+            return base.GetHashCode();
+        }
+
         public override string ToString()
         {
             return string.Format("Lat: {0}, Lon: {1}", Lat, Lon);

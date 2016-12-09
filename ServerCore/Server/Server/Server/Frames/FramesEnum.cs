@@ -5,19 +5,19 @@ namespace Library.Frames
 
     public enum Frames {
 
+        [XmlEnum(Name = "RemovingUser")]
+        RemovingUser,
+
         [XmlEnum(Name = "Login")]
         Login,
-
-        [XmlEnum(Name = "ListOfRooms")]
-        ListOfRooms,
-
-        [XmlEnum(Name = "Disconnect")]
-        Disconnect,
 
         [XmlEnum(Name = "RoomInfo")]
         RoomInfo,
 
         [XmlEnum(Name = "Player")]
-        Player
+        Player,
+
+        [XmlEnum(Name = "Marker")]
+        Marker
     }
 }

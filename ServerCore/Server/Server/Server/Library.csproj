@@ -47,9 +47,12 @@
   <ItemGroup>
     <Compile Include="API\MessagesHandler.cs" />
     <Compile Include="API\Server.cs" />
+    <Compile Include="API\StaticElements.cs" />
     <Compile Include="API\Tools.cs" />
     <Compile Include="Common\Client.cs" />
+    <Compile Include="Common\Marker.cs" />
     <Compile Include="Common\Posision.cs" />
+    <Compile Include="Common\RemoveUser.cs" />
     <Compile Include="Common\Room.cs" />
     <Compile Include="Events\ContainerEventArgs.cs" />
     <Compile Include="Events\MessageEventArgs.cs" />
@@ -58,6 +61,7 @@
     <Compile Include="Frames\FramesEnum.cs" />
     <Compile Include="Frames\FramesFactory.cs" />
     <Compile Include="Frames\IFrame.cs" />
+    <Compile Include="Frames\Server\MarkerInfoServer.cs" />
     <Compile Include="Frames\Server\RoomInfoServer.cs" />
     <Compile Include="Messages\Message.cs" />
     <Compile Include="Messages\MessageContainer.cs" />

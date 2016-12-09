@@ -16,7 +16,6 @@ namespace ServerApplication
         public MainWindow()
         {
             InitializeComponent();
-            broadcast.IsEnabled = false;
         }
 
         private void button_Click(object sender, RoutedEventArgs e)
@@ -38,12 +37,7 @@ namespace ServerApplication
             server.WindowEvent += (s, a) => { if (a.ChangeBrush) ServerStatus.Foreground = new SolidColorBrush(Colors.Green); button.IsEnabled = false; };
 
             server.StartListening();
-            broadcast.IsEnabled = true;
-        }
 
-        private void broadcast_Click(object sender, RoutedEventArgs e)
-        {
-            server.Broadcast();
         }
 
         private void button1_Click(object sender, RoutedEventArgs e)

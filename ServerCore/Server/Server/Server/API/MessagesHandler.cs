@@ -160,7 +160,6 @@ namespace Server.API
                     Server.Room.Players.Add(client);
                     client.PropertyChanged += Server.ClientPropertyChanged;
                     client.Connection = tcpClient;
-                    client.Accuracy = client.Accuracy;
                     client.Posision = posision; // Notify property changed
                     playerInRoom = client;
 
@@ -170,10 +169,12 @@ namespace Server.API
                 {
                     playerInRoom = (Client)Server.Room.Players.Single(p => p.Login.Equals(client.Login));
                     playerInRoom.Accuracy = client.Accuracy;
+                    playerInRoom.Posision = client.Posision;
                     playerInRoom.Posision = posision;
                     playerInRoom.Message = client.Message;
-                    playerInRoom.NotifyPropertyChanged();
                 }
+
+                playerInRoom.NotifyPropertyChanged();
 
                 Server.OnContainerChange(new ContainerEventArgs
                 {

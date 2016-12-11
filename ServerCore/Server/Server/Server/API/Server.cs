@@ -17,6 +17,7 @@ using Library.Frames.Client;
 using Server.Mock;
 using System.Linq;
 using System.Collections.ObjectModel;
+using System.Linq.Expressions;
 
 namespace Library.Server
 {
@@ -49,10 +50,10 @@ namespace Library.Server
             SystemUser login = sender as SystemUser;
 
             if (item != null){
-                StartSending(new RoomInfoServer(){ Client = item, Login = item.Login }, Frames.Frames.Player);
+                StartSending(new RoomInfoServer(){ Client = item, Login = item.Login });
             }
             else if (marker != null){
-                StartSending(new MarkerInfoServer() { Marker = marker, Login = marker.Login }, Frames.Frames.Marker);
+                StartSending(new MarkerInfoServer() { Marker = marker, Login = marker.Login });
             }
             else if (login != null){
                 if (!login.Connection.Connected) return;
@@ -64,7 +65,7 @@ namespace Library.Server
             }
         }
 
-        public void StartSending(IFrame frame, Frames.Frames type)
+        public void StartSending(IFrame frame)
         {
             ObservableCollection<IFrame> collection = Room.Players;
 
@@ -109,9 +110,10 @@ namespace Library.Server
                 }
 
                 notConnected.ForEach(e => {
-                    collection.Remove(e);
+                    Room.Players.Remove(e);
+                    Room.Markers.Where(m => m.Login == e.Login).ToList().ForEach(m => Room.Markers.Remove(m));
                     StartSending(
-                        new RemoveUser { Connection = e.Connection, FrameType = Frames.Frames.RemovingUser, Login = e.Login }, Frames.Frames.Player);
+                        new RemoveUser { Connection = e.Connection, FrameType = Frames.Frames.RemovingUser, Login = e.Login });
                     DataBaseMock.Users.Single(s => s.Login.Equals(e.Login)).LoggedIn = false;
                     OnMessageChange(new MessageEventArgs { Message = $"{e.Login} has been deleted\n" });
                 });

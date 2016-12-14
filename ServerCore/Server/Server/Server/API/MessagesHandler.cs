@@ -58,7 +58,7 @@ namespace Server.API
                                 AddPlayer(xml, tcpClient);
                                 break;
                             case Frames.Login:
-                                CheckLogin(FramesFactory.CreateObject<SystemUser>(xml), tcpClient);
+                                CheckLogin(xml, tcpClient);
                                 break;
                             case Frames.Marker:
                                 AddMarker(xml, tcpClient);
@@ -109,8 +109,10 @@ namespace Server.API
             }
         }
 
-        private void CheckLogin(SystemUser client, TcpClient tcpClient)
+        private void CheckLogin(string xml, TcpClient tcpClient)
         {
+            var client = FramesFactory.CreateObject<SystemUser>(xml);
+
             lock (DataBaseMock.Users)
             {
                 var user = DataBaseMock.Users.SingleOrDefault(u => u.Password.Equals(client.Password) && u.Login.Equals(client.Login));
@@ -169,7 +171,7 @@ namespace Server.API
                 {
                     playerInRoom = (Client)Server.Room.Players.Single(p => p.Login.Equals(client.Login));
                     playerInRoom.Accuracy = client.Accuracy;
-                    playerInRoom.Posision = client.Posision;
+                    playerInRoom.Direction = client.Direction;
                     playerInRoom.Posision = posision;
                     playerInRoom.Message = client.Message;
                 }

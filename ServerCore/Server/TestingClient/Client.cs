@@ -188,6 +188,7 @@ namespace TestingClient
                 {
                     Posision = new Posision(1.23 + count, 543.456 - count),
                     Accuracy = 1.53 + count,
+                    Direction = 5.4 + count,
                     Login = Window.NameBox.Text,
                     Message = data,
                     FrameType = Frames.Player

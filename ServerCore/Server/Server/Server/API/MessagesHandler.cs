@@ -106,6 +106,14 @@ namespace Server.API
                             Server.OnContainerChange(new ContainerEventArgs { Clean = true });
 
                 }
+                else if (Server.Room.Markers.Contains(marker) && !marker.Add)
+                {
+                    Marker m = Server.Room.Markers.Cast<Marker>().Single(e => e.Id == marker.Id);
+                    m.Add = false;
+                    m.NotifyPropertyChanged();
+                    Server.Room.Markers.Remove(m);
+                    Server.OnMessageChange(new MessageEventArgs { Message = $"Marker {m.Id} has been deleted !\n" });
+                }
             }
         }
 

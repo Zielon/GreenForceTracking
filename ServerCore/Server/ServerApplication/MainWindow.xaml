@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Library.Messages;assembly=Server"
         mc:Ignorable="d"
-        Title="Server version 2.0" Height="469.462" Width="826.924" ResizeMode="NoResize">
+        Title="Server version 2.0" Height="469.462" Width="826.924" ResizeMode="NoResize" Closing="Window_Closing">
 
     <Grid Margin="0,0,-45,9">
         <Grid.ColumnDefinitions>
@@ -44,6 +44,7 @@
                         </Label.Foreground>
                     </Label>
                     <Button x:Name="button1" Content="Clean" Grid.Column="1" HorizontalAlignment="Left" Margin="140,114,0,0" VerticalAlignment="Top" Width="47" Height="17" FontSize="9.333" Click="button1_Click"/>
+                    <Button x:Name="button1_Copy" Content="Stats" Grid.Column="1" HorizontalAlignment="Left" Margin="140,92,0,0" VerticalAlignment="Top" Width="47" Height="17" FontSize="9.333" Click="button1_Copy_Click"/>
                 </Grid>
             </Viewbox>
         </Viewbox>

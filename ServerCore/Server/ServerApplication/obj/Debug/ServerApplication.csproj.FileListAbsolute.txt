@@ -11,3 +11,6 @@ X:\Repozytoria\GreenForceTracking\ServerCore\Server\ServerApplication\obj\Debug\
 X:\Repozytoria\GreenForceTracking\ServerCore\Server\ServerApplication\obj\Debug\ServerApplication.csproj.GenerateResource.Cache
 X:\Repozytoria\GreenForceTracking\ServerCore\Server\ServerApplication\obj\Debug\ServerApplication.exe
 X:\Repozytoria\GreenForceTracking\ServerCore\Server\ServerApplication\obj\Debug\ServerApplication.pdb
+X:\Repozytoria\GreenForceTracking\ServerCore\Server\ServerApplication\obj\Debug\Stats.g.cs
+X:\Repozytoria\GreenForceTracking\ServerCore\Server\ServerApplication\obj\Debug\ServerApplication_MarkupCompile.lref
+X:\Repozytoria\GreenForceTracking\ServerCore\Server\ServerApplication\obj\Debug\Stats.baml

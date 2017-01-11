@@ -2,6 +2,7 @@
 using System.ComponentModel;
 using System.Net.Sockets;
 using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
 using System.Xml.Serialization;
 
 namespace Library.Common
@@ -9,10 +10,9 @@ namespace Library.Common
     /// <summary>
     /// Implementaion of Observer design pattern
     /// </summary>
+    [StructLayout(LayoutKind.Sequential)]
     public class Client : INotifyPropertyChanged, IFrame
     {
-        //public string ID { get; set; }
-
         public string Login { get; set; }
 
         public double Lat { get; set; }

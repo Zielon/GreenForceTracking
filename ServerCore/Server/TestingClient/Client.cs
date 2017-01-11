@@ -186,9 +186,9 @@ namespace TestingClient
 
                 var user = new Library.Common.Client()
                 {
-                    Posision = new Posision(1.23 + count, 543.456 - count),
-                    Accuracy = 1.53 + count,
-                    Direction = 5.4 + count,
+                    Posision = new Posision(54.408938381 + count, 19.566548634 - count),
+                    Accuracy = 1.53,
+                    Direction = 5.4,
                     Login = Window.NameBox.Text,
                     Message = data,
                     FrameType = Frames.Player
@@ -197,7 +197,7 @@ namespace TestingClient
                 string msg = FramesFactory.CreateXmlMessage(user);
 
                 await writer.WriteLineAsync(msg);
-                count += 11.6;
+                count += 0.0000023;
 
                 waitForSocket.Set();
             }
@@ -223,9 +223,13 @@ namespace TestingClient
                 {
                     Add = true,
                     Login = Window.NameBox.Text,
+                    Points = new System.Collections.Generic.List<Posision> {
+                        new Posision(1.1, 2.3),
+                        new Posision(3.1, 2.3),
+                        new Posision(4.1, 2.3),
+                        new Posision(5.1, 2.3) },
+                    MarkerType = Markers.Warning,
                     FrameType = Frames.Marker,
-                    Lat = count,
-                    Lng = count - 99,
                     Text = "New marker added",
                     Id = Library.API.Tools.RandomString()
                 };

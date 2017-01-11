@@ -16,12 +16,8 @@ namespace Library.Frames.Factory
         public static T CreateObject<T>(string xml) where T : IFrame
         {
             XmlSerializer serializer = new XmlSerializer(typeof(T));
-            T result;
             using (TextReader reader = new StringReader(xml))
-            {
-                result = (T)serializer.Deserialize(reader);
-            }
-            return result;
+                return (T)serializer.Deserialize(reader);
         }
 
         /// <summary>

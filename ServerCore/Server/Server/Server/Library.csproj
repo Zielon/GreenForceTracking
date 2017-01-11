@@ -47,7 +47,6 @@
   <ItemGroup>
     <Compile Include="API\MessagesHandler.cs" />
     <Compile Include="API\Server.cs" />
-    <Compile Include="API\StaticElements.cs" />
     <Compile Include="API\Tools.cs" />
     <Compile Include="Common\Client.cs" />
     <Compile Include="Common\Marker.cs" />
@@ -61,12 +60,15 @@
     <Compile Include="Frames\FramesEnum.cs" />
     <Compile Include="Frames\FramesFactory.cs" />
     <Compile Include="Frames\IFrame.cs" />
+    <Compile Include="Frames\MarkerEnum.cs" />
     <Compile Include="Frames\Server\MarkerInfoServer.cs" />
     <Compile Include="Frames\Server\RoomInfoServer.cs" />
     <Compile Include="Messages\Message.cs" />
     <Compile Include="Messages\MessageContainer.cs" />
     <Compile Include="Mock\DataBaseMock.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Stats\StatsHandler.cs" />
+    <Compile Include="Stats\UserStats.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

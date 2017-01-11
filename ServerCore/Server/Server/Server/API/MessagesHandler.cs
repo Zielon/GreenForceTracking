@@ -81,6 +81,8 @@ namespace Server.API
 
             if (!IsLogged(marker.Login)) return;
 
+            Stats.StatsHandler.AddMarker(marker.Login);
+
             lock (Server.Room.Markers)
             {
                 if (!Server.Room.Markers.Contains(marker) && marker.Add)
@@ -89,17 +91,6 @@ namespace Server.API
                     marker.PropertyChanged += Server.ClientPropertyChanged;
                     marker.Connection = tcpClient;
                     marker.NotifyPropertyChanged();
-
-                    Server.OnContainerChange(new ContainerEventArgs
-                    {
-                        Message = new Message()
-                        {
-                            User = marker.Login,
-                            Adress = tcpClient.Client.RemoteEndPoint.ToString(),
-                            Time = DateTime.Now,
-                            RecivedData = "New marker was added !"
-                        }
-                    });
 
                     lock (Server.Container.RecivedMessages)
                          if (Server.Container.RecivedMessages.Count > 17)
@@ -184,6 +175,7 @@ namespace Server.API
                     playerInRoom.Message = client.Message;
                 }
 
+                Stats.StatsHandler.Update(client);
                 playerInRoom.NotifyPropertyChanged();
 
                 Server.OnContainerChange(new ContainerEventArgs

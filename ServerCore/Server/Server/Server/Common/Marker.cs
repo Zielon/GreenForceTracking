@@ -1,4 +1,5 @@
 ﻿using Library.Frames;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Net.Sockets;
 using System.Runtime.CompilerServices;
@@ -12,18 +13,18 @@ namespace Library.Common
 
         public string Text { get; set; }
 
-        public double Lat { get; set; }
-
-        public double Lng { get; set; }
-
         public bool Add { get; set; }
+
+        public List<Posision> Points { get; set; }
 
         public string Login { get; set; }
 
-        [XmlIgnoreAttribute]
-        public TcpClient Connection { get; set; }
+        public Markers MarkerType { get; set; }
 
         public Frames.Frames FrameType { get; set; }
+
+        [XmlIgnoreAttribute]
+        public TcpClient Connection { get; set; }
 
         public event PropertyChangedEventHandler PropertyChanged;
 

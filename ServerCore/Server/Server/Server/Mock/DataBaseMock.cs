@@ -9,7 +9,9 @@ namespace Server.Mock
         {
                new SystemUser {  Login = "root", Password = "123" },
                new SystemUser {  Login = "antek", Password = "aaa" },
-               new SystemUser {  Login = "korek", Password = "kkk" }
+               new SystemUser {  Login = "korek", Password = "kkk" },
+               new SystemUser {  Login = "Wojtek", Password = "w" },
+               new SystemUser {  Login = "Filip", Password = "f" }
         };
     }
 }

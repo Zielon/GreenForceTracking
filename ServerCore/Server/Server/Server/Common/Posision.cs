@@ -8,14 +8,15 @@ namespace Library.Common
 {
     public sealed class Posision
     {
-        public double Lat { get; private set; }
-        public double Lon { get; private set; }
+        public double Lat { get; set; }
+        public double Lon { get; set; }
 
         public Posision(double lat, double lon)
         {
             Lat = lat;
             Lon = lon;
         }
+        public Posision() { }
 
         public override bool Equals(object obj)
         {

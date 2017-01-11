@@ -12,10 +12,12 @@ namespace ServerApplication
     {
         private static bool Running;
         private Library.Server.Server server;
+        private Stats statsWindow;
 
         public MainWindow()
         {
             InitializeComponent();
+            statsWindow = new Stats();
         }
 
         private void button_Click(object sender, RoutedEventArgs e)
@@ -43,6 +45,16 @@ namespace ServerApplication
         private void button1_Click(object sender, RoutedEventArgs e)
         {
             this.textBox.Clear();
+        }
+
+        private void button1_Copy_Click(object sender, RoutedEventArgs e)
+        {
+            statsWindow.Show();
+        }
+
+        private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            statsWindow.Close();
         }
     }
 }

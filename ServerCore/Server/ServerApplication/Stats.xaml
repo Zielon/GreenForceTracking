@@ -5,11 +5,11 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:ServerApplication"
         mc:Ignorable="d"
-        Title="Statistics" Height="471.599" Width="319.364" ShowInTaskbar="False" SizeToContent="WidthAndHeight" ResizeMode="NoResize">
+        Title="Statistics" Height="471.599" Width="319.364" ShowInTaskbar="False" SizeToContent="WidthAndHeight" ResizeMode="NoResize" Closing="Window_Closing">
     <Grid>
         <TextBox x:Name="textBox" HorizontalAlignment="Left" Height="412" TextWrapping="Wrap" VerticalAlignment="Top" Width="313" FontFamily="Consolas" FontSize="10.667" BorderBrush="#FFABADB3" Margin="0,31,0,0"/>
         <TextBox x:Name="textBox1" HorizontalAlignment="Left" Height="23" Margin="99,3,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="214" KeyDown="textBox1_KeyDown" KeyUp="textBox1_KeyUp"/>
-        <Label x:Name="label" Content="Serach by name" HorizontalAlignment="Left" VerticalAlignment="Top"/>
+        <Label x:Name="label" Content="Search by name" HorizontalAlignment="Left" VerticalAlignment="Top"/>
 
     </Grid>
 </Window>

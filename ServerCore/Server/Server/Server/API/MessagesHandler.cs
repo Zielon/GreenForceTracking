@@ -92,6 +92,7 @@ namespace Server.API
                     marker.Connection = tcpClient;
                     marker.NotifyPropertyChanged();
 
+                    Server.OnMessageChange(new MessageEventArgs { Message = $"Marker has been added by {marker.Login} !\n" });
                     lock (Server.Container.RecivedMessages)
                          if (Server.Container.RecivedMessages.Count > 17)
                             Server.OnContainerChange(new ContainerEventArgs { Clean = true });

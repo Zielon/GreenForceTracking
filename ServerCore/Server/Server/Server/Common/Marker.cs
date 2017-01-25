@@ -13,13 +13,17 @@ namespace Library.Common
 
         public string Text { get; set; }
 
-        public bool Add { get; set; }
-
         public List<Posision> Points { get; set; }
+
+        public bool Add { get; set; }
 
         public string Login { get; set; }
 
-        public Markers MarkerType { get; set; }
+        public bool Outside { get; set; }
+
+        public int Color { get; set; }
+
+        public string Type { get; set; }
 
         public Frames.Frames FrameType { get; set; }
 

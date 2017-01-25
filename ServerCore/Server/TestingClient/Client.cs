@@ -228,9 +228,11 @@ namespace TestingClient
                         new Posision(3.1, 2.3),
                         new Posision(4.1, 2.3),
                         new Posision(5.1, 2.3) },
-                    MarkerType = Markers.Warning,
                     FrameType = Frames.Marker,
                     Text = "New marker added",
+                    Color = -234,
+                    Outside = false,
+                    Type = "area",
                     Id = Library.API.Tools.RandomString()
                 };
 

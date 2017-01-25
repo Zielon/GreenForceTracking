@@ -41,5 +41,11 @@ namespace ServerApplication
         {
             search = this.textBox1.Text;
         }
+
+        private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            e.Cancel = true;
+            this.Visibility = Visibility.Hidden;
+        }
     }
 }

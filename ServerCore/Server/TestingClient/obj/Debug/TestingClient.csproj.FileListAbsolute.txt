@@ -1,5 +1,0 @@
-X:\Repozytoria\GreenForceTracking\ServerCore\Server\TestingClient\bin\Debug\TestingClient.exe.config
-X:\Repozytoria\GreenForceTracking\ServerCore\Server\TestingClient\bin\Debug\TestingClient.exe
-X:\Repozytoria\GreenForceTracking\ServerCore\Server\TestingClient\bin\Debug\TestingClient.pdb
-X:\Repozytoria\GreenForceTracking\ServerCore\Server\TestingClient\bin\Debug\ServerApplication.exe
-X:\Repozytoria\GreenForceTracking\ServerCore\Server\TestingClient\bin\Debug\ServerApplication.pdb

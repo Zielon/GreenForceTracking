@@ -33,9 +33,13 @@ build/
 *.log
 *.scc
 
-ServerCore/Server/ServerApplication/obj/Debug/ServerApplication.exe
-ServerCore/Server/ServerApplication/obj/Debug/ServerApplication.pdb
-ServerCore/Server/TestingClient/obj/Debug/TestingClient.csproj.FileListAbsolute.txt
-ServerCore/Server/TestingClient/obj/Debug/TestingClient.csprojResolveAssemblyReference.cache
-ServerCore/Server/TestingClient/obj/Debug/TestingClient.exe
-ServerCore/Server/TestingClient/obj/Debug/TestingClient.pdb
+ServerCore/Server/Output/**
+
+ServerCore/Server/ServerApplication/obj/**
+ServerCore/Server/ServerApplication/bin/**
+
+ServerCore/Server/Server/Server/obj/**
+ServerCore/Server/Server/Server/bin/**
+
+ServerCore/Server/TestingClient/obj/**
+ServerCore/Server/TestingClient/bin/**

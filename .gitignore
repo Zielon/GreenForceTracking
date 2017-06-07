@@ -1,38 +1,3 @@
-ServerCore/Server/Output/*
-[Dd]ebug/
-[Rr]elease/
-x64/
-build/
-[Bb]in/
-[Oo]bj/
-
-[Tt]est[Rr]esult*/
-[Bb]uild[Ll]og.*
-
-*_i.c
-*_p.c
-*.ilk
-*.meta
-*.obj
-*.pch
-*.pdb
-*.pgc
-*.pgd
-*.rsp
-*.sbr
-*.tlb
-*.tli
-*.tlh
-*.tmp
-*.tmp_proj
-*.log
-*.vspscc
-*.vssscc
-.builds
-*.pidb
-*.log
-*.scc
-
 ServerCore/Server/Output/**
 
 ServerCore/Server/ServerApplication/obj/**
@@ -43,3 +8,4 @@ ServerCore/Server/Server/Server/bin/**
 
 ServerCore/Server/TestingClient/obj/**
 ServerCore/Server/TestingClient/bin/**
+

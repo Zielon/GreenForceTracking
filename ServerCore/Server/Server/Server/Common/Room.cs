@@ -1,7 +1,7 @@
 ﻿using System.Collections.ObjectModel;
-using Library.Frames;
+using Server.Frames;
 
-namespace Library.Common
+namespace Server.Common
 {
     public class Room
     {

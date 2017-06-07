@@ -6,11 +6,10 @@ using System.Net.Sockets;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Xml;
-using Library.API;
-using Library.Common;
-using Library.Frames;
-using Library.Frames.Client;
-using Library.Frames.Factory;
+using Server.API;
+using Server.Common;
+using Server.Frames;
+using Server.Frames.Client;
 
 namespace TestingClient
 {
@@ -80,14 +79,9 @@ namespace TestingClient
                                 }
 
                                 var xml = sw.ToString();
-                                var f = FramesFactory.CreateObject<Library.Common.Client>(xml);
-                                str += string.Format(
-                                    "User: {0}\nAcc: {1}\nLat: {2}\nLng: {3}\nMsg: {4}\n--------------------\n",
-                                    f.Login,
-                                    f.Accuracy,
-                                    f.Lat,
-                                    f.Lng,
-                                    f.Message);
+                                var f = FramesFactory.CreateObject<Server.Common.Client>(xml);
+                                str +=
+                                    $"User: {f.Login}\nAcc: {f.Accuracy}\nLat: {f.Lat}\nLng: {f.Lng}\nMsg: {f.Message}\n--------------------\n";
                             }
 
                         foreach (XmlNode player in GetNodeList(message, "RemoveUser"))
@@ -102,7 +96,7 @@ namespace TestingClient
 
                                 var xml = sw.ToString();
                                 var f = FramesFactory.CreateObject<RemoveUser>(xml);
-                                str += string.Format("User: {0} was deleted\n--------------------\n", f.Login);
+                                str += $"User: {f.Login} was deleted\n--------------------\n";
                             }
 
                         foreach (XmlNode player in GetNodeList(message, "Marker"))
@@ -117,7 +111,7 @@ namespace TestingClient
 
                                 var xml = sw.ToString();
                                 var f = FramesFactory.CreateObject<Marker>(xml);
-                                str += string.Format("User: {0} added new marker\n--------------------\n", f.Login);
+                                str += $"User: {f.Login} added new marker\n--------------------\n";
                             }
 
                         Progress.Report(str);
@@ -171,7 +165,7 @@ namespace TestingClient
                 writer.AutoFlush = true;
                 Window.textBoxResponse.Clear();
 
-                var user = new Library.Common.Client
+                var user = new Server.Common.Client
                 {
                     Posision = new Posision(54.408938381 + count, 19.566548634 - count),
                     Accuracy = 1.53,

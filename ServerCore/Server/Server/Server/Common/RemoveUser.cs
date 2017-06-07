@@ -1,8 +1,8 @@
 ﻿using System.Net.Sockets;
 using System.Xml.Serialization;
-using Library.Frames;
+using Server.Frames;
 
-namespace Library.Common
+namespace Server.Common
 {
     public class RemoveUser : IFrame
     {

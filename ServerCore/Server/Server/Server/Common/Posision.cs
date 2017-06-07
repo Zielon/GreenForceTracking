@@ -1,4 +1,4 @@
-﻿namespace Library.Common
+﻿namespace Server.Common
 {
     public sealed class Posision
     {
@@ -26,7 +26,7 @@
 
         public override string ToString()
         {
-            return string.Format("Lat: {0}, Lon: {1}", Lat, Lon);
+            return $"Lat: {Lat}, Lon: {Lon}";
         }
     }
 }

@@ -24,20 +24,20 @@ namespace Server.Stats
             var duration = DateTime.Now - Start;
             var strings = new List<string>
             {
-                string.Format("{0,-20} | {1,-20}", "User", Name),
-                string.Format("{0,-20} | {1,-20}", "IP:", IP),
-                string.Format("{0,-20} | {1,-20}", "GPS accuracy", $"{Accuracy.ToString("0.##")} m"),
-                string.Format("{0,-20} | {1,-20}", "Internet speed", $"{Kbps.ToString("0.##")} kbps"),
-                string.Format("{0,-20} | {1,-20}", "Kb in total", $"{Kb.ToString("0.##")}"),
-                string.Format("{0,-20} | {1,-20}", "Frames per second", $"{MessagesPerSecond.ToString("0.##")}"),
-                string.Format("{0,-20} | {1,-20}", "Frames in total", $"{Count}"),
-                string.Format("{0,-20} | {1,-20}", "Start", $"{Start.ToString("yyyy-MM-dd [HH:mm:ss]")}"),
-                string.Format("{0,-20} | {1,-20}", "Duration", $"{duration.ToString(@"hh\:mm\:ss\.fff")}"),
-                string.Format("{0,-20} | {1,-20}", "Actual latitude", $"{Lat.ToString("0.########")}"),
-                string.Format("{0,-20} | {1,-20}", "Actual longitude:", $"{Lon.ToString("0.########")}"),
-                string.Format("{0,-20} | {1,-20}", "Avrage speed", $"{Speed.ToString("0.##")} km\\h"),
-                string.Format("{0,-20} | {1,-20}", "Distance", $"{Distance.ToString("0.##")} m"),
-                string.Format("{0,-20} | {1,-20}", "Markers", $"{Markers}")
+                $"{"User",-20} | {Name,-20}",
+                $"{"IP:",-20} | {IP,-20}",
+                $"{"GPS accuracy",-20} | {$"{Accuracy.ToString("0.##")} m",-20}",
+                $"{"Internet speed",-20} | {$"{Kbps.ToString("0.##")} kbps",-20}",
+                $"{"Kb in total",-20} | {$"{Kb.ToString("0.##")}",-20}",
+                $"{"Frames per second",-20} | {$"{MessagesPerSecond.ToString("0.##")}",-20}",
+                $"{"Frames in total",-20} | {$"{Count}",-20}",
+                $"{"Start",-20} | {$"{Start.ToString("yyyy-MM-dd [HH:mm:ss]")}",-20}",
+                $"{"Duration",-20} | {$"{duration.ToString(@"hh\:mm\:ss\.fff")}",-20}",
+                $"{"Actual latitude",-20} | {$"{Lat.ToString("0.########")}",-20}",
+                $"{"Actual longitude:",-20} | {$"{Lon.ToString("0.########")}",-20}",
+                $"{"Avrage speed",-20} | {$"{Speed.ToString("0.##")} km\\h",-20}",
+                $"{"Distance",-20} | {$"{Distance.ToString("0.##")} m",-20}",
+                $"{"Markers",-20} | {$"{Markers}",-20}"
             };
             return string.Join("\n", strings);
         }

@@ -2,7 +2,7 @@
 using System.Xml;
 using System.Xml.Serialization;
 
-namespace Library.Frames.Factory
+namespace Server.Frames
 {
     public class FramesFactory
     {
@@ -40,7 +40,7 @@ namespace Library.Frames.Factory
             ms.Seek(0, SeekOrigin.Begin);
             StreamReader sr = new StreamReader(ms);
 
-            return string.Format("<Frame>{0}</Frame>", sr.ReadToEnd());
+            return $"<Frame>{sr.ReadToEnd()}</Frame>";
         }
     }
 }

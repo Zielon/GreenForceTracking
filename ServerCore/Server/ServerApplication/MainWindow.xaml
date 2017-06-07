@@ -3,7 +3,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:Library.Messages;assembly=Server"
+        xmlns:messages="clr-namespace:Server.Messages;assembly=Server"
         mc:Ignorable="d"
         Title="Server version 2.0" Height="469.462" Width="826.924" ResizeMode="NoResize" Closing="Window_Closing">
 
@@ -39,11 +39,11 @@
                               Height="323" Width="371" Background="#FFFBDBDB"
                               ItemsSource="{Binding}" FontSize="8">
                         <DataGrid.DataContext>
-                            <local:MessagesContainer>
-                                <local:MessagesContainer.RecivedMessages>
-                                    <local:Message />
-                                </local:MessagesContainer.RecivedMessages>
-                            </local:MessagesContainer>
+                            <messages:MessagesContainer>
+                                <messages:MessagesContainer.RecivedMessages>
+                                    <messages:Message />
+                                </messages:MessagesContainer.RecivedMessages>
+                            </messages:MessagesContainer>
                         </DataGrid.DataContext>
                     </DataGrid>
                     <TextBox x:Name="textBox" Height="216" Margin="376,0,0,0" TextWrapping="Wrap"

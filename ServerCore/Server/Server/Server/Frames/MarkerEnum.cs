@@ -1,4 +1,4 @@
-﻿namespace Library.Frames
+﻿namespace Server.Frames
 {
     public enum Markers
     {

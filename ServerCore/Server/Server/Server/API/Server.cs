@@ -8,17 +8,15 @@ using System.Net;
 using System.Net.Sockets;
 using System.Threading;
 using System.Threading.Tasks;
-using Library.Common;
-using Library.Events;
-using Library.Frames;
-using Library.Frames.Client;
-using Library.Frames.Factory;
-using Library.Frames.Server;
-using Library.Messages;
-using Server.API;
+using Server.Common;
+using Server.Events;
+using Server.Frames;
+using Server.Frames.Client;
+using Server.Frames.Server;
+using Server.Messages;
 using Server.Mock;
 
-namespace Library.Server
+namespace Server.API
 {
     public class Server
     {

@@ -4,13 +4,11 @@ using System.IO;
 using System.Linq;
 using System.Net.Sockets;
 using System.Xml;
-using Library.API;
-using Library.Common;
-using Library.Events;
-using Library.Frames;
-using Library.Frames.Client;
-using Library.Frames.Factory;
-using Library.Messages;
+using Server.Common;
+using Server.Events;
+using Server.Frames;
+using Server.Frames.Client;
+using Server.Messages;
 using Server.Mock;
 using Server.Stats;
 
@@ -18,9 +16,9 @@ namespace Server.API
 {
     public class MessagesHandler
     {
-        private readonly Library.Server.Server Server;
+        private readonly Server Server;
 
-        public MessagesHandler(Library.Server.Server server)
+        public MessagesHandler(Server server)
         {
             Server = server;
         }
@@ -34,7 +32,7 @@ namespace Server.API
                 doc.LoadXml(msg);
 
                 XmlNodeList frame = doc.GetElementsByTagName("FrameType");
-                var type = Tools.ParseEnum<Frames>(frame.Item(0).InnerText);
+                var type = Tools.ParseEnum<Frames.Frames>(frame.Item(0).InnerText);
 
                 string elements = string.Empty;
 
@@ -53,13 +51,13 @@ namespace Server.API
 
                         switch (type)
                         {
-                            case Frames.Player:
+                            case Frames.Frames.Player:
                                 AddPlayer(xml, tcpClient);
                                 break;
-                            case Frames.Login:
+                            case Frames.Frames.Login:
                                 CheckLogin(xml, tcpClient);
                                 break;
-                            case Frames.Marker:
+                            case Frames.Frames.Marker:
                                 AddMarker(xml, tcpClient);
                                 break;
                             default: throw new InvalidEnumArgumentException();

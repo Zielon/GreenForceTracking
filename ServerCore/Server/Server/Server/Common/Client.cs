@@ -3,9 +3,9 @@ using System.Net.Sockets;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Xml.Serialization;
-using Library.Frames;
+using Server.Frames;
 
-namespace Library.Common
+namespace Server.Common
 {
     /// <summary>
     ///     Implementaion of Observer design pattern

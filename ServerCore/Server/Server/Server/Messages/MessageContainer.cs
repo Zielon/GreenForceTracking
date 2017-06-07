@@ -1,6 +1,6 @@
 ﻿using System.Collections.ObjectModel;
 
-namespace Library.Messages
+namespace Server.Messages
 {
     public class MessagesContainer
     {

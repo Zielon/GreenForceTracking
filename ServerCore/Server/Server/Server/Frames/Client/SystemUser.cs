@@ -3,7 +3,7 @@ using System.Net.Sockets;
 using System.Runtime.CompilerServices;
 using System.Xml.Serialization;
 
-namespace Library.Frames.Client
+namespace Server.Frames.Client
 {
     public class SystemUser : IFrame, INotifyPropertyChanged
     {

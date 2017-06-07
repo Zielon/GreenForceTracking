@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Library.Events
+namespace Server.Events
 {
     public class MessageEventArgs : EventArgs
     {

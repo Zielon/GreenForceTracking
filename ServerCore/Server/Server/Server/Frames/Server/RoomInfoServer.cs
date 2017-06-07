@@ -1,7 +1,7 @@
 ﻿using System.Net.Sockets;
 using System.Xml.Serialization;
 
-namespace Library.Frames.Server
+namespace Server.Frames.Server
 {
     public class RoomInfoServer : IFrame
     {

@@ -1,6 +1,6 @@
 ﻿using System.Net.Sockets;
 
-namespace Library.Frames
+namespace Server.Frames
 {
     public interface IFrame
     {

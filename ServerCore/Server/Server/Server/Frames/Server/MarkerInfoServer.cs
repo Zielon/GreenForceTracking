@@ -1,8 +1,8 @@
 ﻿using System.Net.Sockets;
 using System.Xml.Serialization;
-using Library.Common;
+using Server.Common;
 
-namespace Library.Frames.Server
+namespace Server.Frames.Server
 {
     public class MarkerInfoServer : IFrame
     {

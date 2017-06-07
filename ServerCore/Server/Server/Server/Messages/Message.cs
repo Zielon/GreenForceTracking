@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Library.Messages
+namespace Server.Messages
 {
     public class Message
     {

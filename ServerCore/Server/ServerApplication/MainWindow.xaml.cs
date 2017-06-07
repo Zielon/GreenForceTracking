@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel;
 using System.Windows;
 using System.Windows.Media;
-using Library.API;
+using Server.API;
 
 namespace ServerApplication
 {
@@ -11,7 +11,7 @@ namespace ServerApplication
     public partial class MainWindow : Window
     {
         private static bool Running;
-        private Library.Server.Server server;
+        private Server.API.Server server;
         private readonly Stats statsWindow;
 
         public MainWindow()
@@ -27,7 +27,7 @@ namespace ServerApplication
             Running = true;
             var ip = textBoxIP.Text;
 
-            server = new Library.Server.Server(ip, 52400);
+            server = new Server.API.Server(ip, 52400);
             server.WindowEvent += (s, a) => ServerStatus.Content = a.Running;
 
             dataGrid.DataContext = server.Container.RecivedMessages;

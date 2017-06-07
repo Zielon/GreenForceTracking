@@ -1,7 +1,7 @@
 ﻿using System;
-using Library.Messages;
+using Server.Messages;
 
-namespace Library.Events
+namespace Server.Events
 {
     public class ContainerEventArgs : EventArgs
     {

@@ -1,3 +1,8 @@
+
+*.exe
+*.pdb
+*.cache
+
 ServerCore/Server/Output/**
 
 ServerCore/Server/ServerApplication/obj/**
@@ -8,4 +13,3 @@ ServerCore/Server/Server/Server/bin/**
 
 ServerCore/Server/TestingClient/obj/**
 ServerCore/Server/TestingClient/bin/**
-

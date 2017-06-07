@@ -1,56 +1,53 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Net;
 using System.Net.Sockets;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Xml;
+using Library.API;
 using Library.Common;
 using Library.Frames;
+using Library.Frames.Client;
 using Library.Frames.Factory;
-using System.Threading;
 
 namespace TestingClient
 {
     class Client
     {
-        public MainWindow Window;
+        private readonly TcpClient _client;
+
+        private double count = 1.1;
         public IPAddress Ip;
         public bool isConnedted = false;
         public IProgress<string> Progress;
-
-        private double count = 1.1;
-        private ManualResetEvent waitForSocket = new ManualResetEvent(true);
-        private TcpClient _client;
+        private readonly ManualResetEvent waitForSocket = new ManualResetEvent(true);
+        public MainWindow Window;
 
         public Client(Progress<string> progress, MainWindow window)
         {
             _client = new TcpClient();
 
-            this.Window = window;
-            this.Progress = progress;
+            Window = window;
+            Progress = progress;
         }
 
-        public void Conntect() {
-
+        public void Conntect()
+        {
             if (_client.Connected) return;
 
             var check = Window.customIPBtn.IsChecked ?? false;
-            if (check)
-            {
-                Ip = IPAddress.Parse(Window.Ip_Box.Text);
-            }
+            if (check) { Ip = IPAddress.Parse(Window.Ip_Box.Text); }
             else
             {
                 IPHostEntry ipHostInfo = Dns.GetHostEntry("kornik.ddns.net");
                 for (int i = 0; i < ipHostInfo.AddressList.Length; ++i)
-                {
-                    if (ipHostInfo.AddressList[i].AddressFamily ==
-                      AddressFamily.InterNetwork)
+                    if (ipHostInfo.AddressList[i].AddressFamily == AddressFamily.InterNetwork)
                     {
                         Ip = ipHostInfo.AddressList[i];
                         break;
                     }
-                }
             }
 
             _client.ConnectAsync(Ip, 52400);
@@ -59,7 +56,6 @@ namespace TestingClient
         public async void StartProcessing()
         {
             while (true)
-            {
                 try
                 {
                     if (!_client.Connected) _client.Connect(Ip, 52400);
@@ -74,12 +70,11 @@ namespace TestingClient
                         string str = string.Empty;
 
                         foreach (XmlNode player in GetNodeList(message, "Client"))
-                        {
                             using (var sw = new StringWriter())
                             {
                                 using (var xw = new XmlTextWriter(sw))
                                 {
-                                    xw.Formatting = System.Xml.Formatting.Indented;
+                                    xw.Formatting = Formatting.Indented;
                                     xw.Indentation = 2;
                                     player.WriteTo(xw);
                                 }
@@ -88,45 +83,42 @@ namespace TestingClient
                                 var f = FramesFactory.CreateObject<Library.Common.Client>(xml);
                                 str += string.Format(
                                     "User: {0}\nAcc: {1}\nLat: {2}\nLng: {3}\nMsg: {4}\n--------------------\n",
-                                    f.Login, f.Accuracy, f.Lat, f.Lng, f.Message);
+                                    f.Login,
+                                    f.Accuracy,
+                                    f.Lat,
+                                    f.Lng,
+                                    f.Message);
                             }
-                        }
 
                         foreach (XmlNode player in GetNodeList(message, "RemoveUser"))
-                        {
                             using (var sw = new StringWriter())
                             {
                                 using (var xw = new XmlTextWriter(sw))
                                 {
-                                    xw.Formatting = System.Xml.Formatting.Indented;
+                                    xw.Formatting = Formatting.Indented;
                                     xw.Indentation = 2;
                                     player.WriteTo(xw);
                                 }
 
                                 var xml = sw.ToString();
-                                var f = FramesFactory.CreateObject<Library.Common.RemoveUser>(xml);
-                                str += string.Format(
-                                    "User: {0} was deleted\n--------------------\n", f.Login);
+                                var f = FramesFactory.CreateObject<RemoveUser>(xml);
+                                str += string.Format("User: {0} was deleted\n--------------------\n", f.Login);
                             }
-                        }
 
                         foreach (XmlNode player in GetNodeList(message, "Marker"))
-                        {
                             using (var sw = new StringWriter())
                             {
                                 using (var xw = new XmlTextWriter(sw))
                                 {
-                                    xw.Formatting = System.Xml.Formatting.Indented;
+                                    xw.Formatting = Formatting.Indented;
                                     xw.Indentation = 2;
                                     player.WriteTo(xw);
                                 }
 
                                 var xml = sw.ToString();
-                                var f = FramesFactory.CreateObject<Library.Common.Marker>(xml);
-                                str += string.Format(
-                                    "User: {0} added new marker\n--------------------\n", f.Login);
+                                var f = FramesFactory.CreateObject<Marker>(xml);
+                                str += string.Format("User: {0} added new marker\n--------------------\n", f.Login);
                             }
-                        }
 
                         Progress.Report(str);
                     }
@@ -136,7 +128,6 @@ namespace TestingClient
                     Progress.Report(ex.Message + "\n");
                     break;
                 }
-            }
         }
 
         private XmlNodeList GetNodeList(string xml, string tagName)
@@ -153,11 +144,7 @@ namespace TestingClient
 
             writer.AutoFlush = true;
 
-            var msg = new Library.Frames.Client.SystemUser
-            {
-                Login = user,
-                Password = password
-            };
+            var msg = new SystemUser { Login = user, Password = password };
 
             var xmlMsg = FramesFactory.CreateXmlMessage(msg);
 
@@ -184,7 +171,7 @@ namespace TestingClient
                 writer.AutoFlush = true;
                 Window.textBoxResponse.Clear();
 
-                var user = new Library.Common.Client()
+                var user = new Library.Common.Client
                 {
                     Posision = new Posision(54.408938381 + count, 19.566548634 - count),
                     Accuracy = 1.53,
@@ -201,10 +188,7 @@ namespace TestingClient
 
                 waitForSocket.Set();
             }
-            catch (Exception ex)
-            {
-                Window.textBoxResponse.Text = ex.Message + "\n" + ex.StackTrace;
-            }
+            catch (Exception ex) { Window.textBoxResponse.Text = ex.Message + "\n" + ex.StackTrace; }
         }
 
         public async Task SendMarker()
@@ -219,21 +203,24 @@ namespace TestingClient
                 writer.AutoFlush = true;
                 Window.textBoxResponse.Clear();
 
-                var marker = new Library.Common.Marker()
+                var marker = new Marker
                 {
                     Add = true,
                     Login = Window.NameBox.Text,
-                    Points = new System.Collections.Generic.List<Posision> {
-                        new Posision(1.1, 2.3),
-                        new Posision(3.1, 2.3),
-                        new Posision(4.1, 2.3),
-                        new Posision(5.1, 2.3) },
+                    Points =
+                        new List<Posision>
+                        {
+                            new Posision(1.1, 2.3),
+                            new Posision(3.1, 2.3),
+                            new Posision(4.1, 2.3),
+                            new Posision(5.1, 2.3)
+                        },
                     FrameType = Frames.Marker,
                     Text = "New marker added",
                     Color = -234,
                     Outside = false,
                     Type = "area",
-                    Id = Library.API.Tools.RandomString()
+                    Id = Tools.RandomString()
                 };
 
                 string msg = FramesFactory.CreateXmlMessage(marker);
@@ -243,10 +230,7 @@ namespace TestingClient
 
                 waitForSocket.Set();
             }
-            catch (Exception ex)
-            {
-                Window.textBoxResponse.Text = ex.Message + "\n" + ex.StackTrace;
-            }
+            catch (Exception ex) { Window.textBoxResponse.Text = ex.Message + "\n" + ex.StackTrace; }
         }
     }
 }

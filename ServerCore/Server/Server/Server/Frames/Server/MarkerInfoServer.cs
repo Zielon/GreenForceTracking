@@ -1,21 +1,23 @@
-﻿using Library.Common;
-using System.Net.Sockets;
+﻿using System.Net.Sockets;
 using System.Xml.Serialization;
+using Library.Common;
 
 namespace Library.Frames.Server
 {
     public class MarkerInfoServer : IFrame
     {
-        public Frames FrameType { get; set; }
-
-        [XmlIgnoreAttribute]
-        public string Login { get; set; }
-
-        [XmlIgnoreAttribute]
-        public TcpClient Connection { get; set; }
+        public MarkerInfoServer()
+        {
+            FrameType = Frames.Marker;
+        }
 
         public Marker Marker { get; set; }
+        public Frames FrameType { get; set; }
 
-        public MarkerInfoServer() { FrameType = Frames.Marker; }
+        [XmlIgnore]
+        public string Login { get; set; }
+
+        [XmlIgnore]
+        public TcpClient Connection { get; set; }
     }
 }

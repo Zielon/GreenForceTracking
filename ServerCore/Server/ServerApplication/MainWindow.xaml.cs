@@ -1,18 +1,18 @@
-﻿using Library.API;
+﻿using System.ComponentModel;
 using System.Windows;
 using System.Windows.Media;
-
+using Library.API;
 
 namespace ServerApplication
 {
     /// <summary>
-    /// Interaction logic for MainWindow.xaml
+    ///     Interaction logic for MainWindow.xaml
     /// </summary>
     public partial class MainWindow : Window
     {
         private static bool Running;
         private Library.Server.Server server;
-        private Stats statsWindow;
+        private readonly Stats statsWindow;
 
         public MainWindow()
         {
@@ -33,18 +33,24 @@ namespace ServerApplication
             dataGrid.DataContext = server.Container.RecivedMessages;
 
             // Events setup
-            server.ContainerEvent += (s, a) => { if (a.Clean) Dispatcher.Invoke(() => server.Container.RecivedMessages.Remove(m => a.Clean)); };
-            server.ContainerEvent += (s, a) => { if (a.Message != null) Dispatcher.Invoke(() => server.Container.RecivedMessages.Add(a.Message)); };
+            server.ContainerEvent += (s, a) => {
+                if (a.Clean) Dispatcher.Invoke(() => server.Container.RecivedMessages.Remove(m => a.Clean));
+            };
+            server.ContainerEvent += (s, a) => {
+                if (a.Message != null) Dispatcher.Invoke(() => server.Container.RecivedMessages.Add(a.Message));
+            };
             server.MessageEvent += (s, a) => Dispatcher.Invoke(() => textBox.AppendText(a.Message));
-            server.WindowEvent += (s, a) => { if (a.ChangeBrush) ServerStatus.Foreground = new SolidColorBrush(Colors.Green); button.IsEnabled = false; };
+            server.WindowEvent += (s, a) => {
+                if (a.ChangeBrush) ServerStatus.Foreground = new SolidColorBrush(Colors.Green);
+                button.IsEnabled = false;
+            };
 
             server.StartListening();
-
         }
 
         private void button1_Click(object sender, RoutedEventArgs e)
         {
-            this.textBox.Clear();
+            textBox.Clear();
         }
 
         private void button1_Copy_Click(object sender, RoutedEventArgs e)
@@ -52,7 +58,7 @@ namespace ServerApplication
             statsWindow.Show();
         }
 
-        private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+        private void Window_Closing(object sender, CancelEventArgs e)
         {
             statsWindow.Close();
         }

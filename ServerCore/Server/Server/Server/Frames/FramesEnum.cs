@@ -2,22 +2,16 @@
 
 namespace Library.Frames
 {
+    public enum Frames
+    {
+        [XmlEnum(Name = "RemovingUser")] RemovingUser,
 
-    public enum Frames {
+        [XmlEnum(Name = "Login")] Login,
 
-        [XmlEnum(Name = "RemovingUser")]
-        RemovingUser,
+        [XmlEnum(Name = "RoomInfo")] RoomInfo,
 
-        [XmlEnum(Name = "Login")]
-        Login,
+        [XmlEnum(Name = "Player")] Player,
 
-        [XmlEnum(Name = "RoomInfo")]
-        RoomInfo,
-
-        [XmlEnum(Name = "Player")]
-        Player,
-
-        [XmlEnum(Name = "Marker")]
-        Marker
+        [XmlEnum(Name = "Marker")] Marker
     }
 }

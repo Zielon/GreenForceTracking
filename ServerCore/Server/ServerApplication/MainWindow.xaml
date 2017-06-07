@@ -9,42 +9,59 @@
 
     <Grid Margin="0,0,-45,9">
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="107*"/>
-            <ColumnDefinition Width="95*"/>
-            <ColumnDefinition Width="0*"/>
-            <ColumnDefinition Width="14*"/>
+            <ColumnDefinition Width="107*" />
+            <ColumnDefinition Width="95*" />
+            <ColumnDefinition Width="0*" />
+            <ColumnDefinition Width="14*" />
         </Grid.ColumnDefinitions>
         <Viewbox Grid.ColumnSpan="2" Margin="10,10,8,0" Stretch="Fill">
             <Viewbox Height="352" Stretch="Fill" Width="657">
                 <Grid Height="352" Width="657">
                     <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="470*"/>
-                        <ColumnDefinition Width="187*"/>
+                        <ColumnDefinition Width="470*" />
+                        <ColumnDefinition Width="187*" />
                     </Grid.ColumnDefinitions>
-                    <Label x:Name="label2" Content="Recived Packages" HorizontalAlignment="Left" VerticalAlignment="Top" Width="301" Height="26"/>
-                    <Button x:Name="button" Content="Start listening" HorizontalAlignment="Right" Margin="0,38,0,0" VerticalAlignment="Top" Width="120" Height="24" Click="button_Click" Grid.Column="1"/>
-                    <TextBox x:Name="textBoxIP" Height="23" Margin="0,10,0,0" TextWrapping="Wrap" VerticalAlignment="Top" HorizontalAlignment="Right" Width="120" Text="192.168.0.3" Grid.Column="1"/>
-                    <Label x:Name="label" Content="IP&#xA;IP" HorizontalAlignment="Left" Margin="44.648,6,0,0" VerticalAlignment="Top" Height="26" Width="39" RenderTransformOrigin="0.38,-0.118" Grid.Column="1"/>
-                    <Label x:Name="ServerStatus" Content="Server is disabled" Margin="376,38,131,0" VerticalAlignment="Top" Height="38" Background="White" Foreground="#FFFF0202" FontSize="16" Grid.ColumnSpan="2"/>
+                    <Label x:Name="label2" Content="Recived Packages" HorizontalAlignment="Left"
+                           VerticalAlignment="Top" Width="301" Height="26" />
+                    <Button x:Name="button" Content="Start listening" HorizontalAlignment="Right" Margin="0,38,0,0"
+                            VerticalAlignment="Top" Width="120" Height="24" Click="button_Click" Grid.Column="1" />
+                    <TextBox x:Name="textBoxIP" Height="23" Margin="0,10,0,0" TextWrapping="Wrap"
+                             VerticalAlignment="Top" HorizontalAlignment="Right" Width="120" Text="192.168.0.3"
+                             Grid.Column="1" />
+                    <Label x:Name="label" Content="IP&#xA;IP" HorizontalAlignment="Left" Margin="44.648,6,0,0"
+                           VerticalAlignment="Top" Height="26" Width="39" RenderTransformOrigin="0.38,-0.118"
+                           Grid.Column="1" />
+                    <Label x:Name="ServerStatus" Content="Server is disabled" Margin="376,38,131,0"
+                           VerticalAlignment="Top" Height="38" Background="White" Foreground="#FFFF0202" FontSize="16"
+                           Grid.ColumnSpan="2" />
 
-                    <DataGrid x:Name="dataGrid" HorizontalAlignment="Left" Margin="0,29,0,0" VerticalAlignment="Top" Height="323" Width="371" Background="#FFFBDBDB"
+                    <DataGrid x:Name="dataGrid" HorizontalAlignment="Left" Margin="0,29,0,0" VerticalAlignment="Top"
+                              Height="323" Width="371" Background="#FFFBDBDB"
                               ItemsSource="{Binding}" FontSize="8">
                         <DataGrid.DataContext>
                             <local:MessagesContainer>
                                 <local:MessagesContainer.RecivedMessages>
-                                    <local:Message/>
+                                    <local:Message />
                                 </local:MessagesContainer.RecivedMessages>
                             </local:MessagesContainer>
                         </DataGrid.DataContext>
                     </DataGrid>
-                    <TextBox x:Name="textBox" Height="216" Margin="376,0,0,0" TextWrapping="Wrap" VerticalAlignment="Bottom" FontSize="9.333" FontFamily="Consolas" Background="#FFF0DADA" Grid.ColumnSpan="2" HorizontalAlignment="Left" Width="281"/>
-                    <Label x:Name="label3" Content="Console output" HorizontalAlignment="Left" Margin="376,105,0,0" VerticalAlignment="Top">
+                    <TextBox x:Name="textBox" Height="216" Margin="376,0,0,0" TextWrapping="Wrap"
+                             VerticalAlignment="Bottom" FontSize="9.333" FontFamily="Consolas" Background="#FFF0DADA"
+                             Grid.ColumnSpan="2" HorizontalAlignment="Left" Width="281" />
+                    <Label x:Name="label3" Content="Console output" HorizontalAlignment="Left" Margin="376,105,0,0"
+                           VerticalAlignment="Top">
                         <Label.Foreground>
-                            <SolidColorBrush Color="{DynamicResource {x:Static SystemColors.ActiveCaptionTextColorKey}}"/>
+                            <SolidColorBrush
+                                Color="{DynamicResource {x:Static SystemColors.ActiveCaptionTextColorKey}}" />
                         </Label.Foreground>
                     </Label>
-                    <Button x:Name="button1" Content="Clean" Grid.Column="1" HorizontalAlignment="Left" Margin="140,114,0,0" VerticalAlignment="Top" Width="47" Height="17" FontSize="9.333" Click="button1_Click"/>
-                    <Button x:Name="button1_Copy" Content="Stats" Grid.Column="1" HorizontalAlignment="Left" Margin="140,92,0,0" VerticalAlignment="Top" Width="47" Height="17" FontSize="9.333" Click="button1_Copy_Click"/>
+                    <Button x:Name="button1" Content="Clean" Grid.Column="1" HorizontalAlignment="Left"
+                            Margin="140,114,0,0" VerticalAlignment="Top" Width="47" Height="17" FontSize="9.333"
+                            Click="button1_Click" />
+                    <Button x:Name="button1_Copy" Content="Stats" Grid.Column="1" HorizontalAlignment="Left"
+                            Margin="140,92,0,0" VerticalAlignment="Top" Width="47" Height="17" FontSize="9.333"
+                            Click="button1_Copy_Click" />
                 </Grid>
             </Viewbox>
         </Viewbox>

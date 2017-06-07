@@ -1,21 +1,22 @@
-﻿using System.Collections.Generic;
-using System.Net.Sockets;
+﻿using System.Net.Sockets;
 using System.Xml.Serialization;
 
 namespace Library.Frames.Server
 {
     public class RoomInfoServer : IFrame
     {
-        public Frames FrameType { get; set; }
-
-        [XmlIgnoreAttribute]
-        public string Login { get; set; }
-
-        [XmlIgnoreAttribute]
-        public TcpClient Connection { get; set; }
+        public RoomInfoServer()
+        {
+            FrameType = Frames.RoomInfo;
+        }
 
         public Common.Client Client { get; set; }
+        public Frames FrameType { get; set; }
 
-        public RoomInfoServer() { FrameType = Frames.RoomInfo; }
+        [XmlIgnore]
+        public string Login { get; set; }
+
+        [XmlIgnore]
+        public TcpClient Connection { get; set; }
     }
 }

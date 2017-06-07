@@ -1,13 +1,15 @@
-﻿using System;
+﻿using System.ComponentModel;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Input;
+using Server.Stats;
 
 namespace ServerApplication
 {
     /// <summary>
-    /// Interaction logic for Stats.xaml
+    ///     Interaction logic for Stats.xaml
     /// </summary>
     public partial class Stats : Window
     {
@@ -16,36 +18,36 @@ namespace ServerApplication
         public Stats()
         {
             InitializeComponent();
-            Task.Factory.StartNew(() =>
-            {
-                while (true)
-                {
-                    var str = Server.Stats.StatsHandler.StatsCollection.Select(e => e.Value.ToString());
+            Task.Factory.StartNew(
+                () => {
+                    while (true)
+                    {
+                        var str = StatsHandler.StatsCollection.Select(e => e.Value.ToString());
 
-                    if (search != string.Empty) {
-                        str = Server.Stats.StatsHandler.StatsCollection.Where(e => e.Key.Contains(search)).Select(e => e.Value.ToString());
+                        if (search != string.Empty)
+                            str = StatsHandler.StatsCollection.Where(e => e.Key.Contains(search)).Select(e => e.Value.ToString());
+
+                        Dispatcher.Invoke(() => textBox.Text = string.Join("--------------------------------------------\n", str));
+                        Thread.Sleep(100);
                     }
-
-                    Dispatcher.Invoke(() => textBox.Text = string.Join("--------------------------------------------\n", str));
-                    Thread.Sleep(100);
-                }
-            }, TaskCreationOptions.LongRunning);
+                },
+                TaskCreationOptions.LongRunning);
         }
 
-        private void textBox1_KeyDown(object sender, System.Windows.Input.KeyEventArgs e)
+        private void textBox1_KeyDown(object sender, KeyEventArgs e)
         {
-            search = this.textBox1.Text;
+            search = textBox1.Text;
         }
 
-        private void textBox1_KeyUp(object sender, System.Windows.Input.KeyEventArgs e)
+        private void textBox1_KeyUp(object sender, KeyEventArgs e)
         {
-            search = this.textBox1.Text;
+            search = textBox1.Text;
         }
 
-        private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+        private void Window_Closing(object sender, CancelEventArgs e)
         {
             e.Cancel = true;
-            this.Visibility = Visibility.Hidden;
+            Visibility = Visibility.Hidden;
         }
     }
 }

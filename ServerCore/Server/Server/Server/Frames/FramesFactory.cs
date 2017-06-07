@@ -7,25 +7,24 @@ namespace Library.Frames.Factory
     public class FramesFactory
     {
         /// <summary>
-        /// Deserialize object.
+        ///     Deserialize object.
         /// </summary>
         /// <param name="xml"></param>
         /// <returns>
-        /// Type of a template which implements an IFrame interface.
+        ///     Type of a template which implements an IFrame interface.
         /// </returns>
         public static T CreateObject<T>(string xml) where T : IFrame
         {
             XmlSerializer serializer = new XmlSerializer(typeof(T));
-            using (TextReader reader = new StringReader(xml))
-                return (T)serializer.Deserialize(reader);
+            using (TextReader reader = new StringReader(xml)) { return (T) serializer.Deserialize(reader); }
         }
 
         /// <summary>
-        /// Create an serialized object as a single xml string line.
+        ///     Create an serialized object as a single xml string line.
         /// </summary>
         /// <param name="frame"></param>
         /// <returns>
-        /// Single string line.
+        ///     Single string line.
         /// </returns>
         public static string CreateXmlMessage<T>(T frame) where T : IFrame
         {

@@ -1,39 +1,37 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.IO;
+using System.Linq;
 using System.Net;
 using System.Net.Sockets;
-using System.Threading.Tasks;
 using System.Threading;
-using System.ComponentModel;
-using Library.Frames.Server;
+using System.Threading.Tasks;
 using Library.Common;
-using Library.Frames.Factory;
 using Library.Events;
-using Library.Messages;
-using Server.API;
 using Library.Frames;
 using Library.Frames.Client;
+using Library.Frames.Factory;
+using Library.Frames.Server;
+using Library.Messages;
+using Server.API;
 using Server.Mock;
-using System.Linq;
-using System.Collections.ObjectModel;
-using System.Linq.Expressions;
 
 namespace Library.Server
 {
     public class Server
     {
-        public MessagesContainer Container { get; private set; }
-        public EventHandler<MessageEventArgs> MessageEvent;
-        public EventHandler<ContainerEventArgs> ContainerEvent;
-        public EventHandler<WindowEventArgs> WindowEvent;
-        public Room Room = new Room();
-
-        private IPAddress ipAddress;
-        private int port;
         private static EventWaitHandle waitHandle = new AutoResetEvent(false);
         private List<TcpClient> clientList = new List<TcpClient>();
-        private MessagesHandler FramesHandler;
+        public EventHandler<ContainerEventArgs> ContainerEvent;
+        private readonly MessagesHandler FramesHandler;
+
+        private readonly IPAddress ipAddress;
+        public EventHandler<MessageEventArgs> MessageEvent;
+        private readonly int port;
+        public Room Room = new Room();
+        public EventHandler<WindowEventArgs> WindowEvent;
 
         public Server(string ipAddress, int port)
         {
@@ -43,19 +41,18 @@ namespace Library.Server
             FramesHandler = new MessagesHandler(this);
         }
 
+        public MessagesContainer Container { get; }
+
         public void ClientPropertyChanged(object sender, PropertyChangedEventArgs e)
         {
             Client item = sender as Client;
             Marker marker = sender as Marker;
             SystemUser login = sender as SystemUser;
 
-            if (item != null){
-                StartSending(new RoomInfoServer(){ Client = item, Login = item.Login });
-            }
-            else if (marker != null){
-                StartSending(new MarkerInfoServer() { Marker = marker, Login = marker.Login });
-            }
-            else if (login != null){
+            if (item != null) { StartSending(new RoomInfoServer { Client = item, Login = item.Login }); }
+            else if (marker != null) { StartSending(new MarkerInfoServer { Marker = marker, Login = marker.Login }); }
+            else if (login != null)
+            {
                 if (!login.Connection.Connected) return;
 
                 NetworkStream networkStream = login.Connection.GetStream();
@@ -74,7 +71,6 @@ namespace Library.Server
                 var notConnected = new List<IFrame>();
 
                 foreach (var p in collection)
-                {
                     try
                     {
                         if (p.Connection == null || p.Login.Equals(frame.Login)) continue;
@@ -107,16 +103,15 @@ namespace Library.Server
                         notConnected.Add(p);
                         OnMessageChange(new MessageEventArgs { Message = ex.Message + "\n" });
                     }
-                }
 
-                notConnected.ForEach(e => {
-                    Room.Players.Remove(e);
-                    Room.Markers.Where(m => m.Login == e.Login).ToList().ForEach(m => Room.Markers.Remove(m));
-                    StartSending(
-                        new RemoveUser { Connection = e.Connection, FrameType = Frames.Frames.RemovingUser, Login = e.Login });
-                    DataBaseMock.Users.Single(s => s.Login.Equals(e.Login)).LoggedIn = false;
-                    OnMessageChange(new MessageEventArgs { Message = $"{e.Login} has been deleted\n" });
-                });
+                notConnected.ForEach(
+                    e => {
+                        Room.Players.Remove(e);
+                        Room.Markers.Where(m => m.Login == e.Login).ToList().ForEach(m => Room.Markers.Remove(m));
+                        StartSending(new RemoveUser { Connection = e.Connection, FrameType = Frames.Frames.RemovingUser, Login = e.Login });
+                        DataBaseMock.Users.Single(s => s.Login.Equals(e.Login)).LoggedIn = false;
+                        OnMessageChange(new MessageEventArgs { Message = $"{e.Login} has been deleted\n" });
+                    });
             }
         }
 
@@ -126,7 +121,7 @@ namespace Library.Server
 
             try
             {
-                listener = new TcpListener(this.ipAddress, this.port);
+                listener = new TcpListener(ipAddress, port);
                 listener.Start();
                 OnMessageChange(new MessageEventArgs { Message = $"Listening on port: {port}\n" });
                 OnWindowChange(new WindowEventArgs { Running = "Server is running...", ChangeBrush = true });
@@ -137,33 +132,27 @@ namespace Library.Server
                     Processing(tcpClient);
                 }
             }
-            catch (Exception ex)
-            {
-                OnMessageChange(new MessageEventArgs { Message = ex.Message + "\n" + ex.StackTrace });
-            }
+            catch (Exception ex) { OnMessageChange(new MessageEventArgs { Message = ex.Message + "\n" + ex.StackTrace }); }
         }
 
         private void Processing(TcpClient client)
         {
             var localClient = client;
 
-            Task.Factory.StartNew(async () =>
-            {
-                NetworkStream networkStream = localClient.GetStream();
-                StreamReader reader = new StreamReader(networkStream, true);
+            Task.Factory.StartNew(
+                async () => {
+                    NetworkStream networkStream = localClient.GetStream();
+                    StreamReader reader = new StreamReader(networkStream, true);
 
-                while (true)
-                {
-                    string message = await reader.ReadLineAsync();
-
-                    if (message != null)
+                    while (true)
                     {
-                        FramesHandler.ParseMessage(message, localClient);
-                    }
-                    else break;
-                }
+                        string message = await reader.ReadLineAsync();
 
-            }, TaskCreationOptions.LongRunning);
+                        if (message != null) FramesHandler.ParseMessage(message, localClient);
+                        else break;
+                    }
+                },
+                TaskCreationOptions.LongRunning);
         }
 
         public void OnMessageChange(MessageEventArgs args)

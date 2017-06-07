@@ -1,6 +1,5 @@
-﻿using Library;
+﻿using System;
 using Library.Messages;
-using System;
 
 namespace Library.Events
 {

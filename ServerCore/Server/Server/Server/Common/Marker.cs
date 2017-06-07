@@ -1,9 +1,9 @@
-﻿using Library.Frames;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.ComponentModel;
 using System.Net.Sockets;
 using System.Runtime.CompilerServices;
 using System.Xml.Serialization;
+using Library.Frames;
 
 namespace Library.Common
 {
@@ -17,35 +17,31 @@ namespace Library.Common
 
         public bool Add { get; set; }
 
-        public string Login { get; set; }
-
         public bool Outside { get; set; }
 
         public int Color { get; set; }
 
         public string Type { get; set; }
 
+        public string Login { get; set; }
+
         public Frames.Frames FrameType { get; set; }
 
-        [XmlIgnoreAttribute]
+        [XmlIgnore]
         public TcpClient Connection { get; set; }
 
         public event PropertyChangedEventHandler PropertyChanged;
 
         public void NotifyPropertyChanged([CallerMemberName] string propertyName = "")
         {
-            if (PropertyChanged != null)
-                PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+            if (PropertyChanged != null) PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
         }
 
         public override bool Equals(object obj)
         {
             var marker = obj as Marker;
-            if (marker != null)
-                return marker.Id.Equals(Id);
-            else return false;
+            if (marker != null) return marker.Id.Equals(Id);
+            return false;
         }
-
-        public Marker() { }
     }
 }

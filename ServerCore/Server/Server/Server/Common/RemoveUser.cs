@@ -1,7 +1,6 @@
-﻿using Library.Frames;
-using System.Collections.Generic;
-using System.Net.Sockets;
+﻿using System.Net.Sockets;
 using System.Xml.Serialization;
+using Library.Frames;
 
 namespace Library.Common
 {
@@ -11,7 +10,7 @@ namespace Library.Common
 
         public string Login { get; set; }
 
-        [XmlIgnoreAttribute]
+        [XmlIgnore]
         public TcpClient Connection { get; set; }
     }
 }

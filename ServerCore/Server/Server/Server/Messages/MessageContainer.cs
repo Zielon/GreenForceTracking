@@ -4,12 +4,16 @@ namespace Library.Messages
 {
     public class MessagesContainer
     {
-        private ObservableCollection<Message> recivedMessages;
+        private readonly ObservableCollection<Message> recivedMessages;
 
-        public MessagesContainer() {
+        public MessagesContainer()
+        {
             recivedMessages = new ObservableCollection<Message>();
         }
 
-        public ObservableCollection<Message> RecivedMessages { get { return recivedMessages; } }
+        public ObservableCollection<Message> RecivedMessages
+        {
+            get { return recivedMessages; }
+        }
     }
 }

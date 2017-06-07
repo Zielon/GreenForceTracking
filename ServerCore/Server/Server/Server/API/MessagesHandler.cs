@@ -1,4 +1,10 @@
-﻿using Library.API;
+﻿using System;
+using System.ComponentModel;
+using System.IO;
+using System.Linq;
+using System.Net.Sockets;
+using System.Xml;
+using Library.API;
 using Library.Common;
 using Library.Events;
 using Library.Frames;
@@ -6,23 +12,17 @@ using Library.Frames.Client;
 using Library.Frames.Factory;
 using Library.Messages;
 using Server.Mock;
-using System;
-using System.ComponentModel;
-using System.IO;
-using System.Linq;
-using System.Net.Sockets;
-using System.Xml;
-
+using Server.Stats;
 
 namespace Server.API
 {
     public class MessagesHandler
     {
-        private Library.Server.Server Server;
+        private readonly Library.Server.Server Server;
 
         public MessagesHandler(Library.Server.Server server)
         {
-            this.Server = server;
+            Server = server;
         }
 
         public void ParseMessage(string msg, TcpClient tcpClient)
@@ -39,7 +39,6 @@ namespace Server.API
                 string elements = string.Empty;
 
                 foreach (XmlNode player in doc.GetElementsByTagName("Frame"))
-                {
                     using (var sw = new StringWriter())
                     {
                         string xml = string.Empty;
@@ -63,16 +62,11 @@ namespace Server.API
                             case Frames.Marker:
                                 AddMarker(xml, tcpClient);
                                 break;
-                            default:
-                                throw new InvalidEnumArgumentException();
+                            default: throw new InvalidEnumArgumentException();
                         }
                     }
-                }
             }
-            catch (Exception ex)
-            {
-                Server.OnMessageChange(new MessageEventArgs { Message = ex.Message + "\n" + ex.StackTrace });
-            }
+            catch (Exception ex) { Server.OnMessageChange(new MessageEventArgs { Message = ex.Message + "\n" + ex.StackTrace }); }
         }
 
         private void AddMarker(string xml, TcpClient tcpClient)
@@ -81,7 +75,7 @@ namespace Server.API
 
             if (!IsLogged(marker.Login)) return;
 
-            Stats.StatsHandler.AddMarker(marker.Login);
+            StatsHandler.AddMarker(marker.Login);
 
             lock (Server.Room.Markers)
             {
@@ -94,9 +88,9 @@ namespace Server.API
 
                     Server.OnMessageChange(new MessageEventArgs { Message = $"Marker has been added by {marker.Login} !\n" });
                     lock (Server.Container.RecivedMessages)
-                         if (Server.Container.RecivedMessages.Count > 17)
-                            Server.OnContainerChange(new ContainerEventArgs { Clean = true });
-
+                    {
+                        if (Server.Container.RecivedMessages.Count > 17) Server.OnContainerChange(new ContainerEventArgs { Clean = true });
+                    }
                 }
                 else if (Server.Room.Markers.Contains(marker) && !marker.Add)
                 {
@@ -124,12 +118,9 @@ namespace Server.API
                     return;
                 }
 
-                if (user != null)
-                {
-                    user.PropertyChanged += Server.ClientPropertyChanged;
-                    user.Connection = tcpClient;
-                    user.LoggedIn = true;
-                }
+                user.PropertyChanged += Server.ClientPropertyChanged;
+                user.Connection = tcpClient;
+                user.LoggedIn = true;
             }
         }
 
@@ -138,16 +129,13 @@ namespace Server.API
             lock (DataBaseMock.Users)
             {
                 var user = DataBaseMock.Users.SingleOrDefault(u => u.Login.Equals(player));
-                if (user != null)
-                    return user.LoggedIn;
-                return false;
+                return user != null && user.LoggedIn;
             }
         }
 
         private void AddPlayer(string xml, TcpClient tcpClient)
         {
             Client client = null;
-            Client playerInRoom = null;
 
             client = FramesFactory.CreateObject<Client>(xml);
 
@@ -157,6 +145,7 @@ namespace Server.API
 
             lock (Server.Room.Players)
             {
+                Client playerInRoom = null;
                 if (!Server.Room.Players.Contains(client))
                 {
                     Server.Room.Players.Add(client);
@@ -169,30 +158,32 @@ namespace Server.API
                 }
                 else
                 {
-                    playerInRoom = (Client)Server.Room.Players.Single(p => p.Login.Equals(client.Login));
+                    playerInRoom = (Client) Server.Room.Players.Single(p => p.Login.Equals(client.Login));
                     playerInRoom.Accuracy = client.Accuracy;
                     playerInRoom.Direction = client.Direction;
                     playerInRoom.Posision = posision;
                     playerInRoom.Message = client.Message;
                 }
 
-                Stats.StatsHandler.Update(client);
+                StatsHandler.Update(client);
                 playerInRoom.NotifyPropertyChanged();
 
-                Server.OnContainerChange(new ContainerEventArgs
-                {
-                    Message = new Message()
+                Server.OnContainerChange(
+                    new ContainerEventArgs
                     {
-                        User = playerInRoom.Login,
-                        Adress = tcpClient.Client.RemoteEndPoint.ToString(),
-                        Time = DateTime.Now,
-                        RecivedData = client.Message
-                    }
-                });
+                        Message = new Message
+                        {
+                            User = playerInRoom.Login,
+                            Adress = tcpClient.Client.RemoteEndPoint.ToString(),
+                            Time = DateTime.Now,
+                            RecivedData = client.Message
+                        }
+                    });
 
                 lock (Server.Container.RecivedMessages)
-                     if (Server.Container.RecivedMessages.Count > 17)
-                        Server.OnContainerChange(new ContainerEventArgs { Clean = true });
+                {
+                    if (Server.Container.RecivedMessages.Count > 17) Server.OnContainerChange(new ContainerEventArgs { Clean = true });
+                }
             }
         }
     }

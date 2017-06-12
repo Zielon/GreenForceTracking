@@ -45,6 +45,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="API\MessagesFunctions.cs" />
     <Compile Include="API\MessagesHandler.cs" />
     <Compile Include="API\Server.cs" />
     <Compile Include="API\Tools.cs" />

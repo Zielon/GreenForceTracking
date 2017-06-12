@@ -1,26 +1,27 @@
 ﻿using System;
-using System.ComponentModel;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net.Sockets;
 using System.Xml;
-using Server.Common;
 using Server.Events;
-using Server.Frames;
-using Server.Frames.Client;
-using Server.Messages;
 using Server.Mock;
-using Server.Stats;
 
 namespace Server.API
 {
-    public class MessagesHandler
+    public partial class MessagesHandler
     {
-        private readonly Server Server;
+        private readonly Dictionary<Frames.Frames, Action<string, TcpClient>> _actions =
+            new Dictionary<Frames.Frames, Action<string, TcpClient>>();
+
+        private readonly Server _server;
 
         public MessagesHandler(Server server)
         {
-            Server = server;
+            _server = server;
+            _actions[Frames.Frames.Player] = AddPlayer;
+            _actions[Frames.Frames.Login] = CheckLogin;
+            _actions[Frames.Frames.Marker] = AddMarker;
         }
 
         public void ParseMessage(string msg, TcpClient tcpClient)
@@ -49,77 +50,10 @@ namespace Server.API
                             xml = sw.ToString();
                         }
 
-                        switch (type)
-                        {
-                            case Frames.Frames.Player:
-                                AddPlayer(xml, tcpClient);
-                                break;
-                            case Frames.Frames.Login:
-                                CheckLogin(xml, tcpClient);
-                                break;
-                            case Frames.Frames.Marker:
-                                AddMarker(xml, tcpClient);
-                                break;
-                            default: throw new InvalidEnumArgumentException();
-                        }
+                        _actions[type](xml, tcpClient);
                     }
             }
-            catch (Exception ex) { Server.OnMessageChange(new MessageEventArgs { Message = ex.Message + "\n" + ex.StackTrace }); }
-        }
-
-        private void AddMarker(string xml, TcpClient tcpClient)
-        {
-            Marker marker = FramesFactory.CreateObject<Marker>(xml);
-
-            if (!IsLogged(marker.Login)) return;
-
-            StatsHandler.AddMarker(marker.Login);
-
-            lock (Server.Room.Markers)
-            {
-                if (!Server.Room.Markers.Contains(marker) && marker.Add)
-                {
-                    Server.Room.Markers.Add(marker);
-                    marker.PropertyChanged += Server.ClientPropertyChanged;
-                    marker.Connection = tcpClient;
-                    marker.NotifyPropertyChanged();
-
-                    Server.OnMessageChange(new MessageEventArgs { Message = $"Marker has been added by {marker.Login} !\n" });
-                    lock (Server.Container.RecivedMessages)
-                    {
-                        if (Server.Container.RecivedMessages.Count > 17) Server.OnContainerChange(new ContainerEventArgs { Clean = true });
-                    }
-                }
-                else if (Server.Room.Markers.Contains(marker) && !marker.Add)
-                {
-                    Marker m = Server.Room.Markers.Cast<Marker>().Single(e => e.Id == marker.Id);
-                    m.Add = false;
-                    m.NotifyPropertyChanged();
-                    Server.Room.Markers.Remove(m);
-                    Server.OnMessageChange(new MessageEventArgs { Message = $"Marker {m.Id} has been deleted !\n" });
-                }
-            }
-        }
-
-        private void CheckLogin(string xml, TcpClient tcpClient)
-        {
-            var client = FramesFactory.CreateObject<SystemUser>(xml);
-
-            lock (DataBaseMock.Users)
-            {
-                var user = DataBaseMock.Users.SingleOrDefault(u => u.Password.Equals(client.Password) && u.Login.Equals(client.Login));
-                if (user == null)
-                {
-                    client.PropertyChanged += Server.ClientPropertyChanged;
-                    client.Connection = tcpClient;
-                    client.LoggedIn = false;
-                    return;
-                }
-
-                user.PropertyChanged += Server.ClientPropertyChanged;
-                user.Connection = tcpClient;
-                user.LoggedIn = true;
-            }
+            catch (Exception ex) { _server.OnMessageChange(new MessageEventArgs { Message = ex.Message + "\n" + ex.StackTrace }); }
         }
 
         private bool IsLogged(string player)
@@ -128,60 +62,6 @@ namespace Server.API
             {
                 var user = DataBaseMock.Users.SingleOrDefault(u => u.Login.Equals(player));
                 return user != null && user.LoggedIn;
-            }
-        }
-
-        private void AddPlayer(string xml, TcpClient tcpClient)
-        {
-            Client client = null;
-
-            client = FramesFactory.CreateObject<Client>(xml);
-
-            if (!IsLogged(client.Login)) return;
-
-            var posision = new Posision(client.Lat, client.Lng);
-
-            lock (Server.Room.Players)
-            {
-                Client playerInRoom = null;
-                if (!Server.Room.Players.Contains(client))
-                {
-                    Server.Room.Players.Add(client);
-                    client.PropertyChanged += Server.ClientPropertyChanged;
-                    client.Connection = tcpClient;
-                    client.Posision = posision; // Notify property changed
-                    playerInRoom = client;
-
-                    Server.OnMessageChange(new MessageEventArgs { Message = $"New player {client.Login}\n" });
-                }
-                else
-                {
-                    playerInRoom = (Client) Server.Room.Players.Single(p => p.Login.Equals(client.Login));
-                    playerInRoom.Accuracy = client.Accuracy;
-                    playerInRoom.Direction = client.Direction;
-                    playerInRoom.Posision = posision;
-                    playerInRoom.Message = client.Message;
-                }
-
-                StatsHandler.Update(client);
-                playerInRoom.NotifyPropertyChanged();
-
-                Server.OnContainerChange(
-                    new ContainerEventArgs
-                    {
-                        Message = new Message
-                        {
-                            User = playerInRoom.Login,
-                            Adress = tcpClient.Client.RemoteEndPoint.ToString(),
-                            Time = DateTime.Now,
-                            RecivedData = client.Message
-                        }
-                    });
-
-                lock (Server.Container.RecivedMessages)
-                {
-                    if (Server.Container.RecivedMessages.Count > 17) Server.OnContainerChange(new ContainerEventArgs { Clean = true });
-                }
             }
         }
     }

@@ -1,4 +1,0 @@
-X:\Repozytoria\GreenForceTracking\ServerCore\Server\Server\Server\bin\Debug\Server.dll
-X:\Repozytoria\GreenForceTracking\ServerCore\Server\Server\Server\bin\Debug\Server.pdb
-X:\Repozytoria\GreenForceTracking\ServerCore\Server\Server\Server\obj\Debug\Server.dll
-X:\Repozytoria\GreenForceTracking\ServerCore\Server\Server\Server\obj\Debug\Server.pdb
